@@ -6,9 +6,7 @@
 
 Repository ini berisi seri artikel edukasi tentang dasar-dasar crypto trading, setup Freqtrade, pembuatan strategi, backtesting, dry-run, dan operasional bot trading.
 
-Target utama repository ini adalah gamers yang terbiasa membaca sistem, statistik, market item, build, probability, dan resource management, tetapi belum familiar dengan crypto market dan risiko trading sungguhan.
-
-Repository ini tidak dibuat untuk menjual mimpi profit cepat, tetapi repository ini dibuat untuk membangun cara berpikir yang lebih aman:
+Target utama repository ini adalah gamers yang terbiasa membaca sistem, statistik, market item, build, probability, dan resource management, tetapi belum familiar dengan crypto market dan risiko trading sungguhan. Repository ini tidak dibuat untuk menjual mimpi profit cepat, tetapi repository ini dibuat untuk membangun cara berpikir yang lebih aman:
 
 * Memahami market sebelum trading
 * Memahami risiko sebelum menggunakan bot
@@ -84,9 +82,7 @@ Seri ini dibagi menjadi empat artikel utama.
 
 ## Artikel 1: Foundation
 
-Artikel pertama membahas dasar-dasar crypto trading untuk pembaca yang benar-benar baru.
-
-Topik utama:
+Artikel pertama membahas dasar-dasar crypto trading untuk pembaca yang benar-benar baru. Topik utama:
 
 * Apa itu cryptocurrency
 * Blockchain, wallet, stablecoin, dan exchange
@@ -112,9 +108,7 @@ Tujuan artikel ini adalah membangun dasar pemukiran sebelum pembaca masuk ke ins
 
 ## Artikel 2: Setup
 
-Artikel kedua membahas setup teknis dari nol sampai bot bisa berjalan dalam mode dry-run.
-
-Topik utama:
+Artikel kedua membahas setup teknis dari nol sampai bot bisa berjalan dalam mode dry-run. Topik utama:
 
 * Persiapan akun exchange
 * Membuat API key dengan izin minimal
@@ -139,9 +133,7 @@ Tujuan artikel ini adalah membuat pembaca memiliki environment Freqtrade yang be
 
 ## Artikel 3: Strategy
 
-Artikel ketiga membahas cara berpikir dan menulis strategi Freqtrade.
-
-Topik utama:
+Artikel ketiga membahas cara berpikir dan menulis strategi Freqtrade. Topik utama:
 
 * Memahami data candlestick
 * Memahami dataframe
@@ -171,9 +163,7 @@ Tujuan artikel ini adalah memahami bagaimana strategi dibuat, diuji, dievaluasi,
 
 ## Artikel 4: Operations
 
-Artikel keempat membahas operasional bot setelah setup dan strategi selesai diuji.
-
-Topik utama:
+Artikel keempat membahas operasional bot setelah setup dan strategi selesai diuji. Topik utama:
 
 * Transisi dari dry-run ke live
 * Pre-live checklist
@@ -227,9 +217,7 @@ secrets.json
 id_rsa
 ```
 
-Jika menggunakan GitHub, pastikan file sensitif masuk ke `.gitignore`.
-
-Contoh `.gitignore`:
+Jika menggunakan GitHub, pastikan file sensitif masuk ke `.gitignore`. Contoh `.gitignore`:
 
 ```gitignore
 # Freqtrade sensitive config
@@ -373,25 +361,15 @@ Selalu cek dokumentasi resmi karena fitur, command, exchange support, dan best p
 
 Repository ini hanya untuk tujuan edukasi.
 
-Crypto trading memiliki risiko tinggi. Harga aset crypto dapat bergerak sangat cepat dan ekstrem. Bot trading tidak menjamin profit. Backtesting tidak menjamin hasil di masa depan. Dry-run tidak sepenuhnya merepresentasikan kondisi live market.
+Crypto trading memiliki risiko tinggi. Harga aset crypto dapat bergerak sangat cepat dan ekstrem. Bot trading tidak menjamin profit. Backtesting tidak menjamin hasil di masa depan. Dry-run tidak sepenuhnya merepresentasikan kondisi live market. Jangan menggunakan uang kebutuhan hidup, dana darurat, uang pinjaman, atau uang operasional keluarga untuk trading.
 
-Jangan menggunakan uang kebutuhan hidup, dana darurat, uang pinjaman, atau uang operasional keluarga untuk trading.
-
-Setiap keputusan trading adalah tanggung jawab pribadi masing-masing pengguna.
-
-Gunakan repository ini sebagai bahan belajar, bukan sebagai finansial advisor.
+Setiap keputusan trading adalah tanggung jawab pribadi masing-masing pengguna. Gunakan repository ini sebagai bahan belajar, bukan sebagai finansial advisor.
 
 ---
 
 ## Closing Note
 
-Belajar crypto trading dengan Freqtrade sebaiknya dimulai dari pemahaman, bukan langsung dari eksekusi.
-
-Untuk gamers, pendekatan terbaik adalah memperlakukan market seperti sistem kompleks yang perlu dibaca, diuji, dan dievaluasi.
-
-Bukan seperti farming. Bukan seperti gacha. Bukan seperti cheat.
-
-Gunakan data, gunakan risk management, dan mulai dari dry-run.
+Belajar crypto trading dengan Freqtrade sebaiknya dimulai dari pemahaman, bukan langsung dari eksekusi. Untuk gamers, pendekatan terbaik adalah memperlakukan market seperti sistem kompleks yang perlu dibaca, diuji, dan dievaluasi. Gunakan data, gunakan risk management, dan mulai dari dry-run.
 
 ---
 
