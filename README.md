@@ -392,3 +392,7 @@ Untuk gamers, pendekatan terbaik adalah memperlakukan market seperti sistem komp
 Bukan seperti farming. Bukan seperti gacha. Bukan seperti cheat.
 
 Gunakan data, gunakan risk management, dan mulai dari dry-run.
+
+---
+
+2026 - Kenshin Himura
