@@ -37,11 +37,7 @@
 
 ## Tujuan Artikel
 
-Artikel ini adalah lanjutan dari Artikel 2 — Setup.
-
-Jika artikel sebelumnya membahas cara membangun environment Freqtrade, artikel ini membahas cara mulai menulis dan mengevaluasi strategy.
-
-Pada tahap ini, pembaca sudah diasumsikan memahami:
+Artikel ini adalah lanjutan dari Artikel 2 — Setup. Jika artikel sebelumnya membahas cara membangun environment Freqtrade, artikel ini membahas cara mulai menulis dan mengevaluasi strategy. Pada tahap ini, pembaca sudah diasumsikan memahami:
 
 * Apa Itu Cryptocurrency.
 * Apa Itu Exchange.
@@ -72,9 +68,7 @@ Dalam konteks gamer, artikel ini mirip proses meracik build karakter. Build yang
 
 ## Mindset Dasar Strategy
 
-Strategy adalah sekumpulan aturan.
-
-Strategy menjawab pertanyaan:
+Strategy adalah sekumpulan aturan. Strategy menjawab pertanyaan:
 
 ```text id="xw6toj"
 Kapan bot boleh masuk posisi?
@@ -84,9 +78,7 @@ Berapa target profit yang masuk akal?
 Kapan kondisi market dianggap tidak valid?
 ```
 
-Strategy yang baik tidak harus selalu benar. Strategy yang baik harus memiliki aturan yang jelas ketika benar dan ketika salah.
-
-Pemula sering berpikir bahwa strategy bagus adalah strategy yang selalu menang. Ini keliru. Dalam trading, loss adalah bagian dari sistem. Yang lebih penting adalah:
+Strategy yang baik tidak harus selalu benar. Strategy yang baik harus memiliki aturan yang jelas ketika benar dan ketika salah. Pemula sering berpikir bahwa strategy bagus adalah strategy yang selalu menang. Ini keliru. Dalam trading, loss adalah bagian dari sistem. Yang lebih penting adalah:
 
 * Kerugian Terkendali.
 * Ukuran Posisi Masuk Akal.
@@ -97,19 +89,13 @@ Pemula sering berpikir bahwa strategy bagus adalah strategy yang selalu menang. 
 
 Di dunia game, build yang baik tidak selalu menang dalam semua situasi. Ada build yang kuat untuk farming, ada build yang kuat untuk boss, ada build yang kuat untuk PvP, dan ada build yang hanya kuat karena meta tertentu.
 
-Strategy trading juga punya konteks.
-
-Ada strategy yang cocok untuk trend market. Ada strategy yang cocok untuk sideways market. Ada strategy yang terlihat bagus saat market bullish, tetapi buruk saat market bearish.
-
-Karena itu, jangan mencari strategy sempurna. Cari strategy yang dapat dipahami, diuji, dan dikontrol risikonya.
+Strategy trading juga punya konteks. Ada strategy yang cocok untuk trend market. Ada strategy yang cocok untuk sideways market. Ada strategy yang terlihat bagus saat market bullish, tetapi buruk saat market bearish. Karena itu, jangan mencari strategy sempurna. Cari strategy yang dapat dipahami, diuji, dan dikontrol risikonya.
 
 ---
 
 ## Strategy Bukan Ramalan Market
 
-Strategy bukan alat untuk mengetahui masa depan. Strategy hanya membuat aturan berdasarkan data yang tersedia.
-
-Contoh sederhana:
+Strategy bukan alat untuk mengetahui masa depan. Strategy hanya membuat aturan berdasarkan data yang tersedia. Contoh sederhana:
 
 ```text id="wco2dr"
 Jika trend naik dan momentum membaik, bot boleh mencari entry.
@@ -143,9 +129,7 @@ Freqtrade bekerja menggunakan data candle. Setiap candle merepresentasikan perge
 | `4h`      | Satu candle mewakili 4 jam    |
 | `1d`      | Satu candle mewakili 1 hari   |
 
-Timeframe sangat mempengaruhi karakter strategy.
-
-Strategy `5m` biasanya:
+Timeframe sangat mempengaruhi karakter strategy. Strategy `5m` biasanya:
 
 * Memberi Sinyal Lebih Sering.
 * Lebih Sensitif terhadap Noise.
@@ -165,11 +149,7 @@ Tidak ada timeframe yang selalu paling baik. Timeframe harus sesuai dengan karak
 
 ## Memahami Dataframe
 
-Dalam Freqtrade, data candle diproses dalam bentuk dataframe. Dataframe dapat dipahami sebagai tabel data.
-
-Setiap baris merepresentasikan satu candle. Setiap kolom berisi informasi seperti open, high, low, close, volume, dan indikator tambahan.
-
-Contoh sederhana:
+Dalam Freqtrade, data candle diproses dalam bentuk dataframe. Dataframe dapat dipahami sebagai tabel data. Setiap baris merepresentasikan satu candle. Setiap kolom berisi informasi seperti open, high, low, close, volume, dan indikator tambahan. Contoh sederhana:
 
 | Date             | Open | High | Low | Close | Volume |
 | ---------------- | ---: | ---: | --: | ----: | -----: |
@@ -177,9 +157,7 @@ Contoh sederhana:
 | 2026-01-01 00:05 |  103 |  108 | 101 |   107 |   1500 |
 | 2026-01-01 00:10 |  107 |  109 | 104 |   105 |   1300 |
 
-Strategy akan menambahkan kolom baru ke dataframe.
-
-Contoh:
+Strategy akan menambahkan kolom baru ke dataframe. Contoh:
 
 | Date             | Close | Volume | SMA20 | SMA50 | RSI |
 | ---------------- | ----: | -----: | ----: | ----: | --: |
@@ -187,9 +165,7 @@ Contoh:
 | 2026-01-01 00:05 |   107 |   1500 |   102 |    99 |  61 |
 | 2026-01-01 00:10 |   105 |   1300 |   103 |   100 |  58 |
 
-Kolom tambahan tersebut digunakan untuk membuat aturan entry dan exit.
-
-Contoh logika:
+Kolom tambahan tersebut digunakan untuk membuat aturan entry dan exit. Contoh logika:
 
 ```text id="dzm25u"
 Jika SMA20 memotong ke atas SMA50, maka trend jangka pendek mulai menguat.
@@ -213,9 +189,7 @@ OHLCV adalah format data dasar dalam trading.
 | Close    | Harga penutupan candle                  |
 | Volume   | Jumlah aktivitas transaksi dalam candle |
 
-Dalam banyak strategy sederhana, harga close sering digunakan sebagai basis perhitungan indikator.
-
-Contoh:
+Dalam banyak strategy sederhana, harga close sering digunakan sebagai basis perhitungan indikator. Contoh:
 
 * SMA Menggunakan Rata-Rata Close.
 * EMA Menggunakan Close dengan Bobot Lebih Besar pada Data Terbaru.
@@ -245,15 +219,13 @@ Indikator tidak memberi jaminan. Indikator hanya menyederhanakan informasi dari 
 RSI di bawah 30 berarti harga pasti naik.
 ```
 
-Interpretasi yang lebih sehat:
+Interpretasi yang lebih tepat:
 
 ```text id="6grf8e"
 RSI di bawah 30 menunjukkan kondisi oversold berdasarkan perhitungan RSI, tetapi harga masih bisa turun lebih jauh.
 ```
 
-Dalam strategy, indikator sebaiknya digunakan bersama konteks lain.
-
-Misalnya:
+Dalam strategy, indikator sebaiknya digunakan bersama konteks lain. Misalnya:
 
 * Trend Filter.
 * Volume Filter.
@@ -295,9 +267,7 @@ Namun, RSI tidak boleh digunakan secara buta. Dalam trend yang kuat, RSI bisa be
 
 ### Volume
 
-Volume menunjukkan aktivitas transaksi. Volume membantu menilai apakah pergerakan harga didukung aktivitas market yang cukup.
-
-Contoh:
+Volume menunjukkan aktivitas transaksi. Volume membantu menilai apakah pergerakan harga didukung aktivitas market yang cukup. Contoh:
 
 * Harga Naik dengan Volume Naik Dapat Menunjukkan Momentum Lebih Kuat.
 * Harga Naik dengan Volume Lemah Dapat Menunjukkan Kenaikan Rapuh.
@@ -723,17 +693,11 @@ Contoh:
 stoploss = -0.08
 ```
 
-Artinya, stoploss berada di sekitar minus 8%. Yang perlu dipahami adalah: stoploss bukan tanda strategy buruk. Stoploss adalah mekanisme bertahan hidup.
-
-Tanpa stoploss, bot bisa menahan posisi buruk terlalu lama. Dalam game, stoploss mirip keputusan mundur dari raid ketika party sudah jelas tidak mampu menyelesaikan boss.
-
-Mundur bukan gagal total. Mundur adalah cara menjaga resource untuk percobaan berikutnya.
+Artinya, stoploss berada di sekitar minus 8%. Yang perlu dipahami adalah: stoploss bukan tanda strategy buruk. Stoploss adalah mekanisme bertahan hidup. Tanpa stoploss, bot bisa menahan posisi buruk terlalu lama. Dalam game, stoploss mirip keputusan mundur dari raid ketika party sudah jelas tidak mampu menyelesaikan boss. Mundur bukan gagal total. Mundur adalah cara menjaga resource untuk percobaan berikutnya.
 
 ### Trailing Stoploss
 
-Trailing stoploss adalah stoploss yang bergerak mengikuti profit.
-
-Contoh:
+Trailing stoploss adalah stoploss yang bergerak mengikuti profit. Contoh:
 
 ```python id="kn47rw"
 trailing_stop = True
@@ -755,9 +719,7 @@ Jika terlalu ketat, posisi bisa keluar terlalu cepat. Jika terlalu longgar, prof
 
 ## Backtesting
 
-Backtesting adalah proses menguji strategy menggunakan data historis. Tujuannya adalah melihat bagaimana strategy bekerja jika dijalankan pada periode market sebelumnya.
-
-Backtesting tidak menjamin hasil masa depan. Namun, backtesting membantu menjawab pertanyaan penting:
+Backtesting adalah proses menguji strategy menggunakan data historis. Tujuannya adalah melihat bagaimana strategy bekerja jika dijalankan pada periode market sebelumnya. Backtesting tidak menjamin hasil masa depan. Namun, backtesting membantu menjawab pertanyaan penting:
 
 * Apakah Strategy Pernah Memberi Sinyal?
 * Apakah Strategy Terlalu Sering Trading?
@@ -770,9 +732,7 @@ Backtesting tidak menjamin hasil masa depan. Namun, backtesting membantu menjawa
 
 ### Download Data Historis
 
-Sebelum backtest, download data historis.
-
-Contoh:
+Sebelum backtest, download data historis. Contoh:
 
 ```bash id="zn7jty"
 cd ~/freqtrade
@@ -815,9 +775,7 @@ docker compose run --rm freqtrade backtesting \
   --timerange 20240101-20240601
 ```
 
-Hasil backtest biasanya berisi metrik seperti total trades, profit, winrate, average duration, drawdown, dan detail trade.
-
-Jangan hanya melihat total profit. Total profit adalah angka paling menggoda, tetapi bukan satu-satunya angka yang penting.
+Hasil backtest biasanya berisi metrik seperti total trades, profit, winrate, average duration, drawdown, dan detail trade. Jangan hanya melihat total profit. Total profit adalah angka paling menggoda, tetapi bukan satu-satunya angka yang penting.
 
 ---
 
@@ -827,11 +785,7 @@ Saat membaca hasil backtest, gunakan pendekatan yang kritis.
 
 ### Total Profit
 
-Total profit menunjukkan hasil akhir strategy pada periode backtest.
-
-Namun, total profit bisa menipu.
-
-Strategy bisa terlihat profit karena satu trade besar, sementara banyak trade lain buruk.
+Total profit menunjukkan hasil akhir strategy pada periode backtest. Namun, total profit bisa menipu. Strategy bisa terlihat profit karena satu trade besar, sementara banyak trade lain buruk.
 
 ### Total Trades
 
@@ -847,11 +801,7 @@ Jumlah trade yang terlalu banyak juga perlu diperiksa karena fee dan slippage da
 
 ### Winrate
 
-Winrate menunjukkan persentase trade yang profit. Winrate tinggi tidak selalu berarti strategy bagus.
-
-Strategy dengan winrate tinggi tetap bisa rugi jika satu loss besar menghapus banyak profit kecil.
-
-Sebaliknya, strategy dengan winrate rendah bisa tetap profit jika profit per trade jauh lebih besar daripada loss.
+Winrate menunjukkan persentase trade yang profit. Winrate tinggi tidak selalu berarti strategy bagus. Strategy dengan winrate tinggi tetap bisa rugi jika satu loss besar menghapus banyak profit kecil. Sebaliknya, strategy dengan winrate rendah bisa tetap profit jika profit per trade jauh lebih besar daripada loss.
 
 ### Average Profit
 
@@ -859,31 +809,19 @@ Average profit menunjukkan rata-rata profit per trade. Metrik ini membantu melih
 
 ### Drawdown
 
-Drawdown menunjukkan penurunan nilai akun dari titik tertinggi ke titik lebih rendah. Drawdown sangat penting.
-
-Strategy dengan profit tinggi tetapi drawdown terlalu besar bisa tidak layak digunakan.
-
-Dalam live trading, drawdown besar dapat merusak psikologi dan meningkatkan risiko stop bot di waktu yang salah.
+Drawdown menunjukkan penurunan nilai akun dari titik tertinggi ke titik lebih rendah. Drawdown sangat penting. Strategy dengan profit tinggi tetapi drawdown terlalu besar bisa tidak layak digunakan. Dalam live trading, drawdown besar dapat merusak psikologi dan meningkatkan risiko stop bot di waktu yang salah.
 
 ### Best Trade dan Worst Trade
 
-Periksa trade terbaik dan terburuk.
-
-Jika profit strategy hanya bergantung pada satu trade terbaik, strategy mungkin rapuh.
-
-Jika satu trade terburuk terlalu besar, risk control perlu diperbaiki.
+Periksa trade terbaik dan terburuk. Jika profit strategy hanya bergantung pada satu trade terbaik, strategy mungkin rapuh. Jika satu trade terburuk terlalu besar, risk control perlu diperbaiki.
 
 ### Pair Performance
 
-Lihat performa per pair. Strategy mungkin bagus di BTC/USDT tetapi buruk di coin lain.
-
-Jangan menyimpulkan strategy universal hanya dari satu pair.
+Lihat performa per pair. Strategy mungkin bagus di BTC/USDT tetapi buruk di coin lain. Jangan menyimpulkan strategy universal hanya dari satu pair.
 
 ### Exit Reason
 
-Periksa alasan exit.
-
-Contoh exit reason:
+Periksa alasan exit. Contoh exit reason:
 
 | Exit Reason       | Arti                          |
 | ----------------- | ----------------------------- |
@@ -893,19 +831,13 @@ Contoh exit reason:
 | Trailing Stoploss | Keluar karena trailing stop   |
 | Force Exit        | Keluar karena dipaksa         |
 
-Jika terlalu banyak exit karena stoploss, strategy mungkin entry terlalu buruk atau stoploss terlalu ketat.
-
-Jika terlalu banyak posisi keluar terlalu cepat, ROI atau trailing stop mungkin perlu diperiksa.
+Jika terlalu banyak exit karena stoploss, strategy mungkin entry terlalu buruk atau stoploss terlalu ketat. Jika terlalu banyak posisi keluar terlalu cepat, ROI atau trailing stop mungkin perlu diperiksa.
 
 ---
 
 ## Iterasi Strategy
 
-Strategy development adalah proses iterasi.
-
-Jangan berharap strategy pertama langsung bagus.
-
-Proses yang sehat:
+Strategy development adalah proses iterasi. Jangan berharap strategy pertama langsung bagus. Proses yang tepat:
 
 ```text id="hm4f91"
 Tulis strategy sederhana.
@@ -920,11 +852,7 @@ Jalankan dry-run.
 Evaluasi ulang.
 ```
 
-Perubahan harus dilakukan secara terkontrol. Jangan mengubah terlalu banyak parameter sekaligus.
-
-Jika semua parameter diubah bersamaan, sulit mengetahui bagian mana yang memperbaiki atau merusak hasil.
-
-Contoh iterasi yang sehat:
+Perubahan harus dilakukan secara terkontrol. Jangan mengubah terlalu banyak parameter sekaligus. Jika semua parameter diubah bersamaan, sulit mengetahui bagian mana yang memperbaiki atau merusak hasil. Contoh iterasi yang tepat:
 
 * Ubah Periode SMA dari 20/50 ke 10/50.
 * Jalankan Backtest Ulang.
@@ -948,9 +876,7 @@ Strategy development harus seperti testing build secara disiplin. Jangan seperti
 
 ## Hyperparameter Optimization
 
-Hyperparameter optimization, atau hyperopt, adalah proses mencari parameter strategy yang lebih optimal berdasarkan objective tertentu.
-
-Contoh parameter yang bisa dioptimasi:
+Hyperparameter optimization, atau hyperopt, adalah proses mencari parameter strategy yang lebih optimal berdasarkan objective tertentu. Contoh parameter yang bisa dioptimasi:
 
 * Periode RSI.
 * Batas RSI Entry.
@@ -962,11 +888,7 @@ Contoh parameter yang bisa dioptimasi:
 * Parameter Buy.
 * Parameter Sell.
 
-Hyperopt dapat membantu eksplorasi parameter, tetapi sangat mudah disalahgunakan.
-
-Jika hyperopt dilakukan terlalu agresif pada data yang sama, hasilnya bisa terlalu cocok dengan masa lalu.
-
-Itu disebut overfitting.
+Hyperopt dapat membantu eksplorasi parameter, tetapi sangat mudah disalahgunakan. Jika hyperopt dilakukan terlalu agresif pada data yang sama, hasilnya bisa terlalu cocok dengan masa lalu. Itu disebut overfitting.
 
 ### Contoh Konsep Parameter
 
@@ -1053,11 +975,7 @@ Hyperopt adalah alat pencari parameter. Parameter yang bagus di data masa lalu t
 
 ## Menghindari Overfitting
 
-Overfitting terjadi ketika strategy terlalu cocok dengan data historis tertentu, tetapi gagal di data baru.
-
-Dalam analogi gamer, overfitting seperti build yang dibuat khusus untuk satu boss, satu arena, satu patch, dan satu kondisi. Build itu terlihat sangat kuat di simulasi tertentu, tetapi gagal ketika kondisi berubah sedikit.
-
-Tanda-tanda overfitting:
+Overfitting terjadi ketika strategy terlalu cocok dengan data historis tertentu, tetapi gagal di data baru. Dalam analogi gamer, overfitting seperti build yang dibuat khusus untuk satu boss, satu arena, satu patch, dan satu kondisi. Build itu terlihat sangat kuat di simulasi tertentu, tetapi gagal ketika kondisi berubah sedikit. Tanda-tanda overfitting:
 
 * Profit Backtest Sangat Tinggi tetapi Hanya pada Satu Periode.
 * Jumlah Trade Terlalu Sedikit.
@@ -1092,17 +1010,13 @@ Contoh pembagian data:
 | April sampai Mei     | Validasi           |
 | Juni                 | Out-of-sample test |
 
-Jika strategy hanya bagus di periode eksperimen tetapi buruk di validasi, jangan langsung dipakai.
-
-Overfitting adalah salah satu jebakan terbesar dalam bot trading. Backtest dengan indikator hijau tidak otomatis berarti strategy siap live.
+Jika strategy hanya bagus di periode eksperimen tetapi buruk di validasi, jangan langsung dipakai. Overfitting adalah salah satu jebakan terbesar dalam bot trading. Backtest dengan indikator hijau tidak otomatis berarti strategy siap live.
 
 ---
 
 ## Menggunakan Strategy Komunitas sebagai Referensi
 
-Banyak strategy Freqtrade beredar di komunitas. Strategy komunitas dapat berguna untuk belajar, tetapi tidak boleh langsung dipercaya.
-
-Gunakan strategy komunitas sebagai referensi untuk memahami:
+Banyak strategy Freqtrade beredar di komunitas. Strategy komunitas dapat berguna untuk belajar, tetapi tidak boleh langsung dipercaya. Gunakan strategy komunitas sebagai referensi untuk memahami:
 
 * Struktur Code.
 * Cara Menggunakan Indikator.
@@ -1139,11 +1053,7 @@ Sebelum menggunakan strategy komunitas, lakukan checklist:
 | Dry-run Dilakukan                 | Wajib  |
 | Tidak Ada Secret di File Strategy | Wajib  |
 
-Strategy komunitas bisa menjadi bahan belajar yang baik.
-
-Namun, setiap market condition, exchange, fee, pair, dan timeframe dapat menghasilkan hasil yang berbeda.
-
-Tidak ada strategy publik yang otomatis cocok untuk semua pengguna.
+Strategy komunitas bisa menjadi bahan belajar yang baik. Namun, setiap market condition, exchange, fee, pair, dan timeframe dapat menghasilkan hasil yang berbeda. Tidak ada strategy publik yang otomatis cocok untuk semua pengguna.
 
 ---
 
@@ -1173,9 +1083,7 @@ Sebelum lanjut ke Artikel 4 — Operations, pastikan poin berikut sudah dipahami
 | Memahami Strategy Komunitas Hanya Referensi | Wajib              |
 | Strategy Sudah Diuji di Dry-run             | Wajib Sebelum Live |
 
-Jika belum memahami poin di atas, jangan lanjut ke live trading.
-
-Artikel berikutnya akan membahas operations, yaitu cara mengelola bot ketika sudah masuk fase live atau mendekati live.
+Jika belum memahami poin di atas, jangan lanjut ke live trading. Artikel berikutnya akan membahas operations, yaitu cara mengelola bot ketika sudah masuk fase live atau mendekati live.
 
 ---
 
@@ -1228,13 +1136,9 @@ Artikel berikutnya akan membahas operations, yaitu cara mengelola bot ketika sud
 
 ## Disclaimer
 
-Artikel ini hanya untuk tujuan edukasi.
+Artikel ini hanya untuk tujuan edukasi. Contoh strategy dalam artikel ini bukan rekomendasi trading, bukan sinyal beli atau jual, dan bukan strategy siap live.
 
-Contoh strategy dalam artikel ini bukan rekomendasi trading, bukan sinyal beli atau jual, dan bukan strategy siap live.
-
-Crypto trading memiliki risiko tinggi. Bot trading tidak menjamin profit. Backtesting tidak menjamin hasil masa depan. Hyperopt tidak menjamin parameter terbaik untuk market real.
-
-Jangan menjalankan strategy dalam mode live sebelum memahami logic, risk management, stoploss, position sizing, exchange fee, slippage, dan risiko operasional.
+Crypto trading memiliki risiko tinggi. Bot trading tidak menjamin profit. Backtesting tidak menjamin hasil masa depan. Hyperopt tidak menjamin parameter terbaik untuk market real. Jangan menjalankan strategy dalam mode live sebelum memahami logic, risk management, stoploss, position sizing, exchange fee, slippage, dan risiko operasional.
 
 Setiap keputusan trading adalah tanggung jawab pribadi masing-masing pengguna.
 
