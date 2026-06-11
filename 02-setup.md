@@ -36,15 +36,9 @@
 
 ## Tujuan Artikel
 
-Artikel ini adalah lanjutan dari Artikel 1 — Foundation.
+Artikel ini adalah lanjutan dari Artikel 1 — Foundation. Jika artikel pertama membahas konsep dasar crypto market, artikel ini mulai masuk ke sisi teknis. Target akhirnya adalah membuat environment Freqtrade yang bisa berjalan dalam mode dry-run.
 
-Jika artikel pertama membahas konsep dasar crypto market, artikel ini mulai masuk ke sisi teknis. Target akhirnya adalah membuat environment Freqtrade yang bisa berjalan dalam mode dry-run.
-
-Pada tahap ini, fokus utama bukan profit.
-
-Fokus utama adalah membangun trading lab yang rapi, aman, dan bisa diuji.
-
-Dalam konteks gamer, tahap ini mirip membangun base sebelum masuk raid:
+Pada tahap ini, fokus utama bukan profit. Fokus utama adalah membangun trading lab yang rapi, aman, dan bisa diuji. Dalam konteks gamer, tahap ini mirip membangun base sebelum masuk raid:
 
 * Server harus siap.
 * Akses harus aman.
@@ -69,9 +63,7 @@ Setelah menyelesaikan artikel ini, pembaca diharapkan memahami:
 
 ## Gambaran Arsitektur
 
-Sebelum menjalankan command, pahami dulu gambaran sistemnya.
-
-Arsitektur sederhana Freqtrade:
+Sebelum menjalankan command, pahami dulu gambaran sistemnya. Arsitektur sederhana Freqtrade:
 
 ```text
 User Browser
@@ -125,19 +117,13 @@ Sebelum mulai, pegang prinsip berikut.
 * Jangan Menggunakan Password Lemah untuk FreqUI.
 * Jangan Menganggap VPS Selalu Aman Secara Default.
 
-Freqtrade adalah alat yang kuat, tetapi kesalahan konfigurasi bisa berbahaya.
-
-Dalam game, salah build mungkin membuat karakter tidak optimal.
-
-Dalam trading bot, salah config bisa membuat bot membuka order yang tidak kamu inginkan.
+Freqtrade adalah alat yang kuat, tetapi kesalahan konfigurasi bisa berbahaya. Dalam game, salah build mungkin membuat karakter tidak optimal. Dalam trading bot, salah config bisa membuat bot membuka order yang tidak kamu inginkan.
 
 ---
 
 ## Persiapan Akun Exchange
 
-Freqtrade membutuhkan exchange yang mendukung API trading.
-
-Sebelum membuat API key, pastikan exchange yang digunakan:
+Freqtrade membutuhkan exchange yang mendukung API trading. Sebelum membuat API key, pastikan exchange yang digunakan:
 
 * Memiliki Reputasi yang Baik.
 * Mendukung API Trading.
@@ -157,17 +143,13 @@ Hal yang perlu dilakukan di akun exchange:
 5. Pilih pair yang likuid.
 6. Jangan langsung menggunakan seluruh modal.
 
-Untuk tahap belajar, gunakan mode dry-run terlebih dahulu.
-
-Dry-run tidak mengirim order sungguhan ke exchange, tetapi tetap membantu memahami perilaku bot.
+Untuk tahap belajar, gunakan mode dry-run terlebih dahulu. Dry-run tidak mengirim order sungguhan ke exchange, tetapi tetap membantu memahami perilaku bot.
 
 ---
 
 ## Membuat API Key dengan Izin Minimal
 
-API key adalah kredensial yang memungkinkan bot terhubung ke exchange.
-
-API key biasanya terdiri dari:
+API key adalah kredensial yang memungkinkan bot terhubung ke exchange. API key biasanya terdiri dari:
 
 | Komponen   | Fungsi                           |
 | ---------- | -------------------------------- |
@@ -176,9 +158,7 @@ API key biasanya terdiri dari:
 | Passphrase | Digunakan oleh beberapa exchange |
 | Permission | Hak akses API                    |
 
-Permission API harus dibatasi.
-
-Untuk bot trading, permission yang umumnya dibutuhkan:
+Permission API harus dibatasi. Untuk bot trading, permission yang umumnya dibutuhkan:
 
 * Read.
 * Trade.
@@ -200,19 +180,13 @@ Rekomendasi keamanan API key:
 * Rotate API Key Jika Pernah Bocor.
 * Hapus API Key yang Tidak Digunakan.
 
-Analogi gamer:
-
-API key bukan sekadar password.
-
-API key adalah akses bot ke inventory trading kamu. Jika permission terlalu luas, risiko juga menjadi lebih besar.
+Analogi gamer: API key bukan password. API key adalah akses bot ke inventory trading kamu. Jika permission terlalu luas, risiko juga menjadi lebih besar.
 
 ---
 
 ## Memilih VPS
 
-VPS digunakan agar Freqtrade bisa berjalan stabil tanpa bergantung pada laptop pribadi.
-
-Kriteria VPS yang layak untuk Freqtrade awal:
+VPS digunakan agar Freqtrade bisa berjalan stabil tanpa bergantung pada laptop pribadi. Kriteria VPS yang layak untuk Freqtrade awal:
 
 | Komponen | Rekomendasi Awal                                                  |
 | -------- | ----------------------------------------------------------------- |
@@ -224,11 +198,7 @@ Kriteria VPS yang layak untuk Freqtrade awal:
 | Lokasi   | Dekat dengan exchange lebih baik, tetapi tidak wajib untuk pemula |
 | Akses    | SSH root atau user sudo                                           |
 
-Untuk tahap belajar, VPS kecil sudah cukup.
-
-Jangan langsung menyewa server mahal. Lebih baik mulai dari setup sederhana, lalu naikkan resource jika memang dibutuhkan.
-
-Hal yang perlu diperhatikan saat memilih provider VPS:
+Untuk tahap belajar, VPS kecil sudah cukup. Jangan langsung menyewa server mahal. Lebih baik mulai dari setup sederhana, lalu naikkan resource jika memang dibutuhkan. Hal yang perlu diperhatikan saat memilih provider VPS:
 
 * Reputasi Provider.
 * Uptime.
@@ -343,9 +313,7 @@ Waktu server harus akurat karena bot berkomunikasi dengan exchange. Jika waktu s
 
 ### Membuat User Baru
 
-Jangan selalu bekerja sebagai root.
-
-Buat user baru:
+Jangan selalu bekerja sebagai root. Buat user baru:
 
 ```bash
 adduser freqbot
@@ -398,15 +366,11 @@ Cek status firewall:
 sudo ufw status
 ```
 
-Jangan membuka port Freqtrade API langsung ke internet.
-
-Jika Freqtrade API berjalan di port `8080`, biarkan hanya listen di `127.0.0.1`.
+Jangan membuka port Freqtrade API langsung ke internet. Jika Freqtrade API berjalan di port `8080`, biarkan hanya listen di `127.0.0.1`.
 
 ### Menggunakan SSH Key
 
-Untuk setup lebih aman, gunakan SSH key dan matikan password login setelah yakin SSH key berfungsi.
-
-File konfigurasi SSH:
+Untuk setup lebih aman, gunakan SSH key dan matikan password login setelah yakin SSH key berfungsi. File konfigurasi SSH:
 
 ```bash
 sudo nano /etc/ssh/sshd_config
@@ -434,11 +398,7 @@ Jangan menutup sesi SSH aktif sebelum memastikan login dengan SSH key berhasil d
 
 ## Memilih Metode Instalasi Freqtrade
 
-Ada beberapa cara menginstal Freqtrade.
-
-Untuk seri ini, metode utama yang disarankan adalah Docker.
-
-Alasannya:
+Ada beberapa cara menginstal Freqtrade. Untuk seri ini, metode utama yang disarankan adalah Docker. Alasannya:
 
 * Lebih Rapi untuk VPS.
 * Lebih Mudah Direproduksi.
@@ -447,9 +407,7 @@ Alasannya:
 * Cocok untuk Deployment Jangka Panjang.
 * Mengurangi Risiko Konflik Package Python di OS.
 
-Metode native tetap bisa digunakan, tetapi untuk pemula yang ingin menjalankan Freqtrade di VPS, Docker lebih mudah dijaga.
-
-Perbandingan singkat:
+Metode native tetap bisa digunakan, tetapi untuk pemula yang ingin menjalankan Freqtrade di VPS, Docker lebih mudah dijaga. Perbandingan singkat:
 
 | Metode          | Kelebihan                         | Kekurangan                             |
 | --------------- | --------------------------------- | -------------------------------------- |
@@ -569,9 +527,7 @@ Buat config awal:
 docker compose run --rm freqtrade new-config --config user_data/config.json
 ```
 
-Command `new-config` akan menanyakan beberapa parameter awal seperti exchange, stake currency, stake amount, max open trades, timeframe, dan mode dry-run.
-
-Untuk tahap awal, pilih dry-run.
+Command `new-config` akan menanyakan beberapa parameter awal seperti exchange, stake currency, stake amount, max open trades, timeframe, dan mode dry-run. Untuk tahap awal, pilih dry-run.
 
 ---
 
@@ -606,9 +562,7 @@ Penjelasan:
 | `user_data/hyperopts`        | File hyperopt                   |
 | `user_data/plot`             | Output chart atau plot          |
 
-Folder `user_data` adalah folder penting.
-
-Jangan sembarangan menghapus folder ini karena berisi config, strategi, data, dan hasil testing.
+Folder `user_data` adalah folder penting. Jangan sembarangan menghapus folder ini karena berisi config, strategi, data, dan hasil testing.
 
 ---
 
@@ -694,13 +648,7 @@ Catatan:
 "max_open_trades": 3
 ```
 
-Parameter ini menentukan jumlah posisi maksimal yang dapat dibuka bot secara bersamaan.
-
-Jika nilainya `3`, bot hanya dapat membuka maksimal tiga trade aktif.
-
-Untuk pemula, gunakan angka kecil.
-
-Semakin banyak posisi aktif, semakin besar exposure terhadap market.
+Parameter ini menentukan jumlah posisi maksimal yang dapat dibuka bot secara bersamaan. Jika nilainya `3`, bot hanya dapat membuka maksimal tiga trade aktif. Untuk pemula, gunakan angka kecil. Semakin banyak posisi aktif, semakin besar exposure terhadap market.
 
 ### stake_currency
 
@@ -708,9 +656,7 @@ Semakin banyak posisi aktif, semakin besar exposure terhadap market.
 "stake_currency": "USDT"
 ```
 
-Parameter ini menentukan mata uang yang digunakan sebagai modal trading.
-
-Jika menggunakan pair seperti `BTC/USDT`, stake currency biasanya `USDT`.
+Parameter ini menentukan mata uang yang digunakan sebagai modal trading. Jika menggunakan pair seperti `BTC/USDT`, stake currency biasanya `USDT`.
 
 ### stake_amount
 
@@ -718,13 +664,7 @@ Jika menggunakan pair seperti `BTC/USDT`, stake currency biasanya `USDT`.
 "stake_amount": 20
 ```
 
-Parameter ini menentukan ukuran modal per trade.
-
-Jika `stake_amount` adalah `20`, bot akan menggunakan sekitar 20 USDT per trade.
-
-Untuk dry-run, angka ini hanya simulasi.
-
-Untuk live, angka ini akan berpengaruh langsung ke order real.
+Parameter ini menentukan ukuran modal per trade. Jika `stake_amount` adalah `20`, bot akan menggunakan sekitar 20 USDT per trade. Untuk dry-run, angka ini hanya simulasi. Untuk live, angka ini akan berpengaruh langsung ke order real.
 
 ### dry_run
 
@@ -732,13 +672,7 @@ Untuk live, angka ini akan berpengaruh langsung ke order real.
 "dry_run": true
 ```
 
-Parameter ini menentukan apakah bot berjalan dalam mode simulasi.
-
-Jika `true`, bot tidak mengirim order real ke exchange.
-
-Untuk pemula, nilai ini harus tetap `true`.
-
-Jangan ubah ke `false` sebelum memahami risiko live trading.
+Parameter ini menentukan apakah bot berjalan dalam mode simulasi. Jika `true`, bot tidak mengirim order real ke exchange. Untuk pemula, nilai ini harus tetap `true`. Jangan ubah ke `false` sebelum memahami risiko live trading.
 
 ### dry_run_wallet
 
@@ -746,13 +680,7 @@ Jangan ubah ke `false` sebelum memahami risiko live trading.
 "dry_run_wallet": 1000
 ```
 
-Parameter ini menentukan saldo simulasi yang digunakan dalam dry-run.
-
-Jika `dry_run_wallet` adalah `1000`, bot akan menganggap tersedia 1000 USDT untuk simulasi.
-
-Gunakan angka yang realistis.
-
-Jangan menggunakan angka simulasi yang terlalu besar jika modal live nantinya kecil, karena hasil dry-run bisa membuat ekspektasi tidak realistis.
+Parameter ini menentukan saldo simulasi yang digunakan dalam dry-run. Jika `dry_run_wallet` adalah `1000`, bot akan menganggap tersedia 1000 USDT untuk simulasi. Gunakan angka yang realistis. Jangan menggunakan angka simulasi yang terlalu besar jika modal live nantinya kecil, karena hasil dry-run bisa membuat ekspektasi tidak realistis.
 
 ### trading_mode
 
@@ -760,11 +688,7 @@ Jangan menggunakan angka simulasi yang terlalu besar jika modal live nantinya ke
 "trading_mode": "spot"
 ```
 
-Parameter ini menentukan mode trading.
-
-Untuk seri ini, gunakan spot.
-
-Futures dan margin tidak disarankan untuk pemula.
+Parameter ini menentukan mode trading. Untuk seri ini, gunakan spot. Futures dan margin tidak disarankan untuk pemula.
 
 ### timeframe
 
@@ -772,9 +696,7 @@ Futures dan margin tidak disarankan untuk pemula.
 "timeframe": "5m"
 ```
 
-Parameter ini menentukan timeframe candle yang digunakan strategy.
-
-Contoh:
+Parameter ini menentukan timeframe candle yang digunakan strategy. Contoh:
 
 | Timeframe | Arti            |
 | --------- | --------------- |
@@ -783,9 +705,7 @@ Contoh:
 | `1h`      | Candle 1 jam    |
 | `4h`      | Candle 4 jam    |
 
-Timeframe kecil menghasilkan sinyal lebih sering, tetapi lebih noisy.
-
-Timeframe besar lebih lambat, tetapi sering lebih mudah dianalisis.
+Timeframe kecil menghasilkan sinyal lebih sering, tetapi lebih noisy. Timeframe besar lebih lambat, tetapi sering lebih mudah dianalisis.
 
 ### exchange.name
 
@@ -793,11 +713,7 @@ Timeframe besar lebih lambat, tetapi sering lebih mudah dianalisis.
 "name": "binance"
 ```
 
-Parameter ini menentukan exchange yang digunakan.
-
-Nama exchange harus sesuai dengan exchange yang didukung oleh Freqtrade dan CCXT.
-
-Pastikan exchange yang dipilih legal dan sesuai kebutuhan pengguna.
+Parameter ini menentukan exchange yang digunakan. Nama exchange harus sesuai dengan exchange yang didukung oleh Freqtrade dan CCXT. Pastikan exchange yang dipilih legal dan sesuai kebutuhan pengguna.
 
 ### exchange.key dan exchange.secret
 
@@ -806,11 +722,7 @@ Pastikan exchange yang dipilih legal dan sesuai kebutuhan pengguna.
 "secret": ""
 ```
 
-Parameter ini berisi API key dan API secret.
-
-Untuk dry-run, beberapa exchange tetap membutuhkan API key untuk membaca informasi tertentu. Namun, jangan pernah memasukkan API key ke file yang akan diunggah ke GitHub.
-
-Rekomendasi:
+Parameter ini berisi API key dan API secret. Untuk dry-run, beberapa exchange tetap membutuhkan API key untuk membaca informasi tertentu. Namun, jangan pernah memasukkan API key ke file yang akan diunggah ke GitHub. Rekomendasi:
 
 * Gunakan File Private untuk Config Asli.
 * Gunakan File Example untuk Repository.
@@ -826,11 +738,7 @@ Rekomendasi:
 ]
 ```
 
-Parameter ini menentukan pair yang boleh diperdagangkan oleh bot.
-
-Untuk pemula, gunakan pair besar dan likuid.
-
-Jangan langsung memasukkan terlalu banyak pair.
+Parameter ini menentukan pair yang boleh diperdagangkan oleh bot. Untuk pemula, gunakan pair besar dan likuid. Jangan langsung memasukkan terlalu banyak pair.
 
 ### pair_blacklist
 
@@ -838,9 +746,7 @@ Jangan langsung memasukkan terlalu banyak pair.
 "pair_blacklist": []
 ```
 
-Parameter ini menentukan pair yang dilarang diperdagangkan oleh bot.
-
-Pair blacklist berguna jika menggunakan pairlist dinamis.
+Parameter ini menentukan pair yang dilarang diperdagangkan oleh bot. Pair blacklist berguna jika menggunakan pairlist dinamis.
 
 ### pairlists
 
@@ -852,9 +758,7 @@ Pair blacklist berguna jika menggunakan pairlist dinamis.
 ]
 ```
 
-Parameter ini menentukan cara bot memilih pair.
-
-Untuk awal, gunakan `StaticPairList` agar pair yang digunakan jelas dan terkontrol.
+Parameter ini menentukan cara bot memilih pair. Untuk awal, gunakan `StaticPairList` agar pair yang digunakan jelas dan terkontrol.
 
 ### api_server.enabled
 
@@ -862,9 +766,7 @@ Untuk awal, gunakan `StaticPairList` agar pair yang digunakan jelas dan terkontr
 "enabled": true
 ```
 
-Parameter ini mengaktifkan API server Freqtrade.
-
-API server dibutuhkan untuk FreqUI.
+Parameter ini mengaktifkan API server Freqtrade. API server dibutuhkan untuk FreqUI.
 
 ### api_server.listen_ip_address
 
@@ -872,11 +774,7 @@ API server dibutuhkan untuk FreqUI.
 "listen_ip_address": "127.0.0.1"
 ```
 
-Parameter ini menentukan alamat listen API server.
-
-Gunakan `127.0.0.1` agar API hanya dapat diakses dari server lokal.
-
-Jangan gunakan `0.0.0.0` kecuali benar-benar memahami risiko dan sudah menyiapkan proteksi tambahan.
+Parameter ini menentukan alamat listen API server. Gunakan `127.0.0.1` agar API hanya dapat diakses dari server lokal. Jangan gunakan `0.0.0.0` kecuali benar-benar memahami risiko dan sudah menyiapkan proteksi tambahan.
 
 ### api_server.listen_port
 
@@ -884,9 +782,7 @@ Jangan gunakan `0.0.0.0` kecuali benar-benar memahami risiko dan sudah menyiapka
 "listen_port": 8080
 ```
 
-Parameter ini menentukan port API server.
-
-Dalam artikel ini, port yang digunakan adalah `8080`.
+Parameter ini menentukan port API server. Dalam artikel ini, port yang digunakan adalah `8080`.
 
 ### api_server.username dan api_server.password
 
@@ -895,11 +791,7 @@ Dalam artikel ini, port yang digunakan adalah `8080`.
 "password": "CHANGE_THIS_PASSWORD"
 ```
 
-Parameter ini digunakan untuk login ke FreqUI.
-
-Gunakan username dan password yang kuat.
-
-Jangan gunakan password seperti:
+Parameter ini digunakan untuk login ke FreqUI. Gunakan username dan password yang kuat. Jangan gunakan password seperti:
 
 ```text
 admin
@@ -914,9 +806,7 @@ freqtrade
 "initial_state": "stopped"
 ```
 
-Parameter ini menentukan status awal bot ketika dijalankan.
-
-Untuk pemula, `stopped` lebih aman karena bot tidak langsung mulai trading saat container dinyalakan.
+Parameter ini menentukan status awal bot ketika dijalankan. Untuk pemula, `stopped` lebih aman karena bot tidak langsung mulai trading saat container dinyalakan.
 
 ---
 
@@ -941,11 +831,7 @@ Cek log:
 docker compose logs -f
 ```
 
-Jika bot berjalan normal, log akan menampilkan proses startup, koneksi exchange, pairlist, dan status bot.
-
-Karena `initial_state` diset ke `stopped`, bot mungkin belum mulai trading sampai diperintahkan melalui FreqUI atau command yang sesuai.
-
-Untuk menghentikan container:
+Jika bot berjalan normal, log akan menampilkan proses startup, koneksi exchange, pairlist, dan status bot. Karena `initial_state` diset ke `stopped`, bot mungkin belum mulai trading sampai diperintahkan melalui FreqUI atau command yang sesuai. Untuk menghentikan container:
 
 ```bash
 docker compose down
@@ -968,9 +854,7 @@ docker compose up -d
 
 ## Pengenalan FreqUI
 
-FreqUI adalah web interface untuk mengontrol dan memantau Freqtrade.
-
-Dengan FreqUI, pengguna dapat melihat:
+FreqUI adalah web interface untuk mengontrol dan memantau Freqtrade. Dengan FreqUI, pengguna dapat melihat:
 
 * Status Bot.
 * Trade Aktif.
@@ -988,9 +872,7 @@ Jika API server aktif dan listen pada `127.0.0.1:8080`, FreqUI dapat diakses dar
 http://127.0.0.1:8080
 ```
 
-Namun, untuk akses dari browser lokal pengguna, lebih baik gunakan reverse proxy dengan HTTPS.
-
-Jangan membuka port `8080` langsung ke internet.
+Namun, untuk akses dari browser lokal pengguna, lebih baik gunakan reverse proxy dengan HTTPS. Jangan membuka port `8080` langsung ke internet.
 
 ---
 
@@ -1083,9 +965,7 @@ Reload Apache:
 sudo systemctl reload apache2
 ```
 
-Pastikan DNS domain sudah mengarah ke IP VPS.
-
-Cek dari browser:
+Pastikan DNS domain sudah mengarah ke IP VPS. Cek dari browser:
 
 ```text
 http://bot.example.com
@@ -1134,11 +1014,7 @@ Jalankan Certbot:
 sudo certbot --apache -d bot.example.com
 ```
 
-Ikuti instruksi di layar.
-
-Certbot akan membuat konfigurasi SSL dan mengatur redirect HTTPS jika dipilih.
-
-Tes renewal:
+Ikuti instruksi di layar. Certbot akan membuat konfigurasi SSL dan mengatur redirect HTTPS jika dipilih. Tes renewal:
 
 ```bash
 sudo certbot renew --dry-run
@@ -1337,9 +1213,7 @@ Cek port lokal:
 curl http://127.0.0.1:8080
 ```
 
-Jika curl dari server gagal, masalah ada di Freqtrade API.
-
-Jika curl berhasil tetapi domain gagal, masalah ada di Apache, DNS, firewall, atau SSL.
+Jika curl dari server gagal, masalah ada di Freqtrade API. Jika curl berhasil tetapi domain gagal, masalah ada di Apache, DNS, firewall, atau SSL.
 
 ### Config JSON Error
 
@@ -1357,9 +1231,7 @@ Penyebab umum:
 * Format JSON Tidak Valid.
 * Komentar Dimasukkan ke File JSON.
 
-JSON tidak mendukung komentar.
-
-Validasi config dengan tool JSON validator atau gunakan:
+JSON tidak mendukung komentar. Validasi config dengan tool JSON validator atau gunakan:
 
 ```bash
 python3 -m json.tool user_data/config.json
@@ -1388,9 +1260,7 @@ Solusi awal:
 
 ### Bot Tidak Membuka Trade
 
-Ini belum tentu error.
-
-Penyebab umum:
+Ini belum tentu error. Penyebab umum:
 
 * Strategy Belum Memberi Sinyal Entry.
 * Pair Tidak Masuk Whitelist.
@@ -1400,9 +1270,7 @@ Penyebab umum:
 * Bot Masih Dalam State Stopped.
 * Market Tidak Memenuhi Kondisi Strategy.
 
-Cek status bot melalui FreqUI.
-
-Cek log:
+Cek status bot melalui FreqUI. Cek log:
 
 ```bash
 docker compose logs -f
@@ -1466,9 +1334,7 @@ Sebelum masuk Artikel 3, pastikan semua item berikut sudah dipahami.
 | Log Bot Bisa Dibaca                          | Wajib            |
 | Cara Stop Bot Sudah Dipahami                 | Wajib            |
 
-Jika checklist di atas belum terpenuhi, jangan lanjut ke live trading.
-
-Artikel berikutnya akan membahas strategy. Namun, strategy hanya berguna jika environment sudah stabil dan aman.
+Jika checklist di atas belum terpenuhi, jangan lanjut ke live trading. Artikel berikutnya akan membahas strategy. Namun, strategy hanya berguna jika environment sudah stabil dan aman.
 
 ---
 
@@ -1491,15 +1357,9 @@ Artikel berikutnya akan membahas strategy. Namun, strategy hanya berguna jika en
 
 Artikel ini hanya untuk tujuan edukasi.
 
-Setup teknis yang salah dapat menyebabkan risiko keamanan, risiko akses tidak sah, error trading, atau kehilangan dana jika digunakan dalam mode live.
+Setup teknis yang salah dapat menyebabkan risiko keamanan, risiko akses tidak sah, error trading, atau kehilangan dana jika digunakan dalam mode live. Jangan menggunakan API key live dengan permission withdrawal. Jangan menjalankan bot dalam mode live sebelum memahami config, strategy, risk management, dan cara menghentikan bot.
 
-Jangan menggunakan API key live dengan permission withdrawal.
-
-Jangan menjalankan bot dalam mode live sebelum memahami config, strategy, risk management, dan cara menghentikan bot.
-
-Crypto trading memiliki risiko tinggi. Bot trading tidak menjamin profit. Dry-run tidak sama dengan live trading.
-
-Setiap keputusan teknis dan trading adalah tanggung jawab pribadi masing-masing pengguna.
+Crypto trading memiliki risiko tinggi. Bot trading tidak menjamin profit. Dry-run tidak sama dengan live trading. Setiap keputusan teknis dan trading adalah tanggung jawab pribadi masing-masing pengguna.
 
 ---
 
