@@ -1,69 +1,78 @@
 # Artikel 2 — Setup
 
-# Membangun Trading Lab: Setup Freqtrade di VPS dari Nol
+# Setup Freqtrade di VPS: Exchange, Ubuntu Server, Docker, FreqUI, dan Reverse Proxy
 
-> Artikel ini membahas persiapan exchange, API key, VPS, Ubuntu Server, instalasi Freqtrade, konfigurasi dasar, FreqUI, Apache reverse proxy, SSL, dry-run, dan troubleshooting instalasi awal.
+> Artikel kedua dari seri tutorial Freqtrade. Artikel ini membahas persiapan akun exchange dan API key, penyewaan dan pengamanan VPS Ubuntu Server, instalasi Freqtrade menggunakan Docker, konfigurasi dasar, menjalankan dry-run, akses FreqUI melalui Apache reverse proxy dengan SSL, serta troubleshooting instalasi.
 
 ---
 
 ## Daftar Isi
 
-1. [Tujuan Artikel](#tujuan-artikel)
-2. [Gambaran Arsitektur](#gambaran-arsitektur)
-3. [Prinsip Setup yang Aman](#prinsip-setup-yang-aman)
-4. [Persiapan Akun Exchange](#persiapan-akun-exchange)
-5. [Membuat API Key dengan Izin Minimal](#membuat-api-key-dengan-izin-minimal)
-6. [Memilih VPS](#memilih-vps)
-7. [Mengakses VPS Menggunakan SSH](#mengakses-vps-menggunakan-ssh)
-8. [Setup Ubuntu Server dari Nol](#setup-ubuntu-server-dari-nol)
-9. [Mengamankan Server Secara Dasar](#mengamankan-server-secara-dasar)
-10. [Memilih Metode Instalasi Freqtrade](#memilih-metode-instalasi-freqtrade)
-11. [Instalasi Freqtrade Menggunakan Docker](#instalasi-freqtrade-menggunakan-docker)
-12. [Struktur Folder Freqtrade](#struktur-folder-freqtrade)
-13. [Membuat Config Awal](#membuat-config-awal)
-14. [Penjelasan Parameter Penting config.json](#penjelasan-parameter-penting-configjson)
-15. [Menjalankan Bot dalam Mode Dry-run](#menjalankan-bot-dalam-mode-dry-run)
-16. [Pengenalan FreqUI](#pengenalan-frequi)
-17. [Setup Apache Reverse Proxy](#setup-apache-reverse-proxy)
-18. [SSL Menggunakan Let's Encrypt](#ssl-menggunakan-lets-encrypt)
-19. [Menjalankan Bot dengan Docker Compose](#menjalankan-bot-dengan-docker-compose)
-20. [Troubleshooting Instalasi Umum](#troubleshooting-instalasi-umum)
-21. [Checklist Sebelum Lanjut ke Strategy](#checklist-sebelum-lanjut-ke-strategy)
-22. [Key Takeaways](#key-takeaways)
-23. [Disclaimer](#disclaimer)
+1. [Pendahuluan](#pendahuluan)
+2. [Arsitektur Sistem](#arsitektur-sistem)
+3. [Prinsip Keamanan Setup](#prinsip-keamanan-setup)
+4. [Persiapan Exchange dan API Key](#persiapan-exchange-dan-api-key)
+   * [Kriteria Exchange](#kriteria-exchange)
+   * [Persiapan Akun](#persiapan-akun)
+   * [Membuat API Key dengan Permission Minimal](#membuat-api-key-dengan-permission-minimal)
+5. [Persiapan VPS](#persiapan-vps)
+   * [Spesifikasi dan Pemilihan Provider](#spesifikasi-dan-pemilihan-provider)
+   * [Akses Awal Melalui SSH](#akses-awal-melalui-ssh)
+   * [Update Sistem dan Package Dasar](#update-sistem-dan-package-dasar)
+   * [Konfigurasi Timezone](#konfigurasi-timezone)
+6. [Pengamanan Server](#pengamanan-server)
+   * [Membuat User Non-root](#membuat-user-non-root)
+   * [Konfigurasi Firewall](#konfigurasi-firewall)
+   * [Autentikasi SSH Key](#autentikasi-ssh-key)
+7. [Instalasi Freqtrade](#instalasi-freqtrade)
+   * [Metode Instalasi](#metode-instalasi)
+   * [Instalasi Docker](#instalasi-docker)
+   * [Setup Project Freqtrade](#setup-project-freqtrade)
+   * [Struktur Folder](#struktur-folder)
+8. [Konfigurasi Bot](#konfigurasi-bot)
+   * [File config.json](#file-configjson)
+   * [Parameter Penting](#parameter-penting)
+9. [Menjalankan Bot dalam Mode Dry-run](#menjalankan-bot-dalam-mode-dry-run)
+10. [FreqUI](#frequi)
+11. [Apache Reverse Proxy](#apache-reverse-proxy)
+12. [SSL dengan Let's Encrypt](#ssl-dengan-lets-encrypt)
+13. [Referensi Command Docker Compose](#referensi-command-docker-compose)
+14. [Troubleshooting](#troubleshooting)
+15. [Checklist Sebelum Lanjut ke Artikel 3](#checklist-sebelum-lanjut-ke-artikel-3)
+16. [Ringkasan](#ringkasan)
+17. [Disclaimer](#disclaimer)
 
 ---
 
-## Tujuan Artikel
+## Pendahuluan
 
-Artikel ini adalah lanjutan dari Artikel 1 — Foundation. Jika artikel pertama membahas konsep dasar crypto market, artikel ini mulai masuk ke sisi teknis. Target akhirnya adalah membuat environment Freqtrade yang bisa berjalan dalam mode dry-run.
+Artikel ini adalah lanjutan dari Artikel 1 — Foundation. Artikel pertama membahas konsep dasar crypto market; artikel ini membahas sisi teknis. Target akhir artikel ini adalah environment Freqtrade yang berjalan di VPS dalam mode dry-run, dapat dipantau melalui FreqUI, dan dapat diakses secara aman melalui HTTPS.
 
-Pada tahap ini, fokus utama bukan profit. Fokus utama adalah membangun trading lab yang rapi, aman, dan bisa diuji. Dalam konteks gamer, tahap ini mirip membangun base sebelum masuk raid:
+Fokus pada tahap ini adalah membangun environment yang rapi, aman, dan dapat diuji — bukan profit. Live trading baru dipertimbangkan setelah seluruh tahapan validasi pada artikel-artikel berikutnya selesai.
 
-* Server harus siap.
-* Akses harus aman.
-* Tool harus terpasang.
-* Config harus jelas.
-* Bot harus berjalan dalam mode latihan.
-* Risiko harus dikontrol sebelum masuk live.
+Setelah menyelesaikan artikel ini, pembaca diharapkan dapat:
 
-Setelah menyelesaikan artikel ini, pembaca diharapkan memahami:
+* Menyiapkan akun exchange untuk penggunaan bot
+* Membuat API key dengan permission minimal
+* Menyewa dan mengakses VPS melalui SSH
+* Menyiapkan dan mengamankan Ubuntu Server
+* Menginstal Freqtrade menggunakan Docker
+* Membuat dan memahami konfigurasi dasar
+* Menjalankan bot dalam mode dry-run
+* Mengakses FreqUI melalui reverse proxy dan SSL
+* Mendiagnosis error instalasi yang umum terjadi
 
-* Cara menyiapkan akun exchange untuk bot.
-* Cara membuat API key dengan permission minimal.
-* Cara menyewa dan mengakses VPS.
-* Cara menyiapkan Ubuntu Server.
-* Cara menginstal Freqtrade menggunakan Docker.
-* Cara membuat config dasar.
-* Cara menjalankan bot dalam mode dry-run.
-* Cara mengakses FreqUI melalui reverse proxy dan SSL.
-* Cara membaca error instalasi umum.
+### Prasyarat
+
+* Memahami materi Artikel 1
+* Terbiasa dengan command line dasar Linux
+* Memiliki domain (untuk bagian reverse proxy dan SSL; opsional jika hanya menjalankan dry-run lokal)
 
 ---
 
-## Gambaran Arsitektur
+## Arsitektur Sistem
 
-Sebelum menjalankan command, pahami dulu gambaran sistemnya. Arsitektur sederhana Freqtrade:
+Alur sistem yang dibangun pada artikel ini:
 
 ```text
 User Browser
@@ -81,11 +90,9 @@ Exchange API
 Crypto Market
 ```
 
-Penjelasan:
-
 | Komponen             | Fungsi                                                |
 | -------------------- | ----------------------------------------------------- |
-| User Browser         | Digunakan untuk mengakses FreqUI                      |
+| User Browser         | Mengakses FreqUI                                      |
 | Domain               | Nama domain untuk membuka dashboard                   |
 | HTTPS                | Enkripsi koneksi melalui SSL                          |
 | Apache Reverse Proxy | Meneruskan request dari domain ke Freqtrade API lokal |
@@ -94,180 +101,156 @@ Penjelasan:
 | Exchange API         | Jalur komunikasi antara bot dan exchange              |
 | Crypto Market        | Market tempat order dieksekusi                        |
 
-Pada setup yang aman, Freqtrade API sebaiknya hanya mendengarkan koneksi lokal:
-
-```text
-127.0.0.1:8080
-```
-
-Artinya, Freqtrade API tidak langsung dibuka ke internet. Akses dari luar diarahkan melalui Apache dan HTTPS.
+Prinsip arsitektur yang digunakan: Freqtrade API hanya mendengarkan koneksi lokal di `127.0.0.1:8080` dan tidak diekspos langsung ke internet. Seluruh akses dari luar melewati Apache dengan HTTPS dan autentikasi FreqUI.
 
 ---
 
-## Prinsip Setup yang Aman
+## Prinsip Keamanan Setup
 
-Sebelum mulai, pegang prinsip berikut.
+Ketentuan berikut berlaku untuk seluruh tahapan pada artikel ini:
 
-* Jangan Menggunakan API Key dengan Permission Withdrawal.
-* Jangan Menyimpan Secret di Repository Publik.
-* Jangan Menjalankan Bot Live Sebelum Dry-run.
-* Jangan Menggunakan Modal Besar untuk Testing.
-* Jangan Membuka Port Freqtrade API Langsung ke Internet.
-* Jangan Mengabaikan Update OS dan Dependency.
-* Jangan Menggunakan Password Lemah untuk FreqUI.
-* Jangan Menganggap VPS Selalu Aman Secara Default.
+* API key tidak menggunakan permission withdrawal
+* Secret (API key, password, JWT secret) tidak disimpan di repository publik
+* Bot tidak dijalankan dalam mode live sebelum melewati dry-run
+* Testing tidak menggunakan modal besar
+* Port Freqtrade API tidak dibuka langsung ke internet
+* OS dan dependency diupdate secara berkala
+* FreqUI menggunakan password yang kuat
+* VPS dianggap tidak aman secara default dan diamankan secara eksplisit
 
-Freqtrade adalah alat yang kuat, tetapi kesalahan konfigurasi bisa berbahaya. Dalam game, salah build mungkin membuat karakter tidak optimal. Dalam trading bot, salah config bisa membuat bot membuka order yang tidak kamu inginkan.
-
----
-
-## Persiapan Akun Exchange
-
-Freqtrade membutuhkan exchange yang mendukung API trading. Sebelum membuat API key, pastikan exchange yang digunakan:
-
-* Memiliki Reputasi yang Baik.
-* Mendukung API Trading.
-* Mendukung Pair yang Ingin Digunakan.
-* Memiliki Volume dan Likuiditas yang Cukup.
-* Memiliki Biaya Trading yang Jelas.
-* Memiliki Fitur Security Seperti 2FA.
-* Mendukung IP Whitelist Jika Tersedia.
-* Kompatibel dengan Freqtrade.
-
-Hal yang perlu dilakukan di akun exchange:
-
-1. Aktifkan 2FA.
-2. Verifikasi akun sesuai kebutuhan exchange.
-3. Pahami aturan deposit dan withdrawal.
-4. Pahami fee trading.
-5. Pilih pair yang likuid.
-6. Jangan langsung menggunakan seluruh modal.
-
-Untuk tahap belajar, gunakan mode dry-run terlebih dahulu. Dry-run tidak mengirim order sungguhan ke exchange, tetapi tetap membantu memahami perilaku bot.
+Kesalahan konfigurasi pada trading bot berdampak langsung: bot dapat membuka order yang tidak diinginkan, atau API key dapat disalahgunakan jika bocor. Setiap ketentuan di atas dijelaskan implementasinya pada bagian terkait.
 
 ---
 
-## Membuat API Key dengan Izin Minimal
+## Persiapan Exchange dan API Key
 
-API key adalah kredensial yang memungkinkan bot terhubung ke exchange. API key biasanya terdiri dari:
+### Kriteria Exchange
 
-| Komponen   | Fungsi                           |
-| ---------- | -------------------------------- |
-| API Key    | Identitas akses API              |
-| API Secret | Secret untuk autentikasi         |
-| Passphrase | Digunakan oleh beberapa exchange |
-| Permission | Hak akses API                    |
+Freqtrade membutuhkan exchange yang mendukung API trading. Kriteria pemilihan exchange:
 
-Permission API harus dibatasi. Untuk bot trading, permission yang umumnya dibutuhkan:
+* Reputasi dan riwayat keamanan yang baik
+* Dukungan API trading
+* Ketersediaan pair yang akan digunakan
+* Volume dan likuiditas yang memadai
+* Struktur fee trading yang jelas
+* Fitur keamanan seperti 2FA
+* Dukungan IP whitelist untuk API (jika tersedia)
+* Kompatibilitas dengan Freqtrade melalui CCXT
 
-* Read.
-* Trade.
+### Persiapan Akun
+
+Langkah persiapan pada akun exchange:
+
+1. Aktifkan 2FA
+2. Selesaikan verifikasi akun sesuai ketentuan exchange
+3. Pahami aturan deposit dan withdrawal
+4. Pahami struktur fee trading
+5. Tentukan pair likuid yang akan digunakan
+6. Alokasikan hanya sebagian modal; jangan gunakan seluruh dana
+
+Pada tahap belajar, seluruh pengujian dilakukan dalam mode dry-run. Dry-run tidak mengirim order sungguhan ke exchange.
+
+### Membuat API Key dengan Permission Minimal
+
+API key adalah kredensial yang menghubungkan bot ke exchange. Komponen API key pada umumnya:
+
+| Komponen   | Fungsi                                  |
+| ---------- | --------------------------------------- |
+| API Key    | Identitas akses API                     |
+| API Secret | Secret untuk autentikasi                |
+| Passphrase | Digunakan oleh sebagian exchange        |
+| Permission | Hak akses yang diberikan ke API key     |
+
+Permission yang dibutuhkan bot trading:
+
+* Read
+* Trade
 
 Permission yang tidak boleh diaktifkan:
 
-* Withdraw.
-* Transfer Internal Jika Tidak Dibutuhkan.
-* Account Management Jika Tidak Dibutuhkan.
+* Withdraw
+* Internal transfer (jika tidak dibutuhkan)
+* Account management (jika tidak dibutuhkan)
 
-Rekomendasi keamanan API key:
+Ketentuan pengelolaan API key:
 
-* Aktifkan IP Whitelist Jika Exchange Mendukung.
-* Gunakan API Key Khusus untuk Bot.
-* Jangan Gunakan API Key Utama untuk Eksperimen.
-* Jangan Simpan API Key di GitHub.
-* Jangan Kirim API Key Melalui Chat Publik.
-* Jangan Masukkan API Key ke Screenshot.
-* Rotate API Key Jika Pernah Bocor.
-* Hapus API Key yang Tidak Digunakan.
+* Aktifkan IP whitelist jika exchange mendukung, diisi dengan IP VPS
+* Gunakan API key khusus untuk bot, terpisah dari API key lain
+* Jangan menyimpan API key di repository GitHub
+* Jangan mengirim API key melalui chat atau menyertakannya dalam screenshot
+* Lakukan rotasi API key jika diduga bocor
+* Hapus API key yang tidak digunakan
 
-Analogi gamer: API key bukan password. API key adalah akses bot ke inventory trading kamu. Jika permission terlalu luas, risiko juga menjadi lebih besar.
+Pembatasan permission membatasi dampak terburuk jika API key bocor: tanpa permission withdrawal, pihak yang memperoleh API key tidak dapat menarik dana keluar dari akun.
 
 ---
 
-## Memilih VPS
+## Persiapan VPS
 
-VPS digunakan agar Freqtrade bisa berjalan stabil tanpa bergantung pada laptop pribadi. Kriteria VPS yang layak untuk Freqtrade awal:
+### Spesifikasi dan Pemilihan Provider
 
-| Komponen | Rekomendasi Awal                                                  |
-| -------- | ----------------------------------------------------------------- |
-| OS       | Ubuntu Server LTS                                                 |
-| CPU      | 1 sampai 2 vCPU                                                   |
-| RAM      | Minimal 2 GB                                                      |
-| Storage  | Minimal 20 GB SSD                                                 |
-| Network  | Stabil                                                            |
-| Lokasi   | Dekat dengan exchange lebih baik, tetapi tidak wajib untuk pemula |
-| Akses    | SSH root atau user sudo                                           |
+VPS digunakan agar bot berjalan terus-menerus tanpa bergantung pada komputer pribadi. Spesifikasi minimum untuk Freqtrade tahap awal:
 
-Untuk tahap belajar, VPS kecil sudah cukup. Jangan langsung menyewa server mahal. Lebih baik mulai dari setup sederhana, lalu naikkan resource jika memang dibutuhkan. Hal yang perlu diperhatikan saat memilih provider VPS:
+| Komponen | Rekomendasi                                                        |
+| -------- | ------------------------------------------------------------------ |
+| OS       | Ubuntu Server LTS                                                  |
+| CPU      | 1–2 vCPU                                                           |
+| RAM      | Minimal 2 GB                                                       |
+| Storage  | Minimal 20 GB SSD                                                  |
+| Network  | Koneksi stabil                                                     |
+| Lokasi   | Dekat dengan server exchange lebih baik, tetapi tidak wajib        |
+| Akses    | SSH dengan root atau user sudo                                     |
 
-* Reputasi Provider.
-* Uptime.
-* Kemudahan Rebuild OS.
-* Backup Snapshot.
-* Firewall Panel.
-* Lokasi Data Center.
-* Harga Bulanan.
-* Dukungan IPv4.
-* Kemudahan Reset Password atau SSH Key.
+VPS spesifikasi kecil sudah memadai untuk tahap belajar. Resource dapat dinaikkan kemudian sesuai kebutuhan aktual.
 
----
+Kriteria pemilihan provider:
 
-## Mengakses VPS Menggunakan SSH
+* Reputasi dan uptime
+* Kemudahan rebuild OS
+* Fitur backup atau snapshot
+* Firewall panel
+* Lokasi data center
+* Harga bulanan
+* Dukungan IPv4
+* Kemudahan reset password atau SSH key
 
-Setelah VPS dibuat, biasanya provider akan memberikan:
+### Akses Awal Melalui SSH
 
-* IP Public Server.
-* Username Awal.
-* Password atau SSH Key.
-* Informasi OS.
+Setelah VPS dibuat, provider memberikan IP publik server, username awal, password atau SSH key, dan informasi OS.
 
-Contoh login menggunakan SSH:
+Login menggunakan password:
 
 ```bash
 ssh root@YOUR_SERVER_IP
 ```
 
-Jika menggunakan SSH key:
+Login menggunakan SSH key:
 
 ```bash
 ssh -i ~/.ssh/your_key root@YOUR_SERVER_IP
 ```
 
-Setelah berhasil login, cek versi OS:
+Verifikasi kondisi server setelah login:
 
 ```bash
+# Versi OS
 lsb_release -a
-```
 
-Cek user aktif:
-
-```bash
+# User aktif
 whoami
-```
 
-Cek resource server:
-
-```bash
+# Resource server
 free -h
 df -h
 nproc
 ```
 
-Jika baru pertama kali menggunakan VPS, jangan langsung install bot. Lakukan update dasar terlebih dahulu.
+### Update Sistem dan Package Dasar
 
----
-
-## Setup Ubuntu Server dari Nol
-
-Update package index:
+Lakukan update sistem sebelum instalasi apa pun:
 
 ```bash
 sudo apt update
-```
-
-Upgrade package:
-
-```bash
 sudo apt upgrade -y
 ```
 
@@ -287,7 +270,9 @@ sudo apt install -y \
   lsb-release
 ```
 
-Cek timezone:
+### Konfigurasi Timezone
+
+Cek timezone dan status sinkronisasi waktu:
 
 ```bash
 timedatectl
@@ -299,21 +284,15 @@ Set timezone jika diperlukan:
 sudo timedatectl set-timezone Asia/Jakarta
 ```
 
-Aktifkan sinkronisasi waktu:
-
-```bash
-timedatectl status
-```
-
-Waktu server harus akurat karena bot berkomunikasi dengan exchange. Jika waktu server meleset terlalu jauh, request API bisa gagal.
+Waktu server harus akurat. Request ke API exchange menggunakan timestamp; selisih waktu yang terlalu besar antara server dan exchange menyebabkan request ditolak.
 
 ---
 
-## Mengamankan Server Secara Dasar
+## Pengamanan Server
 
-### Membuat User Baru
+### Membuat User Non-root
 
-Jangan selalu bekerja sebagai root. Buat user baru:
+Operasional harian sebaiknya tidak menggunakan root. Buat user baru:
 
 ```bash
 adduser freqbot
@@ -325,58 +304,43 @@ Tambahkan ke group sudo:
 usermod -aG sudo freqbot
 ```
 
-Login sebagai user baru:
+Login sebagai user baru dan verifikasi akses sudo:
 
 ```bash
 su - freqbot
-```
-
-Tes akses sudo:
-
-```bash
 sudo whoami
 ```
 
-Jika output-nya `root`, user sudah memiliki akses sudo.
+Output `root` menandakan user sudah memiliki akses sudo.
 
-### Mengatur Firewall
+### Konfigurasi Firewall
 
-Izinkan SSH:
+Izinkan SSH, HTTP, dan HTTPS, lalu aktifkan firewall:
 
 ```bash
 sudo ufw allow OpenSSH
-```
-
-Izinkan HTTP dan HTTPS:
-
-```bash
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
-```
-
-Aktifkan firewall:
-
-```bash
 sudo ufw enable
 ```
 
-Cek status firewall:
+Verifikasi status:
 
 ```bash
 sudo ufw status
 ```
 
-Jangan membuka port Freqtrade API langsung ke internet. Jika Freqtrade API berjalan di port `8080`, biarkan hanya listen di `127.0.0.1`.
+Port Freqtrade API (`8080`) tidak dibuka di firewall. API server dikonfigurasi agar hanya listen di `127.0.0.1`, sehingga hanya dapat diakses dari dalam server.
 
-### Menggunakan SSH Key
+### Autentikasi SSH Key
 
-Untuk setup lebih aman, gunakan SSH key dan matikan password login setelah yakin SSH key berfungsi. File konfigurasi SSH:
+Gunakan SSH key dan nonaktifkan password login setelah SSH key terverifikasi berfungsi. Edit konfigurasi SSH:
 
 ```bash
 sudo nano /etc/ssh/sshd_config
 ```
 
-Parameter yang umum diperhatikan:
+Parameter yang diatur:
 
 ```text
 PermitRootLogin no
@@ -384,44 +348,31 @@ PasswordAuthentication no
 PubkeyAuthentication yes
 ```
 
-Restart SSH:
+Restart service SSH:
 
 ```bash
 sudo systemctl restart ssh
 ```
 
-Penting:
-
-Jangan menutup sesi SSH aktif sebelum memastikan login dengan SSH key berhasil dari terminal baru.
+**Peringatan:** jangan menutup sesi SSH aktif sebelum login dengan SSH key berhasil diverifikasi dari terminal baru. Kesalahan pada tahap ini dapat mengunci akses ke server.
 
 ---
 
-## Memilih Metode Instalasi Freqtrade
+## Instalasi Freqtrade
 
-Ada beberapa cara menginstal Freqtrade. Untuk seri ini, metode utama yang disarankan adalah Docker. Alasannya:
+### Metode Instalasi
 
-* Lebih Rapi untuk VPS.
-* Lebih Mudah Direproduksi.
-* Dependency Lebih Terkontrol.
-* Update Lebih Terstruktur.
-* Cocok untuk Deployment Jangka Panjang.
-* Mengurangi Risiko Konflik Package Python di OS.
+Freqtrade dapat diinstal melalui beberapa metode:
 
-Metode native tetap bisa digunakan, tetapi untuk pemula yang ingin menjalankan Freqtrade di VPS, Docker lebih mudah dijaga. Perbandingan singkat:
+| Metode          | Kelebihan                          | Kekurangan                              |
+| --------------- | ---------------------------------- | --------------------------------------- |
+| Docker          | Konsisten, mudah update, terisolasi | Perlu memahami Docker Compose           |
+| Native (script) | Akses langsung ke Python environment | Dependency dapat konflik dengan OS      |
+| Manual          | Fleksibel                          | Memerlukan pengalaman lebih             |
 
-| Metode          | Kelebihan                         | Kekurangan                             |
-| --------------- | --------------------------------- | -------------------------------------- |
-| Docker          | Rapi, konsisten, mudah update     | Perlu memahami Docker Compose          |
-| Native Install  | Lebih dekat ke Python environment | Dependency bisa lebih mudah berantakan |
-| Manual Advanced | Fleksibel                         | Tidak cocok untuk pemula               |
+Seri ini menggunakan Docker karena environment lebih mudah direproduksi, dependency terisolasi dari OS, proses update terstruktur, dan sesuai untuk deployment jangka panjang di VPS.
 
-Artikel ini menggunakan Docker sebagai jalur utama.
-
----
-
-## Instalasi Freqtrade Menggunakan Docker
-
-### Install Docker
+### Instalasi Docker
 
 Install package pendukung:
 
@@ -430,22 +381,14 @@ sudo apt update
 sudo apt install -y ca-certificates curl gnupg
 ```
 
-Buat folder keyring Docker:
+Tambahkan GPG key Docker:
 
 ```bash
 sudo install -m 0755 -d /etc/apt/keyrings
-```
 
-Ambil GPG key Docker:
-
-```bash
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
   | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-```
 
-Atur permission key:
-
-```bash
 sudo chmod a+r /etc/apt/keyrings/docker.gpg
 ```
 
@@ -460,40 +403,33 @@ echo \
   | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 ```
 
-Update package index:
-
-```bash
-sudo apt update
-```
-
 Install Docker dan Docker Compose plugin:
 
 ```bash
+sudo apt update
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 
-Cek versi Docker:
+Verifikasi instalasi:
 
 ```bash
 docker --version
 docker compose version
 ```
 
-Tambahkan user ke group docker:
+Tambahkan user ke group docker agar dapat menjalankan Docker tanpa sudo:
 
 ```bash
 sudo usermod -aG docker $USER
 ```
 
-Logout lalu login kembali agar group aktif.
-
-Tes Docker:
+Logout lalu login kembali agar perubahan group aktif, kemudian tes:
 
 ```bash
 docker run hello-world
 ```
 
-### Membuat Folder Project
+### Setup Project Freqtrade
 
 Buat folder kerja:
 
@@ -502,7 +438,7 @@ mkdir -p ~/freqtrade
 cd ~/freqtrade
 ```
 
-Download file Docker Compose Freqtrade:
+Download file Docker Compose resmi Freqtrade:
 
 ```bash
 curl -L https://raw.githubusercontent.com/freqtrade/freqtrade/stable/docker-compose.yml \
@@ -521,19 +457,17 @@ Buat user directory:
 docker compose run --rm freqtrade create-userdir --userdir user_data
 ```
 
-Buat config awal:
+Generate config awal:
 
 ```bash
 docker compose run --rm freqtrade new-config --config user_data/config.json
 ```
 
-Command `new-config` akan menanyakan beberapa parameter awal seperti exchange, stake currency, stake amount, max open trades, timeframe, dan mode dry-run. Untuk tahap awal, pilih dry-run.
+Command `new-config` menanyakan parameter awal secara interaktif: exchange, stake currency, stake amount, max open trades, timeframe, dan mode dry-run. Pada tahap ini, pilih dry-run.
 
----
+### Struktur Folder
 
-## Struktur Folder Freqtrade
-
-Setelah setup awal, struktur folder akan terlihat seperti ini:
+Struktur folder setelah setup awal:
 
 ```text
 freqtrade/
@@ -549,38 +483,32 @@ freqtrade/
     └── config.json
 ```
 
-Penjelasan:
-
 | Path                         | Fungsi                          |
 | ---------------------------- | ------------------------------- |
 | `docker-compose.yml`         | Konfigurasi container Freqtrade |
 | `user_data/config.json`      | Konfigurasi utama bot           |
-| `user_data/strategies`       | Folder strategy Python          |
-| `user_data/data`             | Data historis market            |
-| `user_data/backtest_results` | Hasil backtesting               |
-| `user_data/logs`             | Log bot                         |
-| `user_data/hyperopts`        | File hyperopt                   |
-| `user_data/plot`             | Output chart atau plot          |
+| `user_data/strategies/`      | File strategy Python            |
+| `user_data/data/`            | Data historis market            |
+| `user_data/backtest_results/`| Hasil backtesting               |
+| `user_data/logs/`            | Log bot                         |
+| `user_data/hyperopts/`       | File hyperopt                   |
+| `user_data/plot/`            | Output chart atau plot          |
 
-Folder `user_data` adalah folder penting. Jangan sembarangan menghapus folder ini karena berisi config, strategi, data, dan hasil testing.
+Folder `user_data` berisi config, strategy, data historis, dan hasil testing. Folder ini perlu dimasukkan dalam rencana backup dan tidak boleh dihapus tanpa pertimbangan.
 
 ---
 
-## Membuat Config Awal
+## Konfigurasi Bot
 
-Config utama berada di:
+### File config.json
 
-```text
-user_data/config.json
-```
-
-Buka file config:
+Konfigurasi utama berada di `user_data/config.json`:
 
 ```bash
 nano user_data/config.json
 ```
 
-Contoh struktur config sederhana:
+Contoh konfigurasi dasar untuk dry-run:
 
 ```json
 {
@@ -620,7 +548,7 @@ Contoh struktur config sederhana:
     "username": "CHANGE_THIS_USERNAME",
     "password": "CHANGE_THIS_PASSWORD"
   },
-  "bot_name": "freqtrade-gamers-lab",
+  "bot_name": "freqtrade-lab",
   "initial_state": "stopped",
   "force_entry_enable": false,
   "internals": {
@@ -629,107 +557,90 @@ Contoh struktur config sederhana:
 }
 ```
 
-Catatan:
+Ketentuan penggunaan config:
 
-* Jangan Gunakan Config Ini untuk Live Tanpa Review.
-* Ganti Semua Nilai `CHANGE_THIS`.
-* Jangan Commit `config.json` ke GitHub.
-* Gunakan `config.example.json` untuk Repository Publik.
-* Pastikan `dry_run` Bernilai `true` pada Tahap Belajar.
-* Pastikan API Server Listen di `127.0.0.1`.
+* Seluruh nilai `CHANGE_THIS` wajib diganti dengan nilai acak yang kuat
+* `dry_run` tetap `true` selama tahap belajar
+* API server tetap listen di `127.0.0.1`
+* `config.json` tidak di-commit ke repository; untuk repository publik, gunakan `config.example.json` tanpa secret
+* Config ini tidak digunakan untuk live trading tanpa review menyeluruh
 
----
+### Parameter Penting
 
-## Penjelasan Parameter Penting config.json
-
-### max_open_trades
+#### max_open_trades
 
 ```json
 "max_open_trades": 3
 ```
 
-Parameter ini menentukan jumlah posisi maksimal yang dapat dibuka bot secara bersamaan. Jika nilainya `3`, bot hanya dapat membuka maksimal tiga trade aktif. Untuk pemula, gunakan angka kecil. Semakin banyak posisi aktif, semakin besar exposure terhadap market.
+Jumlah maksimal posisi yang dapat dibuka bersamaan. Semakin banyak posisi aktif, semakin besar eksposur terhadap market. Untuk tahap awal, gunakan nilai kecil.
 
-### stake_currency
+#### stake_currency
 
 ```json
 "stake_currency": "USDT"
 ```
 
-Parameter ini menentukan mata uang yang digunakan sebagai modal trading. Jika menggunakan pair seperti `BTC/USDT`, stake currency biasanya `USDT`.
+Mata uang yang digunakan sebagai modal trading. Untuk pair berformat `BTC/USDT`, stake currency adalah `USDT`.
 
-### stake_amount
+#### stake_amount
 
 ```json
 "stake_amount": 20
 ```
 
-Parameter ini menentukan ukuran modal per trade. Jika `stake_amount` adalah `20`, bot akan menggunakan sekitar 20 USDT per trade. Untuk dry-run, angka ini hanya simulasi. Untuk live, angka ini akan berpengaruh langsung ke order real.
+Besaran modal per trade. Nilai `20` berarti bot menggunakan sekitar 20 USDT per trade. Pada dry-run nilai ini hanya simulasi; pada live trading nilai ini menentukan ukuran order sungguhan.
 
-### dry_run
+#### dry_run
 
 ```json
 "dry_run": true
 ```
 
-Parameter ini menentukan apakah bot berjalan dalam mode simulasi. Jika `true`, bot tidak mengirim order real ke exchange. Untuk pemula, nilai ini harus tetap `true`. Jangan ubah ke `false` sebelum memahami risiko live trading.
+Menentukan mode simulasi. Nilai `true` berarti bot tidak mengirim order sungguhan ke exchange. Nilai ini tidak diubah ke `false` sebelum seluruh tahapan validasi strategi selesai.
 
-### dry_run_wallet
+#### dry_run_wallet
 
 ```json
 "dry_run_wallet": 1000
 ```
 
-Parameter ini menentukan saldo simulasi yang digunakan dalam dry-run. Jika `dry_run_wallet` adalah `1000`, bot akan menganggap tersedia 1000 USDT untuk simulasi. Gunakan angka yang realistis. Jangan menggunakan angka simulasi yang terlalu besar jika modal live nantinya kecil, karena hasil dry-run bisa membuat ekspektasi tidak realistis.
+Saldo simulasi pada mode dry-run. Gunakan nilai yang mendekati modal live yang direncanakan. Saldo simulasi yang jauh lebih besar dari modal sebenarnya menghasilkan ekspektasi performa yang tidak realistis.
 
-### trading_mode
+#### trading_mode
 
 ```json
 "trading_mode": "spot"
 ```
 
-Parameter ini menentukan mode trading. Untuk seri ini, gunakan spot. Futures dan margin tidak disarankan untuk pemula.
+Mode trading. Seri ini menggunakan `spot`. Mode futures memerlukan pemahaman tambahan dan tidak dibahas pada seri ini.
 
-### timeframe
+#### timeframe
 
 ```json
 "timeframe": "5m"
 ```
 
-Parameter ini menentukan timeframe candle yang digunakan strategy. Contoh:
+Timeframe candle yang digunakan strategy. Timeframe kecil menghasilkan sinyal lebih sering dengan noise lebih tinggi; timeframe besar lebih lambat dan umumnya lebih stabil dianalisis. Nilai ini dapat di-override oleh strategy.
 
-| Timeframe | Arti            |
-| --------- | --------------- |
-| `5m`      | Candle 5 menit  |
-| `15m`     | Candle 15 menit |
-| `1h`      | Candle 1 jam    |
-| `4h`      | Candle 4 jam    |
-
-Timeframe kecil menghasilkan sinyal lebih sering, tetapi lebih noisy. Timeframe besar lebih lambat, tetapi sering lebih mudah dianalisis.
-
-### exchange.name
+#### exchange.name
 
 ```json
 "name": "binance"
 ```
 
-Parameter ini menentukan exchange yang digunakan. Nama exchange harus sesuai dengan exchange yang didukung oleh Freqtrade dan CCXT. Pastikan exchange yang dipilih legal dan sesuai kebutuhan pengguna.
+Exchange yang digunakan. Nama harus sesuai dengan identifier exchange yang didukung Freqtrade dan CCXT. Daftar exchange yang didukung tersedia di dokumentasi Freqtrade.
 
-### exchange.key dan exchange.secret
+#### exchange.key dan exchange.secret
 
 ```json
 "key": "",
 "secret": ""
 ```
 
-Parameter ini berisi API key dan API secret. Untuk dry-run, beberapa exchange tetap membutuhkan API key untuk membaca informasi tertentu. Namun, jangan pernah memasukkan API key ke file yang akan diunggah ke GitHub. Rekomendasi:
+API key dan API secret. Pada mode dry-run, sebagian exchange tetap memerlukan API key untuk membaca data tertentu, tetapi key dapat dikosongkan untuk pengujian dasar. Ketentuan: config asli berisi secret disimpan privat, repository publik hanya berisi file example tanpa secret.
 
-* Gunakan File Private untuk Config Asli.
-* Gunakan File Example untuk Repository.
-* Jangan Upload Secret.
-* Jangan Screenshot Config yang Berisi Secret.
-
-### pair_whitelist
+#### pair_whitelist
 
 ```json
 "pair_whitelist": [
@@ -738,17 +649,17 @@ Parameter ini berisi API key dan API secret. Untuk dry-run, beberapa exchange te
 ]
 ```
 
-Parameter ini menentukan pair yang boleh diperdagangkan oleh bot. Untuk pemula, gunakan pair besar dan likuid. Jangan langsung memasukkan terlalu banyak pair.
+Daftar pair yang boleh diperdagangkan bot. Untuk tahap awal, gunakan sedikit pair dengan kapitalisasi besar dan likuiditas tinggi.
 
-### pair_blacklist
+#### pair_blacklist
 
 ```json
 "pair_blacklist": []
 ```
 
-Parameter ini menentukan pair yang dilarang diperdagangkan oleh bot. Pair blacklist berguna jika menggunakan pairlist dinamis.
+Daftar pair yang dilarang diperdagangkan. Berguna terutama saat menggunakan pairlist dinamis, untuk mengecualikan pair tertentu seperti stablecoin pair atau leveraged token.
 
-### pairlists
+#### pairlists
 
 ```json
 "pairlists": [
@@ -758,147 +669,108 @@ Parameter ini menentukan pair yang dilarang diperdagangkan oleh bot. Pair blackl
 ]
 ```
 
-Parameter ini menentukan cara bot memilih pair. Untuk awal, gunakan `StaticPairList` agar pair yang digunakan jelas dan terkontrol.
+Metode pemilihan pair. `StaticPairList` menggunakan `pair_whitelist` secara langsung, sehingga pair yang diperdagangkan jelas dan terkontrol. Pairlist dinamis (misalnya `VolumePairList`) dibahas pada artikel selanjutnya.
 
-### api_server.enabled
-
-```json
-"enabled": true
-```
-
-Parameter ini mengaktifkan API server Freqtrade. API server dibutuhkan untuk FreqUI.
-
-### api_server.listen_ip_address
+#### api_server
 
 ```json
-"listen_ip_address": "127.0.0.1"
-```
-
-Parameter ini menentukan alamat listen API server. Gunakan `127.0.0.1` agar API hanya dapat diakses dari server lokal. Jangan gunakan `0.0.0.0` kecuali benar-benar memahami risiko dan sudah menyiapkan proteksi tambahan.
-
-### api_server.listen_port
-
-```json
+"enabled": true,
+"listen_ip_address": "127.0.0.1",
 "listen_port": 8080
 ```
 
-Parameter ini menentukan port API server. Dalam artikel ini, port yang digunakan adalah `8080`.
-
-### api_server.username dan api_server.password
+API server diperlukan untuk FreqUI. `listen_ip_address` diisi `127.0.0.1` agar API hanya dapat diakses dari dalam server; nilai `0.0.0.0` mengekspos API ke seluruh interface jaringan dan tidak digunakan pada setup ini.
 
 ```json
 "username": "CHANGE_THIS_USERNAME",
 "password": "CHANGE_THIS_PASSWORD"
 ```
 
-Parameter ini digunakan untuk login ke FreqUI. Gunakan username dan password yang kuat. Jangan gunakan password seperti:
+Kredensial login FreqUI. Gunakan kombinasi yang kuat; hindari nilai umum seperti `admin`, `password`, `123456`, atau `freqtrade`. `jwt_secret_key` dan `ws_token` juga diisi nilai acak yang panjang.
 
-```text
-admin
-password
-123456
-freqtrade
-```
-
-### initial_state
+#### initial_state
 
 ```json
 "initial_state": "stopped"
 ```
 
-Parameter ini menentukan status awal bot ketika dijalankan. Untuk pemula, `stopped` lebih aman karena bot tidak langsung mulai trading saat container dinyalakan.
+Status bot saat container dinyalakan. Nilai `stopped` mencegah bot langsung trading saat startup; bot dijalankan secara manual melalui FreqUI atau API setelah kondisi diverifikasi.
 
 ---
 
 ## Menjalankan Bot dalam Mode Dry-run
 
-Setelah config dibuat, jalankan bot:
+Jalankan bot:
 
 ```bash
 cd ~/freqtrade
 docker compose up -d
 ```
 
-Cek container:
+Verifikasi container berjalan:
 
 ```bash
 docker compose ps
 ```
 
-Cek log:
+Pantau log:
 
 ```bash
 docker compose logs -f
 ```
 
-Jika bot berjalan normal, log akan menampilkan proses startup, koneksi exchange, pairlist, dan status bot. Karena `initial_state` diset ke `stopped`, bot mungkin belum mulai trading sampai diperintahkan melalui FreqUI atau command yang sesuai. Untuk menghentikan container:
+Log normal menampilkan proses startup, koneksi ke exchange, pemrosesan pairlist, dan status bot. Karena `initial_state` bernilai `stopped`, bot belum mulai trading sampai dijalankan melalui FreqUI atau API.
+
+Command operasional dasar:
 
 ```bash
+# Menghentikan container
 docker compose down
-```
 
-Untuk restart:
-
-```bash
+# Restart container
 docker compose restart
-```
 
-Untuk update image:
-
-```bash
+# Update image
 docker compose pull
 docker compose up -d
 ```
 
 ---
 
-## Pengenalan FreqUI
+## FreqUI
 
-FreqUI adalah web interface untuk mengontrol dan memantau Freqtrade. Dengan FreqUI, pengguna dapat melihat:
+FreqUI adalah web interface resmi untuk mengontrol dan memantau Freqtrade. Fitur yang tersedia:
 
-* Status Bot.
-* Trade Aktif.
-* Trade History.
-* Profit dan Loss.
-* Pair yang Dipantau.
-* Log Dasar.
-* Chart.
-* Backtesting pada Mode Webserver.
-* Konfigurasi Tertentu.
+* Status bot dan kontrol start/stop
+* Daftar trade aktif dan trade history
+* Profit dan loss
+* Pair yang dipantau
+* Log dasar
+* Chart dengan plot indikator
+* Backtesting melalui mode webserver
+* Sebagian pengaturan konfigurasi
 
-Jika API server aktif dan listen pada `127.0.0.1:8080`, FreqUI dapat diakses dari dalam server melalui:
+Dengan API server listen di `127.0.0.1:8080`, FreqUI hanya dapat diakses dari dalam server:
 
 ```text
 http://127.0.0.1:8080
 ```
 
-Namun, untuk akses dari browser lokal pengguna, lebih baik gunakan reverse proxy dengan HTTPS. Jangan membuka port `8080` langsung ke internet.
+Akses dari browser pengguna dilakukan melalui reverse proxy dengan HTTPS, yang dibahas pada bagian berikutnya. Port `8080` tidak dibuka langsung ke internet.
 
 ---
 
-## Setup Apache Reverse Proxy
+## Apache Reverse Proxy
 
-Reverse proxy digunakan agar FreqUI dapat diakses melalui domain seperti:
+Reverse proxy meneruskan request HTTPS dari domain (misalnya `https://bot.example.com`) ke Freqtrade API lokal di `http://127.0.0.1:8080`.
 
-```text
-https://bot.example.com
-```
-
-Apache akan menerima request HTTPS dari internet, lalu meneruskannya ke Freqtrade API lokal di:
-
-```text
-http://127.0.0.1:8080
-```
-
-### Install Apache
-
-Install Apache:
+### Instalasi Apache
 
 ```bash
 sudo apt install -y apache2
 ```
 
-Aktifkan module proxy:
+Aktifkan module yang diperlukan:
 
 ```bash
 sudo a2enmod proxy
@@ -915,7 +787,7 @@ Restart Apache:
 sudo systemctl restart apache2
 ```
 
-### Buat Virtual Host
+### Konfigurasi Virtual Host
 
 Buat file virtual host:
 
@@ -923,7 +795,7 @@ Buat file virtual host:
 sudo nano /etc/apache2/sites-available/freqtrade.conf
 ```
 
-Isi konfigurasi:
+Isi konfigurasi (ganti `bot.example.com` dengan domain yang digunakan):
 
 ```apache
 <VirtualHost *:80>
@@ -945,174 +817,100 @@ Isi konfigurasi:
 </VirtualHost>
 ```
 
-Ganti `bot.example.com` dengan domain yang digunakan.
+Baris `ProxyPass` untuk path `/api/v1/message/ws` diperlukan agar koneksi WebSocket FreqUI berfungsi.
 
-Aktifkan site:
+Aktifkan site dan verifikasi konfigurasi:
 
 ```bash
 sudo a2ensite freqtrade.conf
-```
-
-Tes konfigurasi Apache:
-
-```bash
 sudo apachectl configtest
-```
-
-Reload Apache:
-
-```bash
 sudo systemctl reload apache2
 ```
 
-Pastikan DNS domain sudah mengarah ke IP VPS. Cek dari browser:
+Pastikan DNS A record domain mengarah ke IP VPS, lalu verifikasi dari browser:
 
 ```text
 http://bot.example.com
 ```
 
-Jika Freqtrade container berjalan dan API server aktif, halaman FreqUI akan terbuka.
+Jika container Freqtrade berjalan dan API server aktif, halaman FreqUI akan terbuka.
 
 ---
 
-## SSL Menggunakan Let's Encrypt
+## SSL dengan Let's Encrypt
 
-Setelah reverse proxy HTTP berjalan, aktifkan HTTPS menggunakan Certbot.
+Setelah reverse proxy HTTP berfungsi, aktifkan HTTPS menggunakan Certbot.
 
-### Install Certbot
-
-Install snap jika belum tersedia:
+### Instalasi Certbot
 
 ```bash
 sudo apt install -y snapd
-```
-
-Install core snap:
-
-```bash
 sudo snap install core
 sudo snap refresh core
-```
-
-Install Certbot:
-
-```bash
 sudo snap install --classic certbot
-```
-
-Buat symbolic link:
-
-```bash
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
 ```
 
-### Generate SSL untuk Apache
-
-Jalankan Certbot:
+### Generate Sertifikat
 
 ```bash
 sudo certbot --apache -d bot.example.com
 ```
 
-Ikuti instruksi di layar. Certbot akan membuat konfigurasi SSL dan mengatur redirect HTTPS jika dipilih. Tes renewal:
+Certbot membuat konfigurasi SSL untuk virtual host dan menawarkan redirect otomatis dari HTTP ke HTTPS. Pilih redirect agar seluruh akses terenkripsi.
+
+Verifikasi proses renewal otomatis:
 
 ```bash
 sudo certbot renew --dry-run
 ```
 
-Setelah SSL aktif, akses FreqUI melalui:
+Setelah SSL aktif, FreqUI diakses melalui:
 
 ```text
 https://bot.example.com
 ```
 
-Pastikan login FreqUI menggunakan username dan password yang kuat.
-
 ---
 
-## Menjalankan Bot dengan Docker Compose
+## Referensi Command Docker Compose
 
-Command dasar yang paling sering digunakan:
+Command yang paling sering digunakan dalam operasional harian:
 
-### Start Bot
+| Tujuan                      | Command                                          |
+| --------------------------- | ------------------------------------------------ |
+| Start bot                   | `docker compose up -d`                           |
+| Stop bot                    | `docker compose down`                            |
+| Restart bot                 | `docker compose restart`                         |
+| Melihat status container    | `docker compose ps`                              |
+| Melihat log                 | `docker compose logs -f`                         |
+| Update image                | `docker compose pull && docker compose up -d`    |
+| Masuk ke container          | `docker compose exec freqtrade bash`             |
 
-```bash
-docker compose up -d
-```
-
-### Stop Bot
-
-```bash
-docker compose down
-```
-
-### Restart Bot
+Menjalankan subcommand Freqtrade secara manual:
 
 ```bash
-docker compose restart
-```
-
-### Melihat Status
-
-```bash
-docker compose ps
-```
-
-### Melihat Log
-
-```bash
-docker compose logs -f
-```
-
-### Update Image
-
-```bash
-docker compose pull
-docker compose up -d
-```
-
-### Masuk ke Container
-
-```bash
-docker compose exec freqtrade bash
-```
-
-### Menjalankan Command Freqtrade Manual
-
-Contoh melihat help:
-
-```bash
+# Melihat help
 docker compose run --rm freqtrade --help
-```
 
-Contoh membuat config baru:
-
-```bash
+# Membuat config baru
 docker compose run --rm freqtrade new-config --config user_data/config.json
-```
 
-Contoh membuat strategy baru:
-
-```bash
+# Membuat strategy baru dari template
 docker compose run --rm freqtrade new-strategy --strategy MyFirstStrategy
 ```
 
 ---
 
-## Troubleshooting Instalasi Umum
+## Troubleshooting
 
-### Docker Permission Denied
-
-Error:
+### Docker: permission denied
 
 ```text
 permission denied while trying to connect to the Docker daemon socket
 ```
 
-Penyebab umum:
-
-* User Belum Masuk Group Docker.
-* Sesi SSH Belum Logout Login Ulang.
+Penyebab umum: user belum masuk group docker, atau sesi SSH belum di-logout setelah penambahan group.
 
 Solusi:
 
@@ -1120,246 +918,175 @@ Solusi:
 sudo usermod -aG docker $USER
 ```
 
-Logout dari SSH, lalu login kembali.
-
-Tes:
+Logout dari SSH, login kembali, lalu verifikasi:
 
 ```bash
 docker ps
 ```
 
-### Port 80 atau 443 Tidak Bisa Dibuka
+### Port 80 atau 443 tidak dapat diakses
 
-Penyebab umum:
+Penyebab umum: firewall belum mengizinkan HTTP/HTTPS, Apache belum berjalan, port digunakan service lain, atau security group di panel VPS belum dibuka.
 
-* Firewall Belum Mengizinkan HTTP atau HTTPS.
-* Apache Belum Berjalan.
-* Port Dipakai Service Lain.
-* Security Group VPS Belum Dibuka.
-
-Cek Apache:
+Diagnosis:
 
 ```bash
+# Status Apache
 sudo systemctl status apache2
-```
 
-Cek port:
-
-```bash
+# Service yang menggunakan port
 sudo ss -tulpn | grep -E ':80|:443'
-```
 
-Cek UFW:
-
-```bash
+# Status firewall
 sudo ufw status
 ```
 
-Izinkan port:
+Izinkan port jika belum:
 
 ```bash
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 ```
 
-### Domain Tidak Mengarah ke VPS
+### Domain tidak mengarah ke VPS
 
-Penyebab umum:
+Penyebab umum: A record belum benar, propagasi DNS belum selesai, atau IP yang didaftarkan salah.
 
-* DNS A Record Belum Benar.
-* Propagasi DNS Belum Selesai.
-* Salah IP VPS.
-
-Cek DNS:
+Diagnosis:
 
 ```bash
 dig bot.example.com
-```
-
-Atau:
-
-```bash
+# atau
 nslookup bot.example.com
 ```
 
-Pastikan hasilnya mengarah ke IP VPS.
+Pastikan hasil resolusi mengarah ke IP VPS.
 
-### FreqUI Tidak Terbuka
+### FreqUI tidak terbuka
 
-Penyebab umum:
+Penyebab umum: container belum berjalan, API server tidak aktif atau listen di port yang salah, konfigurasi Apache salah, DNS belum mengarah, atau firewall memblokir.
 
-* Container Freqtrade Belum Berjalan.
-* API Server Belum Aktif.
-* API Server Tidak Listen di Port yang Benar.
-* Apache Reverse Proxy Salah.
-* Domain Belum Mengarah ke VPS.
-* Firewall Memblokir HTTP atau HTTPS.
-
-Cek container:
+Diagnosis bertahap:
 
 ```bash
+# 1. Status container
 docker compose ps
-```
 
-Cek log:
-
-```bash
+# 2. Log bot
 docker compose logs -f
-```
 
-Cek port lokal:
-
-```bash
+# 3. Tes API dari dalam server
 curl http://127.0.0.1:8080
 ```
 
-Jika curl dari server gagal, masalah ada di Freqtrade API. Jika curl berhasil tetapi domain gagal, masalah ada di Apache, DNS, firewall, atau SSL.
+Interpretasi: jika `curl` dari dalam server gagal, masalah berada di Freqtrade (container atau konfigurasi API server). Jika `curl` berhasil tetapi akses melalui domain gagal, masalah berada di Apache, DNS, firewall, atau SSL.
 
-### Config JSON Error
-
-Error umum:
+### Config JSON error
 
 ```text
 JSONDecodeError
 ```
 
-Penyebab umum:
+Penyebab umum: koma berlebih atau kurang, tanda kutip tidak ditutup, atau komentar di dalam file JSON. Format JSON tidak mendukung komentar.
 
-* Koma Berlebih.
-* Koma Kurang.
-* Kutip Tidak Ditutup.
-* Format JSON Tidak Valid.
-* Komentar Dimasukkan ke File JSON.
-
-JSON tidak mendukung komentar. Validasi config dengan tool JSON validator atau gunakan:
+Validasi config:
 
 ```bash
 python3 -m json.tool user_data/config.json
 ```
 
-### Exchange Connection Error
+### Exchange connection error
 
-Penyebab umum:
+Penyebab umum: API key atau secret salah, permission tidak mencukupi, IP whitelist tidak sesuai dengan IP VPS, gangguan di sisi exchange, pair tidak didukung, atau pembatasan regional.
 
-* API Key Salah.
-* API Secret Salah.
-* Permission API Tidak Cukup.
-* IP Whitelist Tidak Sesuai.
-* Exchange Sedang Bermasalah.
-* Pair Tidak Didukung.
-* Region atau Regulasi Membatasi Akses.
+Langkah diagnosis: periksa ulang API key dan permission, periksa IP whitelist, periksa pair whitelist, baca log Freqtrade, dan rujuk dokumentasi exchange.
 
-Solusi awal:
+### Bot berjalan tetapi tidak membuka trade
 
-* Cek Ulang API Key.
-* Cek Permission API.
-* Cek IP Whitelist.
-* Cek Pair Whitelist.
-* Cek Dokumentasi Exchange.
-* Cek Log Freqtrade.
+Kondisi ini belum tentu error. Penyebab umum:
 
-### Bot Tidak Membuka Trade
+* Strategy belum menghasilkan sinyal entry
+* Pair tidak masuk whitelist
+* Saldo dry-run tidak mencukupi
+* `stake_amount` di bawah minimum order exchange
+* `max_open_trades` sudah terpenuhi
+* Bot masih dalam state `stopped`
+* Kondisi market tidak memenuhi aturan strategy
 
-Ini belum tentu error. Penyebab umum:
-
-* Strategy Belum Memberi Sinyal Entry.
-* Pair Tidak Masuk Whitelist.
-* Saldo Dry-run Tidak Cukup.
-* Stake Amount Terlalu Kecil.
-* Max Open Trades Sudah Terpenuhi.
-* Bot Masih Dalam State Stopped.
-* Market Tidak Memenuhi Kondisi Strategy.
-
-Cek status bot melalui FreqUI. Cek log:
+Periksa status bot melalui FreqUI dan baca log:
 
 ```bash
 docker compose logs -f
 ```
 
-### SSL Gagal Dibuat
+### SSL gagal dibuat
 
-Penyebab umum:
+Penyebab umum: domain belum mengarah ke IP VPS, port 80 tertutup, konfigurasi Apache error, rate limit Let's Encrypt, atau perubahan DNS belum terpropagasi.
 
-* Domain Belum Mengarah ke IP VPS.
-* Port 80 Tertutup.
-* Apache Config Error.
-* Rate Limit Let's Encrypt.
-* DNS Baru Saja Diubah.
-
-Cek config Apache:
+Diagnosis:
 
 ```bash
+# Konfigurasi Apache
 sudo apachectl configtest
-```
 
-Cek akses HTTP:
-
-```bash
+# Akses HTTP dari luar
 curl -I http://bot.example.com
-```
 
-Cek firewall:
-
-```bash
+# Firewall
 sudo ufw status
 ```
 
-Ulangi Certbot setelah masalah DNS dan port selesai.
+Jalankan ulang Certbot setelah masalah DNS dan port terselesaikan.
 
 ---
 
-## Checklist Sebelum Lanjut ke Strategy
+## Checklist Sebelum Lanjut ke Artikel 3
 
-Sebelum masuk Artikel 3, pastikan semua item berikut sudah dipahami.
+| Checklist                                      | Status           |
+| ---------------------------------------------- | ---------------- |
+| Memahami fungsi exchange API                   | Wajib            |
+| API key tidak memiliki permission withdrawal   | Wajib            |
+| VPS dapat diakses melalui SSH                  | Wajib            |
+| Ubuntu Server sudah diupdate                   | Wajib            |
+| Firewall aktif                                 | Wajib            |
+| Docker dan Docker Compose terpasang            | Wajib            |
+| Image Freqtrade sudah diunduh                  | Wajib            |
+| Folder `user_data` sudah dibuat                | Wajib            |
+| `config.json` sudah dibuat                     | Wajib            |
+| `dry_run` bernilai `true`                      | Wajib            |
+| `dry_run_wallet` bernilai realistis            | Wajib            |
+| Pair whitelist ditentukan secara sadar         | Wajib            |
+| API server listen di `127.0.0.1`               | Wajib            |
+| FreqUI dapat diakses                           | Wajib            |
+| Log bot dapat dibaca                           | Wajib            |
+| Prosedur menghentikan bot dipahami             | Wajib            |
+| Apache reverse proxy berjalan                  | Direkomendasikan |
+| SSL aktif                                      | Direkomendasikan |
 
-| Checklist                                    | Status           |
-| -------------------------------------------- | ---------------- |
-| Memahami Fungsi Exchange API                 | Wajib            |
-| API Key Tidak Memiliki Permission Withdrawal | Wajib            |
-| VPS Bisa Diakses Melalui SSH                 | Wajib            |
-| Ubuntu Server Sudah Diupdate                 | Wajib            |
-| Firewall Sudah Aktif                         | Wajib            |
-| Docker Sudah Terpasang                       | Wajib            |
-| Docker Compose Berjalan                      | Wajib            |
-| Freqtrade Image Sudah Diunduh                | Wajib            |
-| Folder `user_data` Sudah Dibuat              | Wajib            |
-| `config.json` Sudah Dibuat                   | Wajib            |
-| `dry_run` Bernilai `true`                    | Wajib            |
-| `dry_run_wallet` Realistis                   | Wajib            |
-| Pair Whitelist Dibuat Secara Sadar           | Wajib            |
-| API Server Listen di `127.0.0.1`             | Wajib            |
-| FreqUI Bisa Diakses                          | Wajib            |
-| Apache Reverse Proxy Berjalan                | Direkomendasikan |
-| SSL Aktif                                    | Direkomendasikan |
-| Log Bot Bisa Dibaca                          | Wajib            |
-| Cara Stop Bot Sudah Dipahami                 | Wajib            |
-
-Jika checklist di atas belum terpenuhi, jangan lanjut ke live trading. Artikel berikutnya akan membahas strategy. Namun, strategy hanya berguna jika environment sudah stabil dan aman.
+Artikel berikutnya membahas pengembangan strategy. Strategy hanya dapat diuji dengan benar jika environment pada artikel ini sudah stabil dan aman.
 
 ---
 
-## Key Takeaways
+## Ringkasan
 
-* Artikel ini membangun trading lab, bukan langsung menjalankan bot live.
-* API key harus dibuat dengan permission minimal.
-* Permission withdrawal tidak boleh diaktifkan untuk bot trading.
-* VPS perlu disiapkan dengan update, firewall, user non-root, dan akses SSH yang aman.
-* Docker adalah metode instalasi yang rapi untuk Freqtrade di VPS.
-* `config.json` adalah pusat konfigurasi bot dan harus dijaga dengan serius.
-* `dry_run` harus tetap `true` pada tahap belajar.
-* FreqUI sebaiknya diakses melalui reverse proxy dan HTTPS.
-* Port Freqtrade API tidak boleh dibuka langsung ke internet.
-* Troubleshooting harus dimulai dari log, status container, config, DNS, firewall, dan koneksi exchange.
+* Target artikel ini adalah environment Freqtrade yang berjalan dalam mode dry-run di VPS, bukan live trading.
+* API key dibuat dengan permission minimal (read dan trade); permission withdrawal tidak diaktifkan.
+* VPS diamankan melalui update sistem, firewall, user non-root, dan autentikasi SSH key.
+* Docker adalah metode instalasi yang digunakan karena konsisten dan mudah dikelola di VPS.
+* `config.json` adalah pusat konfigurasi bot; seluruh secret di dalamnya dijaga dan tidak masuk repository publik.
+* `dry_run` bernilai `true` selama tahap belajar, dan `initial_state` bernilai `stopped` agar bot tidak langsung trading saat startup.
+* Freqtrade API hanya listen di `127.0.0.1`; akses eksternal dilakukan melalui Apache reverse proxy dengan SSL.
+* Troubleshooting dilakukan bertahap: log bot, status container, validasi config, DNS, firewall, lalu koneksi exchange.
 
 ---
 
 ## Disclaimer
 
-Artikel ini hanya untuk tujuan edukasi.
+Artikel ini ditulis untuk tujuan edukasi.
 
-Setup teknis yang salah dapat menyebabkan risiko keamanan, risiko akses tidak sah, error trading, atau kehilangan dana jika digunakan dalam mode live. Jangan menggunakan API key live dengan permission withdrawal. Jangan menjalankan bot dalam mode live sebelum memahami config, strategy, risk management, dan cara menghentikan bot.
+Setup teknis yang salah dapat menyebabkan risiko keamanan, akses tidak sah, error trading, atau kehilangan dana jika digunakan dalam mode live. Jangan menggunakan API key dengan permission withdrawal untuk bot. Jangan menjalankan bot dalam mode live sebelum memahami konfigurasi, strategy, risk management, dan prosedur menghentikan bot.
 
-Crypto trading memiliki risiko tinggi. Bot trading tidak menjamin profit. Dry-run tidak sama dengan live trading. Setiap keputusan teknis dan trading adalah tanggung jawab pribadi masing-masing pengguna.
+Crypto trading memiliki risiko tinggi. Bot trading tidak menjamin profit. Dry-run tidak sama dengan live trading. Setiap keputusan teknis dan trading adalah tanggung jawab masing-masing pengguna.
 
 ---
 
