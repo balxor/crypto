@@ -1,156 +1,137 @@
 # Artikel 1 — Foundation
 
-# Crypto Trading untuk Gamers: Foundation Sebelum Menggunakan Freqtrade
+# Crypto Trading untuk Gamers: Dasar Cryptocurrency, Market, dan Freqtrade
 
-> Artikel ini membahas dasar cryptocurrency, cara kerja market, jenis trading, trading bot, Freqtrade, dan candlestick chart untuk pembaca yang datang dari dunia gaming dan ingin belajar crypto trading secara sistematis.
+> Artikel pertama dari seri tutorial Freqtrade. Artikel ini membahas konsep dasar cryptocurrency, mekanisme pasar, jenis-jenis trading, fungsi trading bot, dan cara membaca candlestick chart. Materi ini ditujukan untuk pembaca dengan latar belakang gaming yang ingin mempelajari crypto trading secara sistematis sebelum melakukan setup teknis.
 
 ---
 
 ## Daftar Isi
 
-1. [Tujuan Artikel](#tujuan-artikel)
-2. [Kenapa Gamer Perlu Memahami Crypto Market dengan Benar](#kenapa-gamer-perlu-memahami-crypto-market-dengan-benar)
-3. [Apa Itu Cryptocurrency](#apa-itu-cryptocurrency)
-4. [Blockchain, Coin, Token, dan Wallet](#blockchain-coin-token-dan-wallet)
-5. [Stablecoin dan Exchange](#stablecoin-dan-exchange)
-6. [Bagaimana Pasar Crypto Bekerja](#bagaimana-pasar-crypto-bekerja)
-7. [Pair, Order Book, Spread, Fee, dan Likuiditas](#pair-order-book-spread-fee-dan-likuiditas)
-8. [Apa Itu Trading](#apa-itu-trading)
-9. [Jenis-Jenis Trading Crypto](#jenis-jenis-trading-crypto)
-10. [Apa Itu Trading Bot](#apa-itu-trading-bot)
-11. [Pengenalan Freqtrade](#pengenalan-freqtrade)
-12. [Apa yang Bisa dan Tidak Bisa Dilakukan Freqtrade](#apa-yang-bisa-dan-tidak-bisa-dilakukan-freqtrade)
-13. [Pengenalan Candlestick Chart](#pengenalan-candlestick-chart)
-14. [Cara Membaca Chart Dasar](#cara-membaca-chart-dasar)
-15. [Mental Model Gamer dalam Trading](#mental-model-gamer-dalam-trading)
-16. [Checklist Sebelum Lanjut ke Setup](#checklist-sebelum-lanjut-ke-setup)
-17. [Glossary](#glossary)
-18. [Key Takeaways](#key-takeaways)
-19. [Disclaimer](#disclaimer)
+1. [Pendahuluan](#pendahuluan)
+2. [Konsep Dasar Cryptocurrency](#konsep-dasar-cryptocurrency)
+   * [Cryptocurrency](#cryptocurrency)
+   * [Blockchain](#blockchain)
+   * [Coin dan Token](#coin-dan-token)
+   * [Wallet](#wallet)
+   * [Stablecoin](#stablecoin)
+3. [Exchange dan API](#exchange-dan-api)
+4. [Mekanisme Pasar Crypto](#mekanisme-pasar-crypto)
+   * [Jam Operasional Market](#jam-operasional-market)
+   * [Pembentukan Harga](#pembentukan-harga)
+   * [Pair](#pair)
+   * [Order Book](#order-book)
+   * [Spread](#spread)
+   * [Fee](#fee)
+   * [Likuiditas dan Slippage](#likuiditas-dan-slippage)
+5. [Dasar Trading](#dasar-trading)
+   * [Definisi dan Komponen Trading](#definisi-dan-komponen-trading)
+   * [Spot Trading](#spot-trading)
+   * [Margin Trading](#margin-trading)
+   * [Futures Trading](#futures-trading)
+6. [Trading Bot](#trading-bot)
+7. [Freqtrade](#freqtrade)
+   * [Fitur Utama](#fitur-utama)
+   * [Batasan Freqtrade](#batasan-freqtrade)
+   * [Backtest, Dry-run, dan Live Trading](#backtest-dry-run-dan-live-trading)
+8. [Candlestick Chart](#candlestick-chart)
+   * [OHLCV](#ohlcv)
+   * [Body dan Wick](#body-dan-wick)
+   * [Timeframe](#timeframe)
+   * [Volume](#volume)
+9. [Membaca Chart Dasar](#membaca-chart-dasar)
+10. [Kesalahan Umum Pemula](#kesalahan-umum-pemula)
+11. [Checklist Sebelum Lanjut ke Artikel 2](#checklist-sebelum-lanjut-ke-artikel-2)
+12. [Glossary](#glossary)
+13. [Ringkasan](#ringkasan)
+14. [Disclaimer](#disclaimer)
 
 ---
 
-## Tujuan Artikel
+## Pendahuluan
 
-Artikel ini adalah baseline awal sebelum masuk ke setup Freqtrade. Sebelum menyewa VPS, membuat API key, menulis strategy, atau menjalankan bot, pembaca perlu memahami dulu apa yang sebenarnya sedang diperdagangkan, bagaimana market bekerja, dan risiko apa yang muncul ketika uang sungguhan masuk ke dalam sistem. Target artikel ini bukan membuat pembaca langsung melakukan trading, tetapi untuk membangun cara berpikir yang lebih terstruktur:
+### Tujuan
 
-* Memahami cryptocurrency sebagai aset digital
-* Memahami exchange dan wallet
-* Memahami cara harga crypto bergerak
-* Memahami perbedaan spot, margin, dan futures
-* Memahami fungsi trading bot
-* Memahami Freqtrade sebagai alat eksekusi strategi
-* Memahami candlestick chart secara dasar
-* Memahami bahwa risk management lebih penting daripada mengejar entry
+Artikel ini adalah materi prasyarat sebelum masuk ke setup Freqtrade pada artikel berikutnya. Sebelum menyewa VPS, membuat API key, menulis strategy, atau menjalankan bot, pembaca perlu memahami aset yang diperdagangkan, mekanisme market, dan risiko yang muncul ketika dana sungguhan digunakan.
 
-Untuk pembaca yang datang dari dunia game, beberapa konsep market mungkin terasa familiar. Di banyak game, kita mengenal item market, auction house, supply-demand, item langka, harga naik ketika event, dan harga turun ketika supply terlalu banyak. Crypto market punya beberapa pola yang mirip, tetapi konsekuensinya berbeda. Di game, salah membeli item biasanya hanya mengurangi gold, zeny, diamond, atau waktu farming. Di crypto trading, kesalahan dapat menghilangkan uang sungguhan.
+Setelah membaca artikel ini, pembaca diharapkan memahami:
 
----
+* Cryptocurrency sebagai aset digital beserta risikonya
+* Fungsi exchange dan wallet
+* Mekanisme pembentukan harga di market crypto
+* Perbedaan spot, margin, dan futures trading
+* Fungsi dan batasan trading bot
+* Posisi Freqtrade dalam workflow pengembangan strategi
+* Struktur candlestick chart dan data OHLCV
+* Peran risk management dalam trading
 
-## Kenapa Gamer Perlu Memahami Crypto Market dengan Benar
+### Target Pembaca
 
-Gamer sering memiliki kemampuan yang berguna untuk memahami trading:
+Artikel ini ditulis untuk pembaca dengan latar belakang gaming. Pemain game pada umumnya sudah mengenal konsep ekonomi virtual: item market, auction house, supply-demand, kelangkaan item, dan fluktuasi harga saat event. Konsep-konsep tersebut memiliki kemiripan dengan market crypto, sehingga dapat digunakan sebagai titik awal pemahaman.
 
-* Terbiasa membaca sistem
-* Terbiasa memahami statistik
-* Terbiasa melakukan eksperimen build
-* Terbiasa membaca patch note
-* Terbiasa membandingkan item, stat, dan efek
-* Terbiasa memahami economy dalam game
-* Terbiasa melihat perubahan meta
+Perbedaan utamanya ada pada konsekuensi. Kesalahan transaksi di dalam game mengurangi mata uang virtual atau waktu farming. Kesalahan di crypto trading mengurangi dana sungguhan, dan pada sebagian besar kasus transaksi tidak dapat dibatalkan.
 
-Kemampuan tersebut membantu, tetapi tidak cukup. Market crypto bukan dungeon yang selalu memiliki pola tetap. Market crypto juga bukan sistem drop rate yang bisa dimenangkan hanya dengan grinding lebih lama. Harga bergerak karena banyak faktor: transaksi pembeli dan penjual, likuiditas, sentimen market, berita, kondisi makro, perilaku whale, leverage, liquidation, dan aktivitas algoritma.
-
-Karena itu, pendekatan yang sehat adalah memperlakukan crypto market sebagai sistem kompleks yang perlu dipelajari, diuji, dan dikendalikan risikonya. Bukan sebagai shortcut untuk profit cepat.
+Kemampuan yang umum dimiliki gamer — membaca sistem, memahami statistik, melakukan eksperimen build, dan mengikuti perubahan meta — berguna dalam mempelajari trading, tetapi tidak cukup sebagai modal tunggal. Harga di market crypto dipengaruhi banyak faktor sekaligus: transaksi pembeli dan penjual, likuiditas, sentimen, berita, kondisi makro, aktivitas whale, leverage, liquidation, dan algoritma trading. Market crypto perlu diperlakukan sebagai sistem kompleks yang dipelajari dan diuji secara bertahap, dengan risiko yang dikendalikan sejak awal.
 
 ---
 
-## Apa Itu Cryptocurrency
+## Konsep Dasar Cryptocurrency
 
-Cryptocurrency adalah aset digital yang menggunakan teknologi kriptografi dan berjalan di atas jaringan digital tertentu. Banyak cryptocurrency berjalan di atas blockchain, yaitu sistem pencatatan data yang tersusun dalam blok dan saling terhubung. Dalam konteks trading, cryptocurrency diperlakukan sebagai aset yang dapat dibeli, dijual, disimpan, dan dipindahkan. Contoh cryptocurrency yang umum dikenal:
+### Cryptocurrency
 
-* Bitcoin
-* Ethereum
-* BNB
-* Solana
-* XRP
-* Dogecoin
+Cryptocurrency adalah aset digital yang menggunakan teknologi kriptografi dan berjalan di atas jaringan terdistribusi, umumnya blockchain. Dalam konteks trading, cryptocurrency diperlakukan sebagai aset yang dapat dibeli, dijual, disimpan, dan dipindahkan.
 
-Namun, tidak semua crypto memiliki fungsi yang sama. Sebagian crypto berfungsi sebagai aset utama sebuah jaringan. Sebagian lain berfungsi sebagai token utilitas, governance token, stablecoin, token game, token DeFi, atau aset spekulatif. Hal penting yang perlu dipahami:
+Contoh cryptocurrency yang umum diperdagangkan: Bitcoin (BTC), Ethereum (ETH), BNB, Solana (SOL), XRP, dan Dogecoin (DOGE).
 
-* Crypto tidak selalu memiliki nilai intrinsik yang jelas
-* Harga crypto bisa sangat volatil
-* Proyek crypto bisa gagal
-* Exchange bisa bermasalah
-* Wallet bisa kehilangan akses jika private key hilang
-* Hype komunitas tidak selalu berarti proyek berkualitas
-* Market cap besar tidak otomatis berarti tanpa risiko
+Fungsi setiap aset berbeda-beda. Sebagian merupakan aset utama sebuah jaringan, sebagian lainnya berfungsi sebagai token utilitas, governance token, stablecoin, token game, token DeFi, atau aset spekulatif.
 
-Untuk pembaca gamer, crypto bisa dianalogikan seperti aset digital yang memiliki market global. Namun, analogi ini tidak boleh dibawa terlalu jauh. Item game biasanya berada dalam satu ekosistem tertutup. Crypto dapat diperdagangkan lintas platform, dipengaruhi market global, dan nilainya bisa berubah sangat cepat.
+Risiko dasar yang melekat pada aset crypto:
 
----
-
-## Blockchain, Coin, Token, dan Wallet
-
-Sebelum memahami trading, pembaca perlu mengenal beberapa istilah dasar.
+* Nilai intrinsik sering tidak terdefinisi dengan jelas
+* Volatilitas harga tinggi
+* Proyek dapat gagal atau ditinggalkan
+* Exchange dapat mengalami gangguan atau kebangkrutan
+* Akses wallet hilang permanen jika private key hilang
+* Popularitas komunitas tidak berkorelasi langsung dengan kualitas proyek
+* Market cap besar tidak menghilangkan risiko
 
 ### Blockchain
 
-Blockchain adalah sistem pencatatan data yang tersusun dalam blok. Setiap blok berisi data transaksi dan terhubung dengan blok sebelumnya. Dalam banyak jaringan crypto, blockchain digunakan untuk mencatat transaksi secara transparan dan sulit diubah secara sembarangan. Secara sederhana, blockchain dapat dipahami sebagai buku catatan digital yang disimpan dan diverifikasi oleh jaringan. Namun, tidak semua hal yang memakai istilah blockchain otomatis aman, berguna, atau bernilai tinggi. Teknologi yang menarik tidak selalu berarti asetnya layak dibeli.
+Blockchain adalah sistem pencatatan data yang tersusun dalam blok-blok yang saling terhubung secara kronologis. Setiap blok berisi data transaksi dan referensi ke blok sebelumnya. Pada jaringan crypto, blockchain berfungsi mencatat transaksi secara transparan dan sulit dimodifikasi setelah tercatat.
 
-### Coin
+Penggunaan teknologi blockchain pada sebuah proyek tidak menjadikan asetnya otomatis aman atau bernilai. Penilaian aset tetap memerlukan analisis terpisah dari teknologinya.
 
-Coin adalah aset crypto yang berjalan di blockchain miliknya sendiri.
+### Coin dan Token
 
-Contoh:
+**Coin** adalah aset crypto yang berjalan di blockchain miliknya sendiri. Contoh: BTC di jaringan Bitcoin, ETH di jaringan Ethereum, SOL di jaringan Solana. Coin umumnya digunakan untuk membayar biaya transaksi, mengamankan jaringan, atau menjalankan fungsi utama ekosistem.
 
-* BTC berjalan di jaringan Bitcoin
-* ETH berjalan di jaringan Ethereum
-* SOL berjalan di jaringan Solana
-
-Coin biasanya digunakan untuk membayar biaya transaksi, menjaga keamanan jaringan, atau menjalankan fungsi utama ekosistem tersebut.
-
-### Token
-
-Token adalah aset crypto yang berjalan di atas blockchain lain. Contoh token dapat berjalan di jaringan Ethereum, BNB Chain, Solana, atau jaringan lain. Token bisa memiliki banyak fungsi:
-
-* Utilitas aplikasi
-* Governance
-* Reward
-* Aset game
-* Stablecoin
-* DeFi
-* NFT ecosystem
-* Spekulasi market
-
-Tidak semua token memiliki kualitas yang sama. Banyak token dibuat hanya untuk mengikuti hype.
+**Token** adalah aset crypto yang berjalan di atas blockchain milik pihak lain, misalnya token yang diterbitkan di jaringan Ethereum, BNB Chain, atau Solana. Fungsi token bervariasi: utilitas aplikasi, governance, reward, aset game, stablecoin, instrumen DeFi, atau aset spekulatif. Kualitas antar token sangat bervariasi; sebagian besar token diterbitkan tanpa fundamental yang memadai.
 
 ### Wallet
 
-Wallet adalah alat untuk menyimpan dan mengakses aset crypto. Wallet tidak benar-benar menyimpan coin seperti dompet fisik menyimpan uang. Wallet menyimpan akses terhadap aset yang tercatat di blockchain. Dalam wallet, ada beberapa konsep penting:
+Wallet adalah perangkat lunak atau perangkat keras untuk mengelola akses terhadap aset crypto. Wallet tidak menyimpan aset secara fisik; aset tercatat di blockchain, dan wallet menyimpan kunci kriptografi untuk mengaksesnya.
 
-| Komponen    | Fungsi                                         |
-| ----------- | ---------------------------------------------- |
-| Address     | alamat publik untuk menerima crypto            |
-| Private key | kunci rahasia untuk mengakses aset             |
-| Seed phrase | kumpulan kata untuk memulihkan wallet          |
-| Public key  | bagian kriptografi yang terkait dengan address |
+Komponen utama wallet:
 
-Private key dan seed phrase harus dijaga dengan sangat serius. Jika private key atau seed phrase hilang, akses ke aset bisa hilang. Jika private key atau seed phrase dicuri, aset bisa diambil orang lain. Dalam analogi game, private key lebih sensitif daripada password akun. Jika password akun game bocor, mungkin masih ada customer support. Jika private key crypto bocor, transaksi biasanya tidak bisa dibatalkan.
+| Komponen    | Fungsi                                          |
+| ----------- | ----------------------------------------------- |
+| Address     | Alamat publik untuk menerima crypto             |
+| Public key  | Komponen kriptografi yang terkait dengan address |
+| Private key | Kunci rahasia untuk mengotorisasi transaksi     |
+| Seed phrase | Rangkaian kata untuk memulihkan wallet          |
 
----
+Private key dan seed phrase adalah komponen paling sensitif:
 
-## Stablecoin dan Exchange
+* Jika hilang, akses ke aset hilang permanen
+* Jika bocor, aset dapat diambil pihak lain dan transaksi tidak dapat dibatalkan
+
+Berbeda dengan akun game yang masih memiliki jalur pemulihan melalui customer support, kehilangan private key tidak memiliki mekanisme pemulihan terpusat.
 
 ### Stablecoin
 
-Stablecoin adalah aset crypto yang dirancang agar nilainya mengikuti aset lain, biasanya dolar Amerika Serikat. Contoh stablecoin yang umum dikenal:
+Stablecoin adalah aset crypto yang dirancang agar nilainya mengikuti aset acuan, umumnya dolar Amerika Serikat. Contoh: USDT, USDC, dan DAI.
 
-* USDT
-* USDC
-* DAI
-
-Dalam trading crypto, stablecoin sering digunakan sebagai pasangan transaksi. Contoh pair:
+Dalam trading, stablecoin digunakan sebagai aset pembanding pada pair transaksi:
 
 ```text
 BTC/USDT
@@ -158,74 +139,58 @@ ETH/USDT
 SOL/USDT
 ```
 
-Jika seseorang membeli BTC/USDT, artinya ia membeli BTC menggunakan USDT. Jika seseorang menjual BTC/USDT, artinya ia menjual BTC dan menerima USDT. Stablecoin memudahkan trader berpindah dari aset volatil ke aset yang relatif stabil. Namun, stablecoin tetap memiliki risiko:
+Membeli pair BTC/USDT berarti membeli BTC menggunakan USDT. Menjual pair tersebut berarti menjual BTC dan menerima USDT. Stablecoin memudahkan trader berpindah dari aset volatil ke aset yang relatif stabil tanpa keluar dari ekosistem crypto.
 
-* Risiko penerbit
-* Risiko regulasi
-* Risiko likuiditas
-* Risiko depeg
-* Risiko exchange
-* Risiko jaringan
+Stablecoin tetap memiliki risiko: risiko penerbit, regulasi, likuiditas, depeg (nilai lepas dari acuan), exchange, dan jaringan. Stablecoin tidak setara dengan uang tunai di rekening bank.
 
-Stablecoin tidak boleh dianggap sama persis dengan uang tunai di bank.
+---
 
-### Exchange
+## Exchange dan API
 
-Exchange adalah platform tempat pengguna membeli dan menjual crypto. Fungsi exchange mirip marketplace. Ada pembeli, penjual, harga, order, fee, dan saldo akun. Hal yang perlu diperhatikan saat memilih exchange:
+Exchange adalah platform tempat pengguna membeli dan menjual crypto. Exchange mempertemukan order pembeli dan penjual, mengelola saldo akun, dan mengenakan fee transaksi.
 
-* Legalitas dan izin di wilayah pengguna
-* Reputasi keamanan
-* Volume transaksi
-* Biaya trading
-* Dukungan API
-* Kualitas withdrawal dan deposit
+Kriteria pemilihan exchange:
+
+* Legalitas dan izin operasi di wilayah pengguna
+* Reputasi keamanan dan riwayat insiden
+* Volume transaksi dan likuiditas
+* Struktur fee trading
+* Dukungan API trading
+* Kualitas proses deposit dan withdrawal
 * Riwayat gangguan layanan
 * Dukungan customer support
-* Kompatibilitas dengan Freqtrade
+* Kompatibilitas dengan Freqtrade (didukung melalui library CCXT)
 
-Untuk penggunaan bot, exchange harus mendukung API trading. API inilah yang memungkinkan Freqtrade membaca market, mengecek saldo, membuat order, dan mengelola posisi sesuai konfigurasi. API key harus dijaga seperti akses penting. Untuk bot trading, permission withdrawal sebaiknya tidak diaktifkan.
+Untuk penggunaan bot, exchange wajib menyediakan API trading. API memungkinkan Freqtrade membaca data market, mengecek saldo, membuat order, dan mengelola posisi sesuai konfigurasi.
+
+Ketentuan keamanan API key untuk bot trading:
+
+* API key diperlakukan sebagai kredensial sensitif, sama seperti password
+* Permission withdrawal tidak diaktifkan
+* Jika exchange mendukung, akses API dibatasi berdasarkan IP (IP whitelist)
 
 ---
 
-## Bagaimana Pasar Crypto Bekerja
+## Mekanisme Pasar Crypto
 
-Crypto market berjalan 24 jam sehari dan 7 hari seminggu. Tidak ada jam tutup seperti pasar saham tradisional. Market tetap bergerak saat malam, akhir pekan, dan hari libur. Karena market berjalan terus, ada beberapa konsekuensi:
+### Jam Operasional Market
 
-* Harga bisa berubah ketika pengguna sedang tidur
+Market crypto beroperasi 24 jam sehari, 7 hari seminggu, tanpa jam tutup seperti pasar saham. Konsekuensinya:
+
+* Harga dapat berubah signifikan di luar jam aktif pengguna
 * Berita dapat mempengaruhi harga kapan saja
-* Bot bisa tetap bekerja tanpa harus menunggu jam market
-* Risiko juga aktif sepanjang waktu
-* Monitoring tetap diperlukan
+* Bot dapat beroperasi terus-menerus tanpa menunggu jam market
+* Risiko juga aktif sepanjang waktu, sehingga monitoring tetap diperlukan
 
-Harga crypto terbentuk dari transaksi antara pembeli dan penjual. Jika banyak pembeli agresif masuk, harga bisa naik. Jika banyak penjual agresif keluar, harga bisa turun. Namun, harga tidak hanya bergerak karena jumlah pembeli dan penjual. Harga juga dipengaruhi oleh:
+### Pembentukan Harga
 
-* Likuiditas
-* Order book
-* Spread
-* Market maker
-* Whale
-* Leverage
-* Liquidation
-* Berita
-* Sentimen sosial media
-* Kondisi makro
-* Pergerakan Bitcoin
-* Volume
-* Perilaku algoritma trading
+Harga terbentuk dari transaksi antara pembeli dan penjual. Tekanan beli yang dominan mendorong harga naik; tekanan jual yang dominan mendorong harga turun. Selain itu, harga dipengaruhi oleh likuiditas, struktur order book, spread, aktivitas market maker dan whale, leverage dan liquidation di market derivatif, berita, sentimen media sosial, kondisi makro, pergerakan Bitcoin sebagai aset acuan market, volume, dan aktivitas algoritma trading.
 
-Banyak pemula mengira market bergerak karena alasan yang sederhana. Misalnya:
-
-> "Coin ini bagus, jadi pasti naik."
-
-Di market real, kualitas proyek dan arah harga jangka pendek tidak selalu sejalan. Aset yang bagus tetap bisa turun. Aset yang buruk tetap bisa naik sementara. Market tidak selalu bergerak secara logis dalam jangka pendek.
-
----
-
-## Pair, Order Book, Spread, Fee, dan Likuiditas
+Kualitas fundamental proyek dan arah harga jangka pendek tidak selalu sejalan. Aset dengan fundamental baik dapat turun, dan aset dengan fundamental buruk dapat naik dalam periode tertentu. Asumsi "proyek bagus berarti harga naik" tidak dapat dijadikan dasar keputusan trading jangka pendek.
 
 ### Pair
 
-Pair adalah pasangan aset yang diperdagangkan di exchange. Contoh:
+Pair adalah pasangan aset yang diperdagangkan di exchange, ditulis dalam format `BASE/QUOTE`.
 
 ```text
 BTC/USDT
@@ -234,438 +199,382 @@ BNB/USDT
 SOL/USDT
 ```
 
-Pada pair `BTC/USDT`, BTC adalah aset yang dibeli atau dijual, sedangkan USDT adalah aset pembanding. Jika harga BTC/USDT adalah 70.000, artinya 1 BTC diperdagangkan sekitar 70.000 USDT.
+Pada pair `BTC/USDT`, BTC adalah base currency (aset yang dibeli atau dijual) dan USDT adalah quote currency (aset pembanding). Harga BTC/USDT sebesar 70.000 berarti 1 BTC diperdagangkan seharga 70.000 USDT.
 
 ### Order Book
 
-Order book adalah daftar order beli dan jual yang menunggu eksekusi. Order book biasanya memiliki dua sisi:
+Order book adalah daftar order beli dan jual yang menunggu eksekusi, terdiri dari dua sisi:
 
-| Sisi | Arti                                                |
-| ---- | --------------------------------------------------- |
-| Bid  | daftar pembeli yang ingin membeli di harga tertentu |
-| Ask  | daftar penjual yang ingin menjual di harga tertentu |
+| Sisi | Arti                                                  |
+| ---- | ----------------------------------------------------- |
+| Bid  | Order beli yang dipasang pembeli pada harga tertentu  |
+| Ask  | Order jual yang dipasang penjual pada harga tertentu  |
 
-Jika market memiliki banyak bid dan ask di berbagai level harga, market tersebut biasanya lebih likuid. Dalam analogi game, order book mirip market board yang berisi daftar harga beli dan harga jual dari banyak pemain. Bedanya, di crypto, order book bisa berubah sangat cepat.
+Market dengan bid dan ask yang tebal di berbagai level harga umumnya lebih likuid. Struktur order book serupa dengan market board di game yang menampilkan daftar harga beli dan jual dari banyak pemain, dengan perbedaan bahwa order book crypto berubah dalam hitungan detik.
 
 ### Spread
 
-Spread adalah selisih antara harga beli tertinggi dan harga jual terendah. Contoh sederhana:
+Spread adalah selisih antara bid tertinggi dan ask terendah.
 
 | Komponen      | Harga   |
 | ------------- | ------- |
 | Bid tertinggi | 99.900  |
 | Ask terendah  | 100.000 |
+| Spread        | 100     |
 
-Spread = 100. Spread kecil biasanya lebih baik untuk trader karena biaya tidak langsung lebih rendah. Spread besar sering muncul pada market dengan likuiditas rendah.
+Spread merupakan biaya tidak langsung bagi trader. Spread kecil umum ditemukan pada market likuid; spread besar umum ditemukan pada market dengan likuiditas rendah.
 
 ### Fee
 
-Fee adalah biaya transaksi yang dikenakan exchange. Fee dapat terlihat kecil, tetapi sangat berpengaruh jika strategi melakukan banyak transaksi. Dalam scalping, fee dapat mengubah strategi yang terlihat profit menjadi rugi. Karena itu, setiap strategi harus mempertimbangkan biaya transaksi.
+Fee adalah biaya transaksi yang dikenakan exchange pada setiap order yang tereksekusi. Pada strategi dengan frekuensi transaksi tinggi seperti scalping, akumulasi fee dapat mengubah strategi yang terlihat profitable di atas kertas menjadi merugi. Perhitungan fee wajib dimasukkan dalam evaluasi setiap strategi. Freqtrade memperhitungkan fee dalam backtesting berdasarkan konfigurasi.
 
-### Likuiditas
+### Likuiditas dan Slippage
 
-Likuiditas menunjukkan seberapa mudah aset dibeli atau dijual tanpa menggerakkan harga terlalu jauh. Aset likuid biasanya memiliki:
+Likuiditas menunjukkan seberapa mudah aset dibeli atau dijual tanpa menggerakkan harga secara signifikan.
 
-* Volume besar
-* Spread kecil
-* Order book tebal
-* Banyak partisipan market
+| Karakteristik    | Market likuid | Market tidak likuid |
+| ---------------- | ------------- | ------------------- |
+| Volume           | Besar         | Kecil               |
+| Spread           | Kecil         | Besar               |
+| Order book       | Tebal         | Tipis               |
+| Pergerakan harga | Bertahap      | Mudah melompat      |
+| Risiko slippage  | Rendah        | Tinggi              |
 
-Aset tidak likuid biasanya memiliki:
+Slippage adalah selisih antara harga yang diharapkan dan harga eksekusi aktual.
 
-* Volume kecil
-* Spread besar
-* Order book tipis
-* Harga mudah loncat
-* Risiko slippage lebih tinggi
-
-Banyak pemula tertarik pada coin kecil karena potensi naiknya terlihat besar. Masalahnya, coin kecil sering sulit dijual ketika market bergerak berlawanan. Masuk posisi mudah. Keluar posisi bisa sulit.
+Coin berkapitalisasi kecil sering menarik bagi pemula karena potensi kenaikannya terlihat besar. Risikonya, aset tersebut sulit dijual pada harga wajar ketika market bergerak berlawanan: posisi mudah dibuka tetapi sulit ditutup.
 
 ---
 
-## Apa Itu Trading
+## Dasar Trading
 
-Trading adalah aktivitas membeli dan menjual aset dengan tujuan mendapatkan selisih harga. Namun, definisi ini terlalu sederhana jika tidak disertai risk management. Trading yang sehat bukan sekadar membeli ketika harga terlihat murah dan menjual ketika harga terlihat mahal. Trading yang sehat membutuhkan:
+### Definisi dan Komponen Trading
+
+Trading adalah aktivitas membeli dan menjual aset untuk mendapatkan selisih harga. Pelaksanaannya memerlukan komponen-komponen berikut:
 
 * Rencana entry
 * Rencana exit
-* Batas risiko
-* Ukuran posisi
-* Pemahaman timeframe
+* Batas risiko per posisi
+* Ukuran posisi (position sizing)
+* Pemilihan timeframe
 * Pemahaman kondisi market
-* Evaluasi hasil
-* Disiplin menjalankan aturan
+* Evaluasi hasil secara berkala
+* Disiplin menjalankan aturan yang ditetapkan
 
-Dalam trading, tujuan utama bukan selalu benar, tetapi menjaga agar kerugian tetap terkendali ketika salah, dan membiarkan profit berkembang ketika analisis benar. Trader pemula sering terlalu fokus pada pertanyaan:
-
-```text
-Coin apa yang akan naik?
-```
-
-Trader yang lebih matang bertanya:
-
-```text
-Berapa risiko jika analisis saya salah?
-```
-
-Perbedaan ini penting. Market tidak bisa dikendalikan. Yang bisa dikendalikan adalah ukuran posisi, risiko, dan keputusan keluar.
-
----
-
-## Jenis-Jenis Trading Crypto
-
-Crypto trading memiliki beberapa jenis utama. Artikel ini hanya menjelaskan konsep dasar. Pembaca pemula sebaiknya memahami spot trading lebih dulu sebelum masuk ke margin atau futures.
+Prinsip dasarnya: kerugian dijaga tetap kecil dan terkendali ketika analisis salah, dan profit dibiarkan berkembang ketika analisis benar. Arah market tidak dapat dikendalikan; yang dapat dikendalikan adalah ukuran posisi, batas risiko, dan keputusan keluar. Karena itu, pertanyaan "berapa risiko jika analisis ini salah" lebih menentukan hasil jangka panjang dibanding pertanyaan "aset mana yang akan naik".
 
 ### Spot Trading
 
-Spot trading adalah aktivitas membeli dan menjual aset crypto secara langsung. Jika membeli BTC di spot market, pengguna benar-benar memiliki saldo BTC di exchange. Contoh:
+Spot trading adalah pembelian dan penjualan aset crypto secara langsung. Pembelian BTC di spot market menghasilkan saldo BTC yang benar-benar dimiliki di akun exchange.
 
-* Membeli BTC menggunakan USDT
-* Menyimpan BTC
-* Menjual BTC kembali menjadi USDT
+Alur dasarnya: membeli BTC menggunakan USDT, menyimpan BTC, lalu menjual BTC kembali menjadi USDT.
 
-Spot trading adalah bentuk trading yang paling dasar. Risikonya tetap tinggi karena harga aset bisa turun, tetapi spot trading tidak memiliki risiko liquidation seperti futures. Untuk pemula, spot trading adalah tempat belajar yang lebih masuk akal dibanding futures.
+Risiko spot trading tetap ada karena harga aset dapat turun, tetapi spot trading tidak memiliki risiko liquidation. Spot trading adalah titik awal yang disarankan untuk pemula, dan menjadi fokus utama seri tutorial ini.
 
 ### Margin Trading
 
-Margin trading memungkinkan pengguna meminjam dana untuk memperbesar posisi. Dengan margin, trader dapat memiliki exposure lebih besar dari modal aslinya. Risikonya juga lebih besar. Jika market bergerak berlawanan, kerugian dapat meningkat lebih cepat. Dalam kondisi tertentu, posisi bisa dipaksa ditutup oleh sistem. Margin trading tidak disarankan untuk pemula.
+Margin trading memungkinkan pengguna meminjam dana untuk memperbesar posisi melebihi modal aslinya. Eksposur yang lebih besar berarti kerugian bertambah lebih cepat ketika market bergerak berlawanan, dan pada kondisi tertentu posisi ditutup paksa oleh sistem. Margin trading tidak disarankan untuk pemula.
 
 ### Futures Trading
 
-Futures trading adalah trading kontrak derivatif. Trader tidak selalu membeli aset secara langsung, tetapi membuka posisi berdasarkan pergerakan harga aset. Dalam futures, trader bisa membuka posisi:
+Futures trading adalah perdagangan kontrak derivatif. Trader membuka posisi berdasarkan pergerakan harga aset tanpa harus memiliki aset tersebut.
 
-| Posisi | Arti                 |
-| ------ | -------------------- |
-| Long   | berharap harga naik  |
-| Short  | berharap harga turun |
+| Posisi | Arti                              |
+| ------ | --------------------------------- |
+| Long   | Posisi yang profit jika harga naik  |
+| Short  | Posisi yang profit jika harga turun |
 
-Futures sering menggunakan leverage. Leverage dapat memperbesar profit, tetapi juga memperbesar kerugian. Jika posisi bergerak berlawanan terlalu jauh, trader bisa terkena liquidation. Bagi pemula, futures terlihat menarik karena bisa profit ketika harga naik atau turun. Namun, futures juga merupakan area yang sangat berbahaya jika tidak memahami leverage, margin, funding fee, liquidation price, dan position sizing. Untuk seri ini, pendekatan utama adalah:
+Futures umumnya menggunakan leverage, yang memperbesar profit dan kerugian secara proporsional. Posisi yang bergerak berlawanan melebihi batas margin akan terkena liquidation (penutupan paksa).
+
+Futures menarik bagi pemula karena memungkinkan profit di kedua arah harga. Namun futures memerlukan pemahaman tentang leverage, margin, funding fee, liquidation price, dan position sizing. Tanpa pemahaman tersebut, potensi kehilangan seluruh modal sangat tinggi.
+
+Urutan belajar yang digunakan dalam seri ini:
 
 ```text
-Belajar spot dulu.
-Pahami risk management dulu.
-Gunakan dry-run dulu.
-Jangan mulai dari leverage.
+1. Pelajari spot trading
+2. Pahami risk management
+3. Jalankan dry-run
+4. Hindari leverage pada tahap awal
 ```
 
 ---
 
-## Apa Itu Trading Bot
+## Trading Bot
 
-Trading bot adalah program yang menjalankan aturan trading secara otomatis. Bot dapat membaca data market, memproses indikator, membuat sinyal entry, membuat sinyal exit, mengelola order, dan mencatat aktivitas trading. Namun, trading bot bukan mesin profit. Bot hanya menjalankan aturan.
+Trading bot adalah program yang menjalankan aturan trading secara otomatis: membaca data market, menghitung indikator, menghasilkan sinyal entry dan exit, mengelola order, dan mencatat aktivitas trading.
 
-Jika aturan strategi buruk, bot akan menjalankan strategi buruk itu secara konsisten. Jika konfigurasi salah, bot bisa menjalankan kesalahan tersebut berulang kali. Jika risk management lemah, bot tidak akan menyelamatkan akun. Trading bot berguna untuk:
+Bot menjalankan aturan persis seperti yang dikonfigurasi. Strategi yang buruk akan dijalankan secara konsisten sebagai strategi buruk. Konfigurasi yang salah akan dieksekusi berulang kali. Risk management yang lemah tidak dikoreksi oleh bot.
 
-* Mengurangi keputusan impulsif
-* Menjalankan strategi secara konsisten
-* Menguji strategi dengan data historis
-* Menjalankan dry-run
-* Mencatat hasil trade
-* Membantu analisis berbasis data
-* Mengurangi emosi dalam eksekusi
+Kegunaan trading bot:
 
-Trading bot tidak bisa:
+* Mengurangi keputusan impulsif dan faktor emosi dalam eksekusi
+* Menjalankan strategi secara konsisten 24/7
+* Menguji strategi terhadap data historis (backtesting)
+* Menjalankan simulasi tanpa dana sungguhan (dry-run)
+* Mencatat seluruh hasil trade untuk analisis
 
-* Menjamin profit
-* Memprediksi masa depan dengan pasti
-* Menghapus risiko market
-* Memperbaiki strategi yang buruk
-* Menggantikan pemahaman trader
-* Menghilangkan kebutuhan monitoring
-* Menghindari kerugian sepenuhnya
+Batasan trading bot:
 
-Dalam konteks gamer, trading bot bisa dipahami sebagai automation tool untuk menjalankan build yang sudah dirancang. Namun, bot bukan cheat. Bot bukan auto-win. Bot juga bukan cara untuk mengalahkan market tanpa risiko. Bot hanya menjalankan sistem yang dibuat oleh manusia.
+* Tidak menjamin profit
+* Tidak memprediksi pergerakan harga di masa depan
+* Tidak menghilangkan risiko market
+* Tidak memperbaiki strategi yang buruk
+* Tidak menggantikan pemahaman pengguna
+* Tidak menghilangkan kebutuhan monitoring
 
 ---
 
-## Pengenalan Freqtrade
+## Freqtrade
 
-Freqtrade adalah bot trading crypto open-source berbasis Python. Freqtrade banyak digunakan untuk eksperimen strategi karena menyediakan workflow yang lengkap:
+Freqtrade adalah bot trading crypto open-source berbasis Python. Freqtrade menyediakan workflow lengkap untuk pengembangan strategi: penulisan strategy dalam Python, pengunduhan data market, backtesting, hyperparameter optimization (hyperopt), dry-run, dan live trading.
 
-* Strategy development
-* Backtesting
-* Dry-run
-* Live trading
-* Konfigurasi exchange
-* Money management
-* Hyperparameter optimization
-* Integrasi web UI
-* Integrasi Telegram
-* Log dan trade history
+Strategy pada Freqtrade ditulis sebagai class Python. Data market diproses dalam bentuk DataFrame (pandas), indikator dihitung dari data OHLCV, lalu kondisi entry dan exit didefinisikan sebagai aturan terhadap DataFrame tersebut. Strategi kemudian diuji terhadap data historis sebelum dijalankan.
 
-Dalam seri ini, Freqtrade diperlakukan sebagai trading lab. Artinya, Freqtrade digunakan untuk belajar bagaimana strategi dibuat, diuji, dievaluasi, dan dijalankan secara disiplin. Bukan sebagai alat untuk mencari profit cepat. Untuk pembaca teknis, Freqtrade menarik karena strategi dapat ditulis menggunakan Python. Data market dapat diproses dalam bentuk dataframe.
-
-Indikator dapat dihitung, sinyal entry dan exit dapat dibuat, lalu strategi dapat diuji dengan data historis. Namun, semakin fleksibel sebuah tool, semakin besar pula risiko salah konfigurasi. Karena itu, pendekatan seri ini adalah:
+Dalam seri ini, Freqtrade diposisikan sebagai lingkungan belajar dan pengujian strategi, dengan urutan kerja:
 
 ```text
-Pahami dulu.
-Setup dengan aman.
-Jalankan dry-run.
-Backtest strategi.
-Evaluasi hasil.
-Baru pertimbangkan live dengan modal kecil.
+1. Pahami konsep dasar (artikel ini)
+2. Setup environment dengan aman
+3. Jalankan dry-run
+4. Backtest strategi
+5. Evaluasi hasil
+6. Pertimbangkan live trading dengan modal kecil
 ```
 
+### Fitur Utama
+
+* Menjalankan bot trading berbasis strategy Python
+* Membaca data market dari exchange yang didukung
+* Mendukung spot trading, dan futures trading pada exchange tertentu
+* Backtesting terhadap data historis
+* Dry-run (simulasi pada kondisi market real-time tanpa order sungguhan)
+* Hyperparameter optimization (hyperopt)
+* Pencatatan hasil trade ke database
+* Monitoring melalui FreqUI (web interface)
+* Notifikasi melalui Telegram
+* Pengaturan stoploss, minimal ROI, dan trailing stoploss
+* Pengelolaan pairlist statis dan dinamis
+* Konfigurasi money management
+
+### Batasan Freqtrade
+
+* Tidak menjamin profit
+* Tidak menghilangkan risiko volatilitas dan loss
+* Tidak memperbaiki strategi yang buruk secara otomatis
+* Tidak mengelola keamanan VPS; administrasi server adalah tanggung jawab pengguna
+* Tidak melindungi API key yang disimpan secara tidak aman
+* Tidak menjamin hasil live sama dengan hasil backtest
+
+### Backtest, Dry-run, dan Live Trading
+
+Tiga mode ini sering disamakan oleh pemula, padahal karakteristiknya berbeda:
+
+| Mode         | Data                    | Order            | Risiko dana |
+| ------------ | ----------------------- | ---------------- | ----------- |
+| Backtest     | Historis                | Simulasi         | Tidak ada   |
+| Dry-run      | Real-time               | Simulasi         | Tidak ada   |
+| Live trading | Real-time               | Order sungguhan  | Ada         |
+
+Backtest tidak sepenuhnya merepresentasikan kondisi live karena slippage, latency, perubahan likuiditas, dan partial fill tidak selalu tersimulasi dengan akurat. Dry-run lebih mendekati kondisi live, tetapi tetap tidak mencakup eksekusi order sungguhan dan tekanan psikologis penggunaan dana real.
+
+Urutan validasi strategi: backtest terlebih dahulu, dilanjutkan dry-run dalam periode yang cukup, lalu live trading dimulai dengan modal kecil.
+
 ---
 
-## Apa yang Bisa dan Tidak Bisa Dilakukan Freqtrade
+## Candlestick Chart
 
-### Freqtrade Bisa Digunakan Untuk
+Candlestick chart adalah representasi visual pergerakan harga dalam periode waktu tertentu. Freqtrade menggunakan data candle sebagai input strategi: strategy membaca data candle, menghitung indikator, lalu mengevaluasi kondisi entry dan exit.
 
-Freqtrade dapat digunakan untuk:
+### OHLCV
 
-* Menjalankan bot trading berbasis strategi
-* Membaca data market dari exchange
-* Menjalankan strategi spot
-* Menjalankan strategi futures pada exchange yang didukung
-* Melakukan backtesting
-* Menjalankan dry-run
-* Mengoptimasi parameter strategi
-* Mencatat hasil trade
-* Memantau bot melalui FreqUI
-* Mengirim notifikasi melalui Telegram
-* Mengatur stoploss, ROI, dan trailing stoploss
-* Mengelola pairlist
-* Mengelola konfigurasi trading
+Satu candle terdiri dari empat data harga (OHLC), dan ditambah volume menjadi OHLCV:
 
-### Freqtrade Tidak Bisa Digunakan Untuk
+| Komponen | Arti                              |
+| -------- | --------------------------------- |
+| Open     | Harga pembukaan periode           |
+| High     | Harga tertinggi periode           |
+| Low      | Harga terendah periode            |
+| Close    | Harga penutupan periode           |
+| Volume   | Jumlah aktivitas transaksi periode |
 
-Freqtrade tidak dapat:
+OHLCV adalah format data standar yang digunakan Freqtrade untuk backtesting dan eksekusi strategi.
 
-* Menjamin profit
-* Mengetahui masa depan
-* Menghilangkan risiko volatilitas
-* Menghindari semua loss
-* Memperbaiki strategi yang buruk secara otomatis
-* Menggantikan pemahaman trader
-* Menjaga VPS jika server tidak dikelola
-* Melindungi API key jika pengguna menyimpannya sembarangan
-* Memastikan hasil live sama dengan backtest
+### Body dan Wick
 
-Poin terakhir sangat penting. Backtest adalah simulasi berdasarkan data historis. Dry-run adalah simulasi berjalan pada kondisi market saat ini, tetapi tidak menggunakan order real. Live trading adalah eksekusi order sungguhan di exchange. Ketiganya tidak sama. Strategi yang terlihat bagus di backtest tetap harus diuji melalui dry-run. Setelah itu pun, live trading tetap harus dimulai dengan risiko kecil.
+**Body** adalah bagian candle antara open dan close. Close di atas open menunjukkan tekanan beli dominan pada periode tersebut; close di bawah open menunjukkan tekanan jual dominan. Secara umum candle bullish ditampilkan hijau dan candle bearish ditampilkan merah, meskipun skema warna dapat berbeda antar platform.
 
----
-
-## Pengenalan Candlestick Chart
-
-Candlestick chart adalah cara visual untuk menampilkan pergerakan harga dalam periode waktu tertentu. Satu candle biasanya memiliki empat data utama:
-
-| Komponen | Arti            |
-| -------- | --------------- |
-| Open     | harga pembukaan |
-| High     | harga tertinggi |
-| Low      | harga terendah  |
-| Close    | harga penutupan |
-
-Empat data ini sering disebut OHLC. Jika ditambah volume, formatnya menjadi OHLCV:
-
-| Komponen | Arti                       |
-| -------- | -------------------------- |
-| Open     | harga pembukaan            |
-| High     | harga tertinggi            |
-| Low      | harga terendah             |
-| Close    | harga penutupan            |
-| Volume   | jumlah aktivitas transaksi |
-
-Freqtrade menggunakan data candle untuk menjalankan strategi. Strategi membaca candle, menghitung indikator, lalu menentukan apakah kondisi entry atau exit terpenuhi.
-
-### Body Candle
-
-Body candle menunjukkan jarak antara open dan close. Jika close lebih tinggi dari open, candle menunjukkan tekanan beli pada periode tersebut. Jika close lebih rendah dari open, candle menunjukkan tekanan jual pada periode tersebut. Warna candle tergantung platform chart. Umumnya, candle bullish ditampilkan hijau dan candle bearish ditampilkan merah, tetapi warna bisa berbeda sesuai pengaturan.
-
-### Wick atau Shadow
-
-Wick adalah garis atas dan bawah pada candle. Wick atas menunjukkan harga sempat naik, tetapi tidak bertahan sampai close. Wick bawah menunjukkan harga sempat turun, tetapi tidak bertahan sampai close. Wick panjang dapat menunjukkan rejection, tetapi tidak boleh dibaca sendirian. Satu candle bukan merupakan bukti yang cukup untuk mengambil keputusan trading.
+**Wick** (shadow) adalah garis di atas dan di bawah body. Wick atas menunjukkan harga sempat naik tetapi tidak bertahan hingga close; wick bawah menunjukkan harga sempat turun tetapi tidak bertahan hingga close. Wick panjang dapat mengindikasikan rejection pada level harga tertentu, tetapi satu candle tidak cukup sebagai dasar keputusan trading dan harus dibaca bersama konteks lainnya.
 
 ### Timeframe
 
-Timeframe adalah periode waktu yang digunakan untuk membentuk satu candle. Contoh:
+Timeframe adalah periode waktu pembentukan satu candle.
 
-| Timeframe | Arti                          |
-| --------- | ----------------------------- |
-| 1m        | satu candle mewakili 1 menit  |
-| 5m        | satu candle mewakili 5 menit  |
-| 15m       | satu candle mewakili 15 menit |
-| 1h        | satu candle mewakili 1 jam    |
-| 4h        | satu candle mewakili 4 jam    |
-| 1d        | satu candle mewakili 1 hari   |
+| Timeframe | Periode per candle |
+| --------- | ------------------ |
+| 1m        | 1 menit            |
+| 5m        | 5 menit            |
+| 15m       | 15 menit           |
+| 1h        | 1 jam              |
+| 4h        | 4 jam              |
+| 1d        | 1 hari             |
 
-Timeframe kecil bergerak cepat dan penuh noise. Timeframe besar bergerak lebih lambat, tetapi sering lebih mudah dibaca oleh pemula. Dalam Freqtrade, timeframe strategy adalah salah satu keputusan penting. Strategy timeframe 5m akan memiliki karakter berbeda dengan strategy timeframe 1h.
+Timeframe kecil menghasilkan lebih banyak sinyal tetapi mengandung lebih banyak noise. Timeframe besar bergerak lebih lambat dan umumnya lebih mudah dibaca oleh pemula. Pada Freqtrade, timeframe adalah parameter strategy yang menentukan karakter strategi secara keseluruhan; strategy 5m dan strategy 1h memiliki perilaku, frekuensi trade, dan profil risiko yang berbeda.
 
 ### Volume
 
-Volume menunjukkan jumlah aktivitas transaksi pada periode candle tertentu. Pergerakan harga dengan volume besar biasanya lebih penting daripada pergerakan harga dengan volume kecil. Jika harga naik tetapi volume lemah, kenaikan bisa rapuh. Jika harga turun dengan volume besar, tekanan jual bisa kuat. Volume tidak selalu memberikan jawaban pasti, tetapi membantu membaca kualitas pergerakan harga.
+Volume menunjukkan jumlah aktivitas transaksi pada periode candle. Pergerakan harga yang disertai volume besar umumnya lebih signifikan dibanding pergerakan dengan volume kecil. Kenaikan harga dengan volume lemah berpotensi tidak bertahan; penurunan harga dengan volume besar mengindikasikan tekanan jual yang kuat. Volume berfungsi sebagai konfirmasi kualitas pergerakan harga, bukan sebagai sinyal tunggal.
 
 ---
 
-## Cara Membaca Chart Dasar
+## Membaca Chart Dasar
 
-Membaca chart bukan soal mencari pola ajaib. Chart membantu trader memahami struktur pergerakan harga. Untuk pemula, fokus awal cukup pada beberapa hal berikut.
+Untuk pemula, pembacaan chart cukup difokuskan pada elemen-elemen berikut.
 
-### 1. Arah Trend
+### Arah Trend
 
-Trend menunjukkan kecenderungan arah harga.
-
-| Trend     | Ciri Umum                                              |
+| Trend     | Ciri umum                                              |
 | --------- | ------------------------------------------------------ |
-| Uptrend   | harga cenderung membuat high dan low yang lebih tinggi |
-| Downtrend | harga cenderung membuat high dan low yang lebih rendah |
-| Sideways  | harga bergerak dalam range tanpa arah jelas            |
+| Uptrend   | Harga membentuk high dan low yang semakin tinggi       |
+| Downtrend | Harga membentuk high dan low yang semakin rendah       |
+| Sideways  | Harga bergerak dalam range tanpa arah yang jelas       |
 
-Trading melawan trend membutuhkan pengalaman lebih tinggi. Untuk pemula, memahami arah trend lebih penting daripada mencari entry cepat.
+Trading searah trend lebih mudah dikelola dibanding melawan trend. Identifikasi arah trend lebih penting bagi pemula dibanding pencarian titik entry yang presisi.
 
-### 2. Area Support
+### Support dan Resistance
 
-Support adalah area harga tempat pembeli sebelumnya cukup kuat menahan penurunan. Support bukan garis yang kaku. Support bisa ditembus. Jika harga menembus support dengan volume besar, kondisi market bisa berubah.
+**Support** adalah area harga tempat tekanan beli sebelumnya cukup kuat menahan penurunan. **Resistance** adalah area harga tempat tekanan jual sebelumnya cukup kuat menahan kenaikan.
 
-### 3. Area Resistance
+Keduanya adalah area, bukan garis pasti, dan dapat ditembus. Penembusan support atau resistance yang disertai volume besar mengindikasikan perubahan kondisi market dan kelanjutan pergerakan ke arah penembusan.
 
-Resistance adalah area harga tempat penjual sebelumnya cukup kuat menahan kenaikan. Resistance juga bukan sebuah garis yang pasti. Jika harga menembus resistance dengan volume kuat, market bisa melanjutkan kenaikan.
+### Pembacaan dalam Konteks
 
-### 4. Candle Jangan Dibaca Sendiri
-
-Satu candle tidak cukup untuk membuat keputusan. Candle perlu dibaca bersama:
-
-* Trend
-* Volume
-* Area support
-* Area resistance
-* Timeframe
-* Kondisi market secara umum
-
-### 5. Jangan Mengejar Candle
-
-Pemula sering membeli setelah candle besar naik karena takut tertinggal. Ini sering menjadi jebakan. Candle besar setelah kenaikan panjang bisa berarti momentum kuat, tetapi bisa juga berarti pembeli telat masuk. Dalam trading, entry yang buruk dapat merusak strategi yang sebenarnya benar.
+Satu candle tidak cukup sebagai dasar keputusan. Candle dibaca bersama trend, volume, area support dan resistance, timeframe, dan kondisi market secara umum.
 
 ---
 
-## Mental Model Gamer dalam Trading
+## Kesalahan Umum Pemula
 
-Gamer punya banyak analogi yang bisa membantu memahami trading, tetapi analogi tersebut harus digunakan dengan hati-hati.
+Beberapa pola kesalahan yang umum terjadi pada trader pemula, termasuk yang datang dari latar belakang gaming:
 
-### Trading Bukan Farming
+**Menahan posisi rugi terlalu lama.** Berbeda dengan farming di game yang memberikan hasil proporsional terhadap waktu, menahan posisi yang salah arah memperbesar kerugian. Market tidak memberikan kompensasi atas durasi menunggu.
 
-Dalam game, farming lebih lama biasanya menghasilkan resource lebih banyak. Dalam trading, berada lebih lama di posisi buruk bisa memperbesar kerugian. Market tidak memberikan reward hanya karena trader menunggu.
+**All-in pada coin kecil.** Mengalokasikan seluruh modal pada satu aset berkapitalisasi kecil dengan harapan kenaikan berlipat termasuk kategori spekulasi tanpa risk management, dan secara statistik lebih dekat ke perjudian dibanding trading sistematis.
 
-### Trading Bukan Gacha
+**Mengandalkan satu strategi untuk semua kondisi.** Strategi yang profitable pada kondisi market tertentu dapat merugi ketika kondisi berubah. Tidak ada strategi yang profitable di seluruh kondisi market, sehingga evaluasi berkala diperlukan.
 
-Dalam gacha, pemain berharap mendapat rare drop. Dalam trading, berharap tanpa risk management adalah kesalahan. All-in pada coin kecil karena berharap naik 100x lebih dekat ke perjudian daripada trading sistematis.
+**Memperlakukan hasil backtest sebagai jaminan.** Backtest menunjukkan performa strategi terhadap data masa lalu. Kondisi live memiliki slippage, fee, latency, dan perubahan likuiditas yang tidak selalu tersimulasi dengan akurat.
 
-### Strategy Bukan Build Auto-Win
+**Mengejar candle besar (FOMO).** Membeli setelah kenaikan besar karena takut tertinggal sering menghasilkan entry pada harga puncak lokal. Entry yang buruk dapat merusak performa strategi yang sebenarnya valid.
 
-Dalam game, build yang kuat bisa mendominasi meta tertentu. Dalam market, strategi yang bagus tetap bisa gagal ketika kondisi berubah. Tidak ada strategi yang menang di semua kondisi.
-
-### Backtest Bukan Damage Simulator Sempurna
-
-Backtest membantu melihat performa strategi pada data masa lalu. Namun, backtest tidak menjamin performa masa depan. Market live memiliki slippage, fee, latency, perubahan likuiditas, dan kondisi yang tidak selalu muncul sempurna dalam simulasi.
-
-### Dry-run Adalah Training Ground
-
-Dry-run membantu melihat perilaku bot tanpa menggunakan uang sungguhan. Namun, dry-run tetap bukan live trading. Dry-run tidak sepenuhnya merepresentasikan tekanan psikologis, eksekusi order real, dan risiko operasional live.
-
-### Live Trading Adalah Raid
-
-Ketika bot berjalan live, risiko menjadi nyata. Karena itu, perlu checklist, monitoring, backup, dan rencana menghentikan bot. Tidak ada raid serius yang masuk tanpa persiapan. Tidak ada live bot yang sehat tanpa rencana risiko.
+**Menjalankan live trading tanpa persiapan operasional.** Live trading memerlukan checklist, monitoring, backup, dan prosedur penghentian bot. Persiapan operasional adalah bagian dari risk management, bukan opsional.
 
 ---
 
-## Checklist Sebelum Lanjut ke Setup
+## Checklist Sebelum Lanjut ke Artikel 2
 
-Sebelum melanjutkan ke Artikel 2, pastikan pembaca memahami poin berikut.
+Sebelum melanjutkan ke artikel setup, pastikan seluruh poin berikut sudah dipahami:
 
-| Checklist                                         | Status |
-| ------------------------------------------------- | ------ |
-| Memahami apa itu cryptocurrency                   | Wajib  |
-| Memahami perbedaan coin dan token                 | Wajib  |
-| Memahami fungsi wallet dan private key            | Wajib  |
-| Memahami stablecoin                               | Wajib  |
-| Memahami exchange dan API key                     | Wajib  |
-| Memahami pair trading                             | Wajib  |
-| Memahami order book secara dasar                  | Wajib  |
-| Memahami fee dan spread                           | Wajib  |
-| Memahami likuiditas                               | Wajib  |
-| Memahami spot trading                             | Wajib  |
-| Memahami risiko margin dan futures                | Wajib  |
-| Memahami trading bot bukan mesin profit           | Wajib  |
-| Memahami Freqtrade sebagai alat eksekusi strategi | Wajib  |
-| Memahami OHLCV                                    | Wajib  |
-| Memahami candlestick dasar                        | Wajib  |
-| Memahami bahwa backtest bukan jaminan profit      | Wajib  |
+| Checklist                                              | Status |
+| ------------------------------------------------------ | ------ |
+| Definisi cryptocurrency dan risikonya                  | Wajib  |
+| Perbedaan coin dan token                               | Wajib  |
+| Fungsi wallet, private key, dan seed phrase            | Wajib  |
+| Fungsi dan risiko stablecoin                           | Wajib  |
+| Fungsi exchange dan keamanan API key                   | Wajib  |
+| Konsep pair trading                                    | Wajib  |
+| Struktur order book                                    | Wajib  |
+| Pengaruh fee dan spread terhadap strategi              | Wajib  |
+| Likuiditas dan slippage                                | Wajib  |
+| Mekanisme spot trading                                 | Wajib  |
+| Risiko margin dan futures trading                      | Wajib  |
+| Fungsi dan batasan trading bot                         | Wajib  |
+| Posisi Freqtrade dalam workflow strategi               | Wajib  |
+| Format data OHLCV                                      | Wajib  |
+| Struktur candlestick dan timeframe                     | Wajib  |
+| Perbedaan backtest, dry-run, dan live trading          | Wajib  |
 
-Jika sebagian besar poin di atas belum jelas, sebaiknya ulangi artikel ini sebelum masuk ke setup teknis.
+Jika sebagian besar poin belum dipahami, ulangi artikel ini sebelum masuk ke setup teknis.
 
 ---
 
 ## Glossary
 
-| Istilah         | Penjelasan                                                                |
-| --------------- | ------------------------------------------------------------------------- |
-| Cryptocurrency  | aset digital yang menggunakan teknologi kriptografi dan jaringan digital  |
-| Blockchain      | sistem pencatatan data yang tersusun dalam blok dan saling terhubung      |
-| Coin            | crypto yang berjalan di blockchain miliknya sendiri                       |
-| Token           | crypto yang berjalan di atas blockchain lain                              |
-| Wallet          | alat untuk mengakses dan mengelola aset crypto                            |
-| Address         | alamat publik untuk menerima crypto                                       |
-| Private Key     | kunci rahasia untuk mengakses aset crypto                                 |
-| Seed Phrase     | kumpulan kata untuk memulihkan wallet                                     |
-| Stablecoin      | crypto yang dirancang mengikuti nilai aset tertentu, biasanya USD         |
-| Exchange        | platform untuk membeli dan menjual crypto                                 |
-| API Key         | kredensial untuk menghubungkan aplikasi atau bot ke exchange              |
-| Pair            | pasangan aset yang diperdagangkan, contoh BTC/USDT                        |
-| Bid             | harga beli yang dipasang pembeli                                          |
-| Ask             | harga jual yang dipasang penjual                                          |
-| Order Book      | daftar order beli dan jual di market                                      |
-| Spread          | selisih antara bid tertinggi dan ask terendah                             |
-| Fee             | biaya transaksi                                                           |
-| Likuiditas      | kemudahan membeli atau menjual aset tanpa menggerakkan harga terlalu jauh |
-| Slippage        | perbedaan antara harga yang diharapkan dan harga eksekusi                 |
-| Volatilitas     | tingkat perubahan harga dalam periode tertentu                            |
-| Spot Trading    | membeli dan menjual aset crypto secara langsung                           |
-| Margin Trading  | trading menggunakan dana pinjaman untuk memperbesar posisi                |
-| Futures Trading | trading kontrak derivatif berdasarkan pergerakan harga aset               |
-| Long            | posisi yang mengharapkan harga naik                                       |
-| Short           | posisi yang mengharapkan harga turun                                      |
-| Leverage        | penggunaan daya ungkit untuk memperbesar exposure posisi                  |
-| Liquidation     | penutupan paksa posisi karena margin tidak cukup                          |
-| Trading Bot     | program yang menjalankan aturan trading secara otomatis                   |
-| Freqtrade       | bot trading crypto open-source berbasis Python                            |
-| Backtesting     | pengujian strategi menggunakan data historis                              |
-| Dry-run         | simulasi bot tanpa menggunakan uang sungguhan                             |
-| Candlestick     | visual pergerakan harga dalam periode tertentu                            |
-| OHLC            | Open, High, Low, Close                                                    |
-| OHLCV           | Open, High, Low, Close, Volume                                            |
-| Timeframe       | periode waktu yang digunakan untuk membentuk candle                       |
-| Support         | area harga tempat pembeli sebelumnya menahan penurunan                    |
-| Resistance      | area harga tempat penjual sebelumnya menahan kenaikan                     |
-| Stoploss        | batas keluar untuk membatasi kerugian                                     |
-| Take Profit     | target keluar ketika posisi mencapai profit tertentu                      |
-| Drawdown        | penurunan nilai akun dari titik tertinggi                                 |
-| FOMO            | takut tertinggal peluang sehingga masuk market tanpa rencana              |
-| Overtrading     | terlalu sering trading tanpa alasan yang kuat                             |
+| Istilah         | Penjelasan                                                                 |
+| --------------- | -------------------------------------------------------------------------- |
+| Cryptocurrency  | Aset digital yang menggunakan teknologi kriptografi dan jaringan digital   |
+| Blockchain      | Sistem pencatatan data yang tersusun dalam blok dan saling terhubung       |
+| Coin            | Crypto yang berjalan di blockchain miliknya sendiri                        |
+| Token           | Crypto yang berjalan di atas blockchain lain                               |
+| Wallet          | Alat untuk mengakses dan mengelola aset crypto                             |
+| Address         | Alamat publik untuk menerima crypto                                        |
+| Private Key     | Kunci rahasia untuk mengotorisasi transaksi                                |
+| Seed Phrase     | Rangkaian kata untuk memulihkan wallet                                     |
+| Stablecoin      | Crypto yang dirancang mengikuti nilai aset acuan, umumnya USD              |
+| Exchange        | Platform untuk membeli dan menjual crypto                                  |
+| API Key         | Kredensial untuk menghubungkan aplikasi atau bot ke exchange               |
+| Pair            | Pasangan aset yang diperdagangkan, contoh BTC/USDT                         |
+| Base Currency   | Aset yang dibeli atau dijual pada sebuah pair                              |
+| Quote Currency  | Aset pembanding pada sebuah pair                                           |
+| Bid             | Order beli yang dipasang pembeli                                           |
+| Ask             | Order jual yang dipasang penjual                                           |
+| Order Book      | Daftar order beli dan jual yang menunggu eksekusi                          |
+| Spread          | Selisih antara bid tertinggi dan ask terendah                              |
+| Fee             | Biaya transaksi yang dikenakan exchange                                    |
+| Likuiditas      | Kemudahan membeli atau menjual aset tanpa menggerakkan harga signifikan    |
+| Slippage        | Selisih antara harga yang diharapkan dan harga eksekusi                    |
+| Volatilitas     | Tingkat perubahan harga dalam periode tertentu                             |
+| Spot Trading    | Pembelian dan penjualan aset crypto secara langsung                        |
+| Margin Trading  | Trading menggunakan dana pinjaman untuk memperbesar posisi                 |
+| Futures Trading | Trading kontrak derivatif berdasarkan pergerakan harga aset                |
+| Long            | Posisi yang profit jika harga naik                                         |
+| Short           | Posisi yang profit jika harga turun                                        |
+| Leverage        | Penggunaan daya ungkit untuk memperbesar eksposur posisi                   |
+| Liquidation     | Penutupan paksa posisi karena margin tidak mencukupi                       |
+| Funding Fee     | Biaya periodik antar posisi long dan short pada perpetual futures          |
+| Trading Bot     | Program yang menjalankan aturan trading secara otomatis                    |
+| Freqtrade       | Bot trading crypto open-source berbasis Python                             |
+| Strategy        | Class Python berisi aturan entry, exit, dan parameter trading di Freqtrade |
+| Backtesting     | Pengujian strategi menggunakan data historis                               |
+| Dry-run         | Simulasi bot pada market real-time tanpa order sungguhan                   |
+| Hyperopt        | Proses optimasi parameter strategi di Freqtrade                            |
+| FreqUI          | Web interface untuk monitoring Freqtrade                                   |
+| Pairlist        | Daftar pair yang diperdagangkan oleh bot                                   |
+| Candlestick     | Representasi visual pergerakan harga dalam periode tertentu                |
+| OHLC            | Open, High, Low, Close                                                     |
+| OHLCV           | Open, High, Low, Close, Volume                                             |
+| Timeframe       | Periode waktu pembentukan satu candle                                      |
+| Support         | Area harga tempat tekanan beli menahan penurunan                           |
+| Resistance      | Area harga tempat tekanan jual menahan kenaikan                            |
+| Stoploss        | Batas keluar untuk membatasi kerugian                                      |
+| Take Profit     | Target keluar ketika posisi mencapai profit tertentu                       |
+| Trailing Stop   | Stoploss yang bergerak mengikuti harga ke arah profit                      |
+| Drawdown        | Penurunan nilai akun dari titik tertinggi                                  |
+| Position Sizing | Penentuan ukuran posisi berdasarkan batas risiko                           |
+| FOMO            | Masuk market tanpa rencana karena takut tertinggal peluang                 |
+| Overtrading     | Frekuensi trading berlebihan tanpa dasar yang kuat                         |
 
 ---
 
-## Key Takeaways
+## Ringkasan
 
-* Crypto trading memiliki beberapa kemiripan dengan ekonomi dalam game, tetapi risikonya jauh lebih nyata.
-* Cryptocurrency adalah aset digital yang dapat diperdagangkan, tetapi tidak semua aset crypto memiliki kualitas dan risiko yang sama.
-* Exchange, wallet, stablecoin, pair, order book, fee, dan likuiditas adalah fondasi yang wajib dipahami sebelum trading.
-* Spot trading lebih cocok sebagai area belajar awal dibanding margin atau futures.
-* Trading bot bukan mesin profit. Bot hanya menjalankan aturan yang dibuat oleh pengguna.
-* Freqtrade adalah alat yang kuat untuk belajar, menguji, dan menjalankan strategi, tetapi tetap membutuhkan pemahaman dan risk management.
-* Candlestick chart membantu membaca pergerakan harga, tetapi tidak boleh digunakan sebagai satu-satunya dasar keputusan.
-* Backtesting dan dry-run adalah tahap wajib sebelum mempertimbangkan live trading.
-* Mindset gamer dapat membantu dalam membaca sistem, tetapi harus diarahkan ke disiplin, bukan farming, gacha, atau all-in build.
+* Market crypto memiliki kemiripan struktural dengan ekonomi dalam game, tetapi melibatkan dana sungguhan dengan transaksi yang umumnya tidak dapat dibatalkan.
+* Exchange, wallet, stablecoin, pair, order book, fee, likuiditas, dan slippage adalah fondasi yang wajib dipahami sebelum trading.
+* Spot trading adalah titik awal yang disarankan; margin dan futures memerlukan pemahaman tambahan tentang leverage dan liquidation.
+* Trading bot menjalankan aturan yang dikonfigurasi pengguna secara konsisten; kualitas hasil ditentukan oleh kualitas strategi dan risk management, bukan oleh bot itu sendiri.
+* Freqtrade menyediakan workflow lengkap untuk pengembangan strategi: penulisan strategy, backtesting, hyperopt, dry-run, dan live trading.
+* Backtest, dry-run, dan live trading adalah tiga mode yang berbeda. Validasi strategi dilakukan berurutan dari backtest, dry-run, lalu live dengan modal kecil.
+* Data OHLCV dan candlestick chart adalah input dasar strategi; pembacaannya selalu dilakukan dalam konteks trend, volume, dan struktur market.
+* Risk management — batas risiko, position sizing, dan rencana exit — adalah faktor penentu utama keberlangsungan akun.
 
 ---
 
 ## Disclaimer
 
-Artikel ini hanya untuk tujuan edukasi.
+Artikel ini ditulis untuk tujuan edukasi.
 
-Crypto trading memiliki risiko tinggi. Harga aset crypto dapat bergerak sangat cepat dan ekstrem. Bot trading tidak menjamin profit. Backtesting tidak menjamin hasil masa depan. Dry-run tidak sepenuhnya merepresentasikan kondisi live market. Artikel ini bukan nasihat keuangan, bukan rekomendasi investasi, dan bukan ajakan membeli atau menjual aset crypto tertentu. Jangan menggunakan uang kebutuhan hidup, dana darurat, uang pinjaman, atau uang operasional keluarga untuk trading.
+Crypto trading memiliki risiko tinggi. Harga aset crypto dapat bergerak cepat dan ekstrem. Bot trading tidak menjamin profit. Hasil backtesting tidak menjamin hasil di masa depan. Dry-run tidak sepenuhnya merepresentasikan kondisi live market. Artikel ini bukan nasihat keuangan, bukan rekomendasi investasi, dan bukan ajakan membeli atau menjual aset crypto tertentu.
 
-Setiap keputusan trading adalah tanggung jawab pribadi masing-masing pengguna. Lanjutkan membaca setup teknis hanya jika sudah memahami risiko dasar yang dijelaskan dalam artikel ini.
+Jangan menggunakan dana kebutuhan hidup, dana darurat, dana pinjaman, atau dana operasional keluarga untuk trading. Setiap keputusan trading adalah tanggung jawab masing-masing pengguna. Lanjutkan ke artikel setup hanya setelah memahami risiko dasar yang dijelaskan dalam artikel ini.
 
 ---
 
