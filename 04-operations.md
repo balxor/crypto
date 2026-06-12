@@ -1,160 +1,158 @@
-# Artikel 4 - Operations
+# Artikel 4 — Operations
 
-# Dari Dry-run ke Live: Mengoperasikan Freqtrade dengan Aman
+# Mengoperasikan Freqtrade: Transisi ke Live, Manajemen Risiko, dan Maintenance
 
-> Artikel ini membahas transisi dari dry-run ke live, manajemen modal, position sizing, monitoring bot, log, FreqUI, alerting, kapan harus menghentikan bot, maintenance server, update Freqtrade, backup, dan troubleshooting saat bot berjalan.
+> Artikel keempat dari seri tutorial Freqtrade. Artikel ini membahas transisi dari dry-run ke live trading, manajemen modal dan position sizing, risk limit, monitoring melalui log dan FreqUI, alerting, prosedur menghentikan bot, maintenance dan update server, backup, incident response, serta troubleshooting pada saat bot berjalan live.
 
 ---
 
 ## Daftar Isi
 
-1. [Tujuan Artikel](#tujuan-artikel)
-2. [Mindset Operations](#mindset-operations)
-3. [Dry-run](#dry-run)
-4. [Pre-live Checklist](#pre-live-checklist)
-5. [Transisi dari Dry-run ke Live](#transisi-dari-dry-run-ke-live)
-6. [Manajemen Modal](#manajemen-modal)
-7. [Position Sizing](#position-sizing)
-8. [Risk Limit Harian dan Mingguan](#risk-limit-harian-dan-mingguan)
-9. [Monitoring Bot](#monitoring-bot)
-10. [Membaca Log](#membaca-log)
-11. [Monitoring Melalui FreqUI](#monitoring-melalui-frequi)
-12. [Alerting](#alerting)
-13. [Kapan Harus Menghentikan Bot](#kapan-harus-menghentikan-bot)
-14. [Kill Switch Plan](#kill-switch-plan)
-15. [Maintenance Server](#maintenance-server)
-16. [Update OS](#update-os)
-17. [Update Freqtrade](#update-freqtrade)
-18. [Backup Konfigurasi dan Strategy](#backup-konfigurasi-dan-strategy)
-19. [Incident Response Ringan](#incident-response-ringan)
-20. [Troubleshooting Umum Saat Live](#troubleshooting-umum-saat-live)
-21. [Routine Review](#routine-review)
-22. [Checklist Operasional](#checklist-operasional)
-23. [Glossary](#glossary)
-24. [Key Takeaways](#key-takeaways)
-25. [Disclaimer](#disclaimer)
+1. [Pendahuluan](#pendahuluan)
+2. [Peran Operations](#peran-operations)
+3. [Dry-run dan Perbedaannya dengan Live](#dry-run-dan-perbedaannya-dengan-live)
+4. [Transisi ke Live](#transisi-ke-live)
+   * [Pre-live Checklist](#pre-live-checklist)
+   * [Urutan Transisi](#urutan-transisi)
+   * [Review Parameter Config](#review-parameter-config)
+5. [Manajemen Risiko](#manajemen-risiko)
+   * [Manajemen Modal](#manajemen-modal)
+   * [Position Sizing](#position-sizing)
+   * [Risk Limit Harian dan Mingguan](#risk-limit-harian-dan-mingguan)
+6. [Monitoring](#monitoring)
+   * [Komponen yang Dipantau](#komponen-yang-dipantau)
+   * [Membaca Log](#membaca-log)
+   * [Monitoring Melalui FreqUI](#monitoring-melalui-frequi)
+   * [Alerting](#alerting)
+7. [Menghentikan Bot](#menghentikan-bot)
+   * [Kapan Bot Dihentikan](#kapan-bot-dihentikan)
+   * [Kill Switch Plan](#kill-switch-plan)
+8. [Maintenance](#maintenance)
+   * [Maintenance Server](#maintenance-server)
+   * [Update OS](#update-os)
+   * [Update Freqtrade](#update-freqtrade)
+   * [Backup Konfigurasi dan Strategy](#backup-konfigurasi-dan-strategy)
+9. [Incident Response](#incident-response)
+10. [Troubleshooting Saat Live](#troubleshooting-saat-live)
+11. [Routine Review](#routine-review)
+12. [Checklist Operasional](#checklist-operasional)
+13. [Glossary](#glossary)
+14. [Ringkasan](#ringkasan)
+15. [Disclaimer](#disclaimer)
 
 ---
 
-## Tujuan Artikel
+## Pendahuluan
 
-Artikel ini adalah lanjutan dari Artikel 3 - Strategy. Jika artikel sebelumnya membahas cara menulis dan menguji strategy, artikel ini membahas cara mengoperasikan bot ketika sudah mendekati atau masuk fase live. Pada tahap ini, masalahnya bukan lagi hanya:
+Artikel ini adalah lanjutan dari Artikel 3 — Strategy. Artikel sebelumnya membahas penulisan dan pengujian strategy; artikel ini membahas pengoperasian bot pada fase mendekati live dan live.
 
-```text
-Apakah strategy bisa profit di backtest?
-```
-
-Pertanyaan yang lebih penting adalah:
+Pada tahap ini, pertanyaan yang relevan bukan lagi sebatas apakah strategy profitable pada backtest, melainkan:
 
 ```text
-Apakah bot bisa dijalankan dengan risiko yang terkontrol?
+Apakah bot dapat dijalankan dengan risiko terkontrol?
 Apakah server stabil?
 Apakah API key aman?
-Apakah log bisa dipantau?
-Apakah ada rencana berhenti?
+Apakah log dapat dipantau?
+Apakah ada prosedur menghentikan bot?
 Apakah modal dikelola dengan benar?
-Apakah pengguna tahu apa yang harus dilakukan ketika terjadi error?
+Apakah pengguna memiliki prosedur penanganan error?
 ```
 
-Dalam konteks gamer, ini adalah fase setelah build selesai diuji di training ground. Live trading bukan training dummy. Jika masuk tanpa persiapan, kerusakan tidak hanya terjadi pada karakter atau resource digital. Kerusakan terjadi pada uang sungguhan. Tujuan artikel ini adalah membantu pembaca memahami operasi bot secara disiplin:
+Live trading menggunakan dana sungguhan. Kesalahan operasional pada fase ini berdampak langsung pada modal, sehingga prosedur operasional perlu disiapkan sebelum live.
 
-* Mengelola Transisi dari Dry-run ke Live.
-* Mengatur Modal dan Position Sizing.
-* Memantau Bot Melalui Log, FreqUI, dan Alert.
-* Menentukan Kapan Bot Harus Dihentikan.
-* Melakukan Maintenance Server.
-* Melakukan Backup Config dan Strategy.
-* Menangani Error Umum Saat Live.
-* Membuat Rutinitas Review.
+### Prasyarat
 
----
+Pembaca diasumsikan sudah menyelesaikan Artikel 1–3 dan memiliki strategy yang telah diuji melalui backtest dan dry-run.
 
-## Mindset Operations
+### Tujuan
 
-Operations adalah disiplin menjalankan sistem. Dalam trading bot, operations bukan bagian yang sifatnya hanya tambahan. Operations adalah bagian inti. Strategy yang baik tetap bisa bermasalah jika operations buruk. Contoh:
+Setelah menyelesaikan artikel ini, pembaca diharapkan dapat:
 
-| Strategy | Operations | Risiko                                                     |
-| -------- | ---------- | ---------------------------------------------------------- |
-| Bagus    | Buruk      | Bot bisa gagal karena config, server, API, atau monitoring |
-| Buruk    | Bagus      | Bot tetap bisa rugi karena logic strategy lemah            |
-| Bagus    | Bagus      | Risiko lebih terkontrol, tetapi profit tetap tidak dijamin |
-| Buruk    | Buruk      | Risiko paling tinggi                                       |
-
-Operations mencakup:
-
-* Cara Bot Dijalankan.
-* Cara Bot Dihentikan.
-* Cara Modal Dibatasi.
-* Cara Error Dipantau.
-* Cara Update Dilakukan.
-* Cara Backup Disimpan.
-* Cara Incident Ditangani.
-* Cara Strategy Dievaluasi.
-
-Gamer biasanya memahami konsep ini dengan baik. Di game, build kuat tidak cukup. Party tetap butuh role yang jelas, resource management, cooldown timing, mekanik boss, dan keputusan mundur. Trading bot juga sama. Strategy adalah build. Operations adalah cara build itu dijalankan dalam kondisi nyata.
+* Mengelola transisi dari dry-run ke live secara bertahap
+* Mengatur manajemen modal dan position sizing
+* Menetapkan risk limit harian dan mingguan
+* Memantau bot melalui log, FreqUI, dan alert
+* Menjalankan prosedur penghentian bot (kill switch)
+* Melakukan maintenance, update, dan backup server
+* Menangani insiden operasional yang umum terjadi
 
 ---
 
-## Dry-run
+## Peran Operations
 
-Dry-run adalah simulasi. Dry-run membantu melihat perilaku bot tanpa mengirim order sungguhan ke exchange. Dry-run berguna untuk:
+Operations adalah disiplin menjalankan dan merawat sistem. Pada trading bot, operations adalah komponen inti, bukan pelengkap. Kualitas operations menentukan apakah strategy dapat dijalankan dengan risiko terkendali.
 
-* Melihat Apakah Bot Berjalan.
-* Melihat Apakah Strategy Memberi Sinyal.
-* Melihat Apakah Config Benar.
-* Melihat Apakah Pairlist Berjalan.
-* Melihat Apakah FreqUI Bisa Dipakai.
-* Melihat Apakah Log Bersih dari Error.
-* Melatih Cara Start, Stop, dan Restart Bot.
+| Strategy | Operations | Hasil                                                       |
+| -------- | ---------- | ----------------------------------------------------------- |
+| Baik     | Buruk      | Bot dapat gagal karena config, server, API, atau monitoring |
+| Buruk    | Baik       | Bot tetap merugi karena logika strategy lemah               |
+| Baik     | Baik       | Risiko lebih terkontrol; profit tetap tidak dijamin         |
+| Buruk    | Buruk      | Risiko tertinggi                                            |
 
-Namun, dry-run tidak sama dengan live. Perbedaan penting:
-
-| Aspek             | Dry-run                | Live                    |
-| ----------------- | ---------------------- | ----------------------- |
-| Order             | Simulasi               | Order sungguhan         |
-| Uang              | Simulasi               | Uang sungguhan          |
-| Slippage          | Tidak selalu realistis | Nyata                   |
-| Eksekusi exchange | Tidak sepenuhnya nyata | Nyata                   |
-| Psikologi         | Lebih tenang           | Lebih berat             |
-| Error API         | Bisa muncul            | Bisa berdampak langsung |
-| Risiko finansial  | Tidak langsung         | Langsung                |
-
-Dry-run adalah training ground. Live trading adalah arena sebenarnya. Jangan masuk live hanya karena dry-run terlihat hijau selama beberapa jam. Dry-run perlu berjalan cukup lama agar pembaca memahami pola bot dalam kondisi market yang berbeda.
+Cakupan operations meliputi prosedur menjalankan dan menghentikan bot, pembatasan modal, pemantauan error, pelaksanaan update, penyimpanan backup, penanganan insiden, dan evaluasi strategy secara berkala. Seluruh aspek ini dibahas pada bagian-bagian berikut.
 
 ---
 
-## Pre-live Checklist
+## Dry-run dan Perbedaannya dengan Live
 
-Sebelum mengubah `dry_run` menjadi `false`, lakukan checklist berikut.
+Dry-run adalah mode simulasi yang menjalankan strategy pada kondisi market real-time tanpa mengirim order sungguhan ke exchange. Dry-run digunakan untuk memverifikasi:
+
+* Bot berjalan tanpa error
+* Strategy menghasilkan sinyal
+* Konfigurasi valid
+* Pairlist berfungsi
+* FreqUI dapat diakses
+* Log bersih dari error kritis
+* Prosedur start, stop, dan restart bot dikuasai
+
+Perbedaan dry-run dan live:
+
+| Aspek             | Dry-run                  | Live                      |
+| ----------------- | ------------------------ | ------------------------- |
+| Order             | Simulasi                 | Order sungguhan           |
+| Dana              | Simulasi                 | Dana sungguhan            |
+| Slippage          | Tidak selalu akurat      | Nyata                     |
+| Eksekusi exchange | Tidak sepenuhnya nyata   | Nyata                     |
+| Tekanan psikologis | Rendah                  | Tinggi                    |
+| Error API         | Dapat muncul             | Berdampak langsung        |
+| Risiko finansial  | Tidak ada                | Langsung                  |
+
+Dry-run perlu dijalankan dalam periode yang cukup panjang agar mencakup beberapa kondisi market sebelum live. Dry-run yang terlihat positif selama beberapa jam tidak cukup sebagai dasar untuk live.
+
+---
+
+## Transisi ke Live
+
+### Pre-live Checklist
+
+Selesaikan seluruh item wajib berikut sebelum mengubah `dry_run` menjadi `false`:
 
 | Checklist                                       | Status           |
 | ----------------------------------------------- | ---------------- |
-| Strategy Sudah Dibaca dan Dipahami              | Wajib            |
-| Strategy Sudah Dibacktest                       | Wajib            |
-| Strategy Sudah Diuji di Beberapa Periode Market | Wajib            |
-| Strategy Sudah Dijalankan dalam Dry-run         | Wajib            |
-| Dry-run Tidak Menghasilkan Error Kritis         | Wajib            |
-| API Key Tidak Memiliki Permission Withdrawal    | Wajib            |
-| IP Whitelist Aktif Jika Exchange Mendukung      | Direkomendasikan |
-| Config Live Tidak Disimpan di Repository Publik | Wajib            |
-| Stake Amount Sudah Sesuai Modal Kecil           | Wajib            |
-| Max Open Trades Sudah Dibatasi                  | Wajib            |
-| Stoploss Sudah Aktif                            | Wajib            |
-| Pairlist Sudah Dipilih Secara Sadar             | Wajib            |
-| FreqUI Bisa Diakses Aman                        | Wajib            |
-| Password FreqUI Kuat                            | Wajib            |
-| VPS Sudah Diamankan                             | Wajib            |
-| Backup Config dan Strategy Sudah Ada            | Wajib            |
-| Cara Stop Bot Sudah Dipahami                    | Wajib            |
-| Kill Switch Plan Sudah Ditulis                  | Wajib            |
+| Strategy sudah dibaca dan dipahami              | Wajib            |
+| Strategy sudah dibacktest                       | Wajib            |
+| Strategy sudah diuji pada beberapa periode market | Wajib          |
+| Strategy sudah dijalankan dalam dry-run         | Wajib            |
+| Dry-run tidak menghasilkan error kritis         | Wajib            |
+| API key tidak memiliki permission withdrawal    | Wajib            |
+| Config live tidak disimpan di repository publik | Wajib            |
+| Stake amount sesuai modal kecil                 | Wajib            |
+| Max open trades dibatasi                        | Wajib            |
+| Stoploss aktif                                  | Wajib            |
+| Pairlist dipilih secara sadar                   | Wajib            |
+| FreqUI dapat diakses secara aman                | Wajib            |
+| Password FreqUI kuat                            | Wajib            |
+| VPS sudah diamankan                             | Wajib            |
+| Backup config dan strategy tersedia             | Wajib            |
+| Prosedur menghentikan bot dipahami              | Wajib            |
+| Kill switch plan sudah ditulis                  | Wajib            |
+| IP whitelist aktif (jika exchange mendukung)    | Direkomendasikan |
 
-Jika ada item wajib yang belum terpenuhi, jangan lanjut live. Live trading tidak boleh menjadi tempat pertama untuk menemukan kesalahan dasar.
+Live trading tidak digunakan sebagai tempat menemukan kesalahan dasar. Selesaikan seluruh item wajib terlebih dahulu.
 
----
+### Urutan Transisi
 
-## Transisi dari Dry-run ke Live
-
-Transisi ke live harus dilakukan perlahan. Jangan mengubah banyak hal sekaligus. Urutan yang lebih aman:
+Transisi ke live dilakukan bertahap, satu perubahan pada satu waktu:
 
 ```text
 Backtest
@@ -169,75 +167,61 @@ Monitoring ketat
     ↓
 Evaluasi
     ↓
-Naikkan modal hanya jika benar-benar paham risikonya
+Penambahan modal hanya setelah risiko dipahami
 ```
 
-Perubahan utama dari dry-run ke live biasanya ada pada config. Contoh parameter dry-run:
+Tujuan live pertama adalah memverifikasi sistem bekerja pada kondisi nyata dengan risiko kecil, bukan menghasilkan profit besar. Modal kecil menjadikan kesalahan awal sebagai biaya belajar yang terkendali; modal besar membuat kesalahan kecil menjadi mahal.
 
-```json
-"dry_run": true,
-"dry_run_wallet": 1000
-```
+### Review Parameter Config
 
-Untuk live:
+Perubahan dari dry-run ke live secara teknis hanya mengubah satu parameter:
 
 ```json
 "dry_run": false
 ```
 
-Namun, perubahan ini tidak boleh dilakukan sendirian tanpa review parameter lain. Sebelum live, periksa kembali:
+Namun parameter ini tidak diubah tanpa meninjau ulang parameter terkait:
 
-| Parameter         | Hal yang Diperiksa                 |
-| ----------------- | ---------------------------------- |
-| `stake_amount`    | Jangan terlalu besar               |
-| `max_open_trades` | Jangan terlalu banyak              |
-| `pair_whitelist`  | Gunakan pair likuid                |
-| `stoploss`        | Harus aktif dan masuk akal         |
-| `trading_mode`    | Gunakan spot untuk pemula          |
-| `api_server`      | Jangan expose langsung ke internet |
-| `exchange.key`    | Pastikan API key benar             |
-| `exchange.secret` | Pastikan tidak bocor               |
-| `initial_state`   | Lebih aman mulai dari `stopped`    |
-
-Contoh prinsip awal:
-
-```text
-Live pertama bukan untuk mencari profit besar.
-Live pertama untuk memastikan sistem bekerja dengan risiko kecil.
-```
-
-Jika menggunakan modal kecil, kerugian awal dapat menjadi biaya belajar yang terkontrol. Jika langsung menggunakan modal besar, kesalahan kecil bisa menjadi mahal.
+| Parameter         | Hal yang diperiksa                          |
+| ----------------- | ------------------------------------------- |
+| `stake_amount`    | Sesuai modal kecil, tidak terlalu besar     |
+| `max_open_trades` | Dibatasi, tidak terlalu banyak              |
+| `pair_whitelist`  | Berisi pair likuid                          |
+| `stoploss`        | Aktif dan bernilai wajar                    |
+| `trading_mode`    | `spot` untuk pemula                         |
+| `api_server`      | Tidak diekspos langsung ke internet         |
+| `exchange.key`    | API key benar                               |
+| `exchange.secret` | Secret tidak bocor                          |
+| `initial_state`   | `stopped` agar bot tidak langsung trading   |
 
 ---
 
-## Manajemen Modal
+## Manajemen Risiko
 
-Manajemen modal adalah dasar operations. Tanpa manajemen modal, strategy yang baik tetap bisa menghancurkan akun. Prinsip utama:
+### Manajemen Modal
 
-* Gunakan Modal yang Siap Rugi.
-* Jangan Gunakan Dana Darurat.
-* Jangan Gunakan Uang Pinjaman.
-* Jangan Gunakan Uang Operasional Keluarga.
-* Jangan Menggunakan Seluruh Saldo Exchange untuk Bot.
-* Pisahkan Modal Trading Bot dari Modal Lain.
-* Mulai dari Ukuran Kecil.
-* Naikkan Modal Hanya Setelah Evaluasi.
+Manajemen modal adalah dasar operations. Tanpa manajemen modal, strategy yang baik tetap dapat menghabiskan akun. Prinsip yang digunakan:
 
-Contoh pembagian modal:
+* Gunakan hanya modal yang siap hilang
+* Jangan gunakan dana darurat, dana pinjaman, atau dana operasional keluarga
+* Jangan gunakan seluruh saldo exchange untuk bot
+* Pisahkan modal bot dari modal lain
+* Mulai dari ukuran kecil
+* Tambah modal hanya setelah evaluasi
 
-| Total Dana Crypto | Modal Bot Awal | Catatan                            |
+Contoh alokasi modal untuk live pertama:
+
+| Total dana crypto | Modal bot awal | Catatan                            |
 | ----------------: | -------------: | ---------------------------------- |
-|        1.000 USDT |       100 USDT | 10% digunakan untuk testing live   |
-|        5.000 USDT |       250 USDT | Mulai kecil walau dana lebih besar |
-|       10.000 USDT |       500 USDT | Tetap perlu evaluasi bertahap      |
+|        1.000 USDT |       100 USDT | 10% untuk testing live             |
+|        5.000 USDT |       250 USDT | Tetap kecil meski dana lebih besar |
+|       10.000 USDT |       500 USDT | Evaluasi bertahap                  |
 
-Tabel di atas hanya contoh edukasi, bukan rekomendasi finansial. Tujuannya menunjukkan prinsip bahwa live pertama harus kecil. Jangan membuat live pertama menjadi all-in test.
+Tabel di atas adalah ilustrasi edukasi, bukan rekomendasi finansial. Prinsipnya: live pertama menggunakan modal kecil, bukan seluruh modal sekaligus.
 
----
+### Position Sizing
 
-## Position Sizing
-
-Position sizing adalah cara menentukan ukuran setiap trade. Dalam Freqtrade, ukuran posisi dapat dipengaruhi oleh beberapa parameter, antara lain:
+Position sizing menentukan ukuran setiap trade. Pada Freqtrade, ukuran posisi dipengaruhi beberapa parameter:
 
 | Parameter                | Fungsi                           |
 | ------------------------ | -------------------------------- |
@@ -245,9 +229,9 @@ Position sizing adalah cara menentukan ukuran setiap trade. Dalam Freqtrade, uku
 | `max_open_trades`        | Jumlah posisi aktif maksimal     |
 | `tradable_balance_ratio` | Porsi saldo yang boleh digunakan |
 | Pairlist                 | Aset yang boleh diperdagangkan   |
-| Stoploss                 | Batas kerugian per trade         |
+| `stoploss`               | Batas kerugian per trade         |
 
-Contoh sederhana:
+Contoh konfigurasi:
 
 ```json
 "stake_currency": "USDT",
@@ -255,420 +239,287 @@ Contoh sederhana:
 "max_open_trades": 3
 ```
 
-Dengan konfigurasi ini, exposure maksimal kasar adalah:
+Eksposur maksimal kasar dari konfigurasi tersebut:
 
 ```text
-20 USDT x 3 posisi = 60 USDT
+20 USDT × 3 posisi = 60 USDT
 ```
 
-Jika stoploss strategy adalah minus 5%, potensi loss per posisi sekitar:
+Dengan stoploss strategy −5%, potensi loss per posisi:
 
 ```text
-20 USDT x 5% = 1 USDT
+20 USDT × 5% = 1 USDT
 ```
 
-Jika tiga posisi terkena stoploss:
+Jika ketiga posisi terkena stoploss bersamaan:
 
 ```text
-1 USDT x 3 = 3 USDT
+1 USDT × 3 = 3 USDT
 ```
 
-Perhitungan ini masih sederhana. Dalam kondisi live, fee, slippage, spread, dan eksekusi dapat membuat hasil berbeda. Namun, pendekatan ini membantu memahami risiko sebelum bot berjalan. Prinsip position sizing:
+Perhitungan ini adalah estimasi dasar. Pada kondisi live, fee, slippage, spread, dan eksekusi order menghasilkan angka yang berbeda. Estimasi ini tetap berguna untuk memahami eksposur sebelum bot dijalankan.
 
-* Jangan Mengukur Risiko dari Profit Impian.
-* Ukur Risiko dari Skenario Salah.
-* Hitung Exposure Maksimal.
-* Hitung Risiko Jika Semua Posisi Kena Stoploss.
-* Jangan Biarkan Satu Trade Menghancurkan Akun.
-* Jangan Biarkan Satu Pair Mendominasi Risiko.
+Prinsip position sizing:
 
-Dalam game, position sizing mirip pengaturan resource sebelum raid. Jangan membawa semua potion untuk satu percobaan jika belum tahu mekanik boss.
+* Hitung risiko dari skenario salah, bukan dari target profit
+* Hitung eksposur maksimal
+* Hitung total loss jika seluruh posisi terkena stoploss
+* Pastikan satu trade tidak dapat menghabiskan akun
+* Pastikan satu pair tidak mendominasi eksposur
+
+### Risk Limit Harian dan Mingguan
+
+Selain stoploss per trade, tetapkan batas risiko harian dan mingguan secara tertulis sebelum live. Contoh aturan:
+
+| Kondisi                                     | Aksi                            |
+| ------------------------------------------- | ------------------------------- |
+| Loss harian mencapai 2% dari modal bot      | Hentikan bot dan review         |
+| Loss mingguan mencapai 5% dari modal bot    | Hentikan bot minimal beberapa hari |
+| Tiga stoploss beruntun                      | Hentikan bot dan periksa market |
+| Exchange error berulang                     | Hentikan bot                    |
+| VPS tidak stabil                            | Hentikan bot                    |
+| Perilaku strategy menyimpang dari backtest  | Hentikan bot                    |
+
+Angka di atas adalah ilustrasi; setiap pengguna menetapkan batas sesuai profil risiko masing-masing. Batas yang ditulis sebelum live mencegah keputusan diambil berdasarkan emosi: saat profit muncul dorongan untuk memperbesar modal, saat loss muncul dorongan untuk membalas. Keduanya berisiko tanpa aturan tertulis.
 
 ---
 
-## Risk Limit Harian dan Mingguan
+## Monitoring
 
-Selain stoploss per trade, pembaca perlu memiliki batas risiko harian dan mingguan. Contoh aturan manual:
+### Komponen yang Dipantau
 
-| Kondisi                                    | Aksi                           |
-| ------------------------------------------ | ------------------------------ |
-| Loss Harian Mencapai 2% dari Modal Bot     | Stop Bot dan Review            |
-| Loss Mingguan Mencapai 5% dari Modal Bot   | Stop Bot Minimal Beberapa Hari |
-| Tiga Stoploss Beruntun                     | Stop Bot dan Cek Market        |
-| Exchange Error Berulang                    | Stop Bot                       |
-| VPS Tidak Stabil                           | Stop Bot                       |
-| Strategy Berperilaku Tidak Sesuai Backtest | Stop Bot                       |
+Monitoring adalah pemantauan kondisi sistem secara rutin untuk memastikan bot berjalan normal. Komponen yang dipantau mencakup sisi trading (status bot, trade aktif, trade history, profit/loss, drawdown, exit reason) dan sisi infrastruktur (error log, API error, koneksi exchange, saldo exchange, CPU/RAM/disk VPS, status container, status reverse proxy, dan masa berlaku SSL).
 
-Angka di atas hanya contoh edukasi. Setiap pengguna harus menentukan batas sesuai profil risiko masing-masing. Yang penting adalah memiliki batas tertulis sebelum live. Tanpa batas tertulis, keputusan sering dikendalikan emosi. Ketika bot profit, pengguna ingin memperbesar modal. Ketika bot loss, pengguna ingin membalas. Keduanya berbahaya jika tidak ada aturan.
+Alat monitoring:
 
----
+| Alat                | Fungsi                          |
+| ------------------- | ------------------------------- |
+| FreqUI              | Status bot dan trade            |
+| Log Docker          | Detail proses bot               |
+| Telegram            | Notifikasi                      |
+| SSH                 | Pemeriksaan server              |
+| `htop`              | Resource server                 |
+| `df`                | Penggunaan storage              |
+| `systemctl`         | Status service (mis. Apache)    |
+| `docker compose ps` | Status container                |
 
-## Monitoring Bot
-
-Monitoring adalah proses memantau kondisi bot secara rutin. Monitoring bukan berarti melihat chart setiap menit. Monitoring berarti memahami apakah sistem berjalan normal. Hal yang perlu dipantau:
-
-* Status Bot.
-* Trade Aktif.
-* Trade History.
-* Profit dan Loss.
-* Drawdown.
-* Exit Reason.
-* Error Log.
-* API Error.
-* Koneksi Exchange.
-* Saldo Exchange.
-* CPU dan RAM VPS.
-* Disk Space.
-* Status Docker Container.
-* Status Apache atau Reverse Proxy.
-* SSL Certificate.
-* Update OS dan Freqtrade.
-
-Monitoring dapat dilakukan melalui:
-
-| Alat              | Fungsi                          |
-| ----------------- | ------------------------------- |
-| FreqUI            | Melihat status bot dan trade    |
-| Log Docker        | Melihat detail proses bot       |
-| Telegram          | Menerima notifikasi             |
-| SSH               | Memeriksa server                |
-| htop              | Memantau resource server        |
-| df                | Memantau storage                |
-| systemctl         | Memantau service seperti Apache |
-| docker compose ps | Memantau container              |
-
-Command dasar:
+Command pemeriksaan dasar:
 
 ```bash
+# Status container
 docker compose ps
-```
 
-```bash
+# Log real-time
 docker compose logs -f
-```
 
-```bash
+# Resource server
 htop
-```
-
-```bash
 df -h
-```
-
-```bash
 free -h
 ```
 
----
+### Membaca Log
 
-## Membaca Log
-
-Log adalah combat log untuk bot. Jika terjadi masalah, log biasanya menjadi tempat pertama untuk mencari petunjuk. Command melihat log:
+Log adalah sumber informasi pertama saat terjadi masalah.
 
 ```bash
 cd ~/freqtrade
+
+# Log real-time
 docker compose logs -f
-```
 
-Melihat log terakhir saja:
-
-```bash
+# 200 baris terakhir
 docker compose logs --tail=200
-```
 
-Melihat log dan mencari error:
-
-```bash
+# Filter error
 docker compose logs | grep -i error
-```
 
-Melihat warning:
-
-```bash
+# Filter warning
 docker compose logs | grep -i warning
 ```
 
-Hal yang perlu diperhatikan dalam log:
+Jenis log yang perlu diperhatikan:
 
-| Log                | Arti Umum                              |
+| Log                | Arti umum                              |
 | ------------------ | -------------------------------------- |
-| Exchange Error     | Ada masalah komunikasi dengan exchange |
-| Network Error      | Ada masalah koneksi                    |
+| Exchange Error     | Masalah komunikasi dengan exchange     |
+| Network Error      | Masalah koneksi                        |
 | Insufficient Funds | Saldo tidak cukup                      |
 | Pair Not Available | Pair tidak tersedia di exchange        |
 | Invalid API Key    | API key salah atau permission kurang   |
-| Rate Limit         | Terlalu banyak request ke exchange     |
+| Rate Limit         | Request ke exchange melebihi batas     |
 | JSON Error         | Config tidak valid                     |
-| Strategy Error     | Ada error di file strategy             |
-| Database Error     | Ada masalah database lokal             |
+| Strategy Error     | Error pada file strategy               |
+| Database Error     | Masalah pada database lokal            |
 
-Jangan mengabaikan log yang berulang. Satu warning kecil mungkin tidak kritis. Tetapi warning yang terus muncul bisa menjadi tanda masalah operasional.
+Warning yang muncul berulang perlu ditindaklanjuti. Satu warning tunggal mungkin tidak kritis, tetapi warning yang terus berulang mengindikasikan masalah operasional.
 
----
+### Monitoring Melalui FreqUI
 
-## Monitoring Melalui FreqUI
+FreqUI menampilkan status bot, open trades, closed trades, profit/loss, pair aktif, chart, durasi trade, detail entry/exit, kontrol bot, dan sebagian informasi strategy.
 
-FreqUI membantu pengguna melihat kondisi bot melalui web interface. Hal yang bisa dipantau dari FreqUI:
+Ketentuan keamanan FreqUI:
 
-* Status Bot.
-* Open Trades.
-* Closed Trades.
-* Profit dan Loss.
-* Pair yang Aktif.
-* Chart.
-* Trade Duration.
-* Entry dan Exit.
-* Control Bot.
-* Beberapa Informasi Strategy.
+* Gunakan password yang kuat dan bukan kredensial default
+* Akses melalui HTTPS
+* Jangan ekspos API server langsung ke internet; gunakan reverse proxy
+* Batasi akses jika memungkinkan
+* Jangan membagikan screenshot yang memuat informasi sensitif
 
-FreqUI memudahkan monitoring, tetapi tetap perlu diamankan. Prinsip keamanan FreqUI:
-
-* Gunakan Password Kuat.
-* Gunakan HTTPS.
-* Jangan Expose API Server Langsung ke Internet.
-* Gunakan Reverse Proxy.
-* Batasi Akses Jika Memungkinkan.
-* Jangan Membagikan Screenshot yang Berisi Informasi Sensitif.
-* Jangan Gunakan Username dan Password Default.
-
-Jika FreqUI tidak bisa diakses, cek urutan berikut:
+Jika FreqUI tidak dapat diakses, telusuri rantai komponen berikut secara berurutan:
 
 ```text
-Browser
-    ↓
-DNS
-    ↓
-HTTPS / SSL
-    ↓
-Apache Reverse Proxy
-    ↓
-Freqtrade API
-    ↓
-Docker Container
+Browser → DNS → HTTPS/SSL → Apache Reverse Proxy → Freqtrade API → Docker Container
 ```
 
-Command cek Freqtrade API lokal:
+Periksa Freqtrade API lokal:
 
 ```bash
 curl http://127.0.0.1:8080
 ```
 
-Jika command ini gagal dari server, masalah ada di Freqtrade API atau container. Jika command ini berhasil tetapi domain gagal, masalah kemungkinan ada di DNS, Apache, firewall, atau SSL.
+Interpretasi: jika command gagal dari dalam server, masalah berada di Freqtrade API atau container. Jika command berhasil tetapi akses domain gagal, masalah berada di DNS, Apache, firewall, atau SSL.
+
+### Alerting
+
+Alerting memberitahukan kondisi bot tanpa perlu membuka dashboard secara terus-menerus. Freqtrade dapat dimonitor dan dikontrol melalui FreqUI atau Telegram. Notifikasi yang dapat dikirim: bot start/stop, entry order, exit order, profit/loss, error tertentu, status harian, dan trade summary.
+
+Ketentuan penggunaan alert:
+
+* Aktifkan hanya alert yang relevan
+* Pastikan alert masuk ke akun yang aman
+* Jangan memasukkan bot ke grup besar
+* Jangan memberikan akses command Telegram ke pihak yang tidak dipercaya
+* Jangan membagikan atau meng-commit token Telegram ke repository
+
+Volume alert perlu seimbang: alert yang terlalu banyak cenderung diabaikan, sedangkan alert yang terlalu sedikit membuat masalah terlambat diketahui.
 
 ---
 
-## Alerting
+## Menghentikan Bot
 
-Alerting membantu pengguna mengetahui kondisi bot tanpa harus terus membuka dashboard. Freqtrade dapat dikontrol dan dimonitor melalui WebUI atau Telegram. Jika menggunakan Telegram, pastikan aksesnya aman. Hal yang bisa dikirim melalui alert:
+### Kapan Bot Dihentikan
 
-* Bot Start.
-* Bot Stop.
-* Entry Order.
-* Exit Order.
-* Profit dan Loss.
-* Error Tertentu.
-* Status Harian.
-* Trade Summary.
+Prosedur menghentikan bot sama pentingnya dengan menjalankannya. Bot dihentikan pada kondisi berikut:
 
-Prinsip penggunaan alert:
+* Loss harian atau mingguan melewati batas
+* Volatilitas market ekstrem
+* Exchange mengalami gangguan
+* API error berulang
+* VPS tidak stabil
+* Perilaku strategy menyimpang dari ekspektasi
+* Stoploss terlalu sering terpicu
+* Pair menjadi tidak likuid
+* Ada berita besar yang membuat kondisi market tidak normal
+* Config baru belum diuji
+* Update bot belum diverifikasi
+* Pengguna tidak dapat melakukan monitoring
 
-* Aktifkan Alert Penting.
-* Jangan Terlalu Banyak Alert yang Tidak Berguna.
-* Pastikan Alert Masuk ke Akun yang Aman.
-* Jangan Masukkan Bot ke Grup Besar.
-* Jangan Berikan Akses Command ke Orang yang Tidak Dipercaya.
-* Jangan Bagikan Token Telegram.
-* Jangan Commit Token Telegram ke GitHub.
+Bot tidak harus selalu aktif. Menghentikan bot pada kondisi yang tidak jelas adalah keputusan operasional yang valid.
 
-Alert yang terlalu ramai akan diabaikan. Alert yang terlalu sedikit membuat masalah terlambat diketahui. Cari keseimbangan/balancing.
+### Kill Switch Plan
 
----
+Kill switch plan adalah prosedur menghentikan bot dengan cepat, yang harus dikuasai sebelum live.
 
-## Kapan Harus Menghentikan Bot
-
-Mengetahui kapan harus menghentikan bot sama pentingnya dengan mengetahui kapan menjalankannya. Bot sebaiknya dihentikan jika:
-
-* Loss Harian Melewati Batas.
-* Loss Mingguan Melewati Batas.
-* Market Mengalami Volatilitas Ekstrem.
-* Exchange Mengalami Gangguan.
-* API Error Berulang.
-* VPS Tidak Stabil.
-* Strategy Berperilaku Tidak Sesuai Ekspektasi.
-* Stoploss Terlalu Sering Terpicu.
-* Pair Tiba-Tiba Tidak Likuid.
-* Ada Berita Besar yang Membuat Market Tidak Normal.
-* Config Baru Belum Diuji.
-* Update Bot Belum Diverifikasi.
-* Pengguna Tidak Bisa Melakukan Monitoring.
-
-Bot tidak harus selalu aktif. Tidak trading juga merupakan keputusan. Dalam game, tidak masuk raid ketika koneksi lag adalah keputusan yang sehat. Dalam trading, tidak menjalankan bot ketika kondisi tidak jelas juga keputusan yang sehat.
-
----
-
-## Kill Switch Plan
-
-Kill switch plan adalah rencana menghentikan bot dengan cepat. Setiap pengguna harus tahu cara mematikan bot sebelum bot live. Command stop container:
+Menghentikan container:
 
 ```bash
 cd ~/freqtrade
 docker compose down
 ```
 
-Command pause atau stop melalui FreqUI juga dapat digunakan jika tersedia dan bot masih responsif. Namun, jika FreqUI tidak responsif, gunakan SSH dan Docker. Checklist kill switch:
+Bot juga dapat dihentikan melalui FreqUI jika masih responsif. Jika FreqUI tidak responsif, gunakan SSH dan Docker.
 
-| Situasi                 | Aksi                                  |
-| ----------------------- | ------------------------------------- |
-| Bot Error Berulang      | Stop Container                        |
-| Exchange API Bermasalah | Stop Bot                              |
-| Strategy Salah Entry    | Stop Bot dan Review                   |
-| VPS Resource Penuh      | Stop Bot dan Cek Server               |
-| FreqUI Tidak Responsif  | Masuk SSH dan Cek Docker              |
-| Config Salah            | Stop Bot, Backup, Perbaiki Config     |
-| Market Ekstrem          | Stop Bot Jika Risiko Tidak Terkontrol |
+| Situasi                 | Aksi                                    |
+| ----------------------- | --------------------------------------- |
+| Bot error berulang      | Stop container                          |
+| Exchange API bermasalah | Stop bot                                |
+| Strategy salah entry    | Stop bot dan review                     |
+| VPS resource penuh      | Stop bot dan periksa server             |
+| FreqUI tidak responsif  | Masuk SSH dan periksa Docker            |
+| Config salah            | Stop bot, backup, perbaiki config       |
+| Market ekstrem          | Stop bot jika risiko tidak terkontrol   |
 
-Setelah stop bot, jangan langsung start ulang. Lakukan review:
+Setelah menghentikan bot, lakukan review sebelum menjalankan ulang:
 
 ```text
 Apa penyebabnya?
 Apakah ada trade aktif?
-Apakah exchange masih memiliki open order?
+Apakah ada open order di exchange?
 Apakah saldo sesuai?
 Apakah config berubah?
 Apakah strategy error?
 Apakah log menunjukkan masalah?
 ```
 
-Jika ada open order di exchange, cek langsung di exchange. Jangan hanya percaya dashboard bot jika sedang ada error.
+Jika terdapat open order, periksa langsung di exchange. Saat bot sedang error, status di dashboard bot belum tentu akurat.
 
 ---
 
-## Maintenance Server
+## Maintenance
 
-VPS perlu dirawat. Server yang tidak dirawat dapat menjadi sumber masalah. Hal yang perlu dipantau:
+### Maintenance Server
 
-* CPU Usage.
-* RAM Usage.
-* Disk Usage.
-* Network Stability.
-* Docker Container.
-* Apache Status.
-* SSL Certificate.
-* OS Update.
-* Log Size.
-* Backup.
-* Unauthorized Login Attempt.
-
-Command dasar:
+VPS yang tidak dirawat dapat menjadi sumber masalah. Komponen yang dipantau: CPU, RAM, disk, stabilitas network, container, status Apache, SSL, update OS, ukuran log, backup, dan upaya login tidak sah.
 
 ```bash
+# Resource
 htop
-```
-
-```bash
 free -h
-```
-
-```bash
 df -h
-```
 
-```bash
+# Penggunaan Docker
 docker system df
-```
 
-```bash
+# Status service
 sudo systemctl status apache2
-```
-
-```bash
 sudo ufw status
-```
 
-Cek login SSH:
-
-```bash
+# Riwayat login dan auth log
 last
-```
-
-Cek auth log:
-
-```bash
 sudo tail -n 100 /var/log/auth.log
 ```
 
-Jika disk penuh, bot bisa bermasalah. Cek penggunaan Docker:
+Disk yang penuh menyebabkan bot bermasalah. Periksa penggunaan Docker dan bersihkan resource yang tidak terpakai dengan hati-hati:
 
 ```bash
 docker system df
-```
-
-Bersihkan resource Docker yang tidak digunakan dengan hati-hati:
-
-```bash
 docker system prune
 ```
 
-Jangan menjalankan command pembersihan tanpa memahami efeknya. Pastikan backup sudah tersedia sebelum melakukan maintenance besar.
+`docker system prune` menghapus container, network, dan image yang tidak terpakai. Jalankan hanya setelah memahami dampaknya dan memastikan backup tersedia.
 
----
-
-## Update OS
-
-Update OS penting untuk keamanan.
-
-Command update:
+### Update OS
 
 ```bash
 sudo apt update
-```
-
-```bash
 sudo apt upgrade -y
-```
 
-Cek apakah reboot diperlukan:
-
-```bash
+# Cek kebutuhan reboot
 cat /var/run/reboot-required
 ```
 
-Jika file tersebut ada, server membutuhkan reboot. Reboot server:
+Keberadaan file `/var/run/reboot-required` menandakan server perlu reboot.
+
+Sebelum reboot: hentikan bot jika diperlukan, pastikan tidak ada operasi penting berjalan, catat trade aktif, dan pastikan SSH, Docker, serta Apache dapat start ulang.
 
 ```bash
 sudo reboot
 ```
 
-Sebelum reboot:
-
-* Stop Bot Jika Diperlukan.
-* Pastikan Tidak Ada Operasi Penting.
-* Catat Trade Aktif.
-* Pastikan Bisa Login SSH Kembali.
-* Pastikan Docker Container Bisa Start Ulang.
-* Pastikan Apache Bisa Start Ulang.
-
-Setelah reboot:
+Setelah reboot, verifikasi sistem:
 
 ```bash
 docker compose ps
-```
-
-```bash
 sudo systemctl status apache2
-```
-
-```bash
 docker compose logs --tail=100
 ```
 
-Jangan update OS sembarangan ketika bot sedang berada dalam kondisi market sensitif.
+Hindari update OS pada saat kondisi market sensitif sementara bot sedang menjalankan posisi.
 
----
+### Update Freqtrade
 
-## Update Freqtrade
-
-Freqtrade perlu diupdate karena exchange API, dependency, bugfix, dan fitur dapat berubah. Jika menggunakan Docker, pola umum update:
+Freqtrade diupdate untuk mengikuti perubahan exchange API, dependency, bugfix, dan fitur baru. Pola update pada Docker:
 
 ```bash
 cd ~/freqtrade
@@ -676,61 +527,40 @@ docker compose pull
 docker compose up -d
 ```
 
-Setelah update, cek container:
+Verifikasi setelah update:
 
 ```bash
 docker compose ps
-```
-
-Cek log:
-
-```bash
 docker compose logs --tail=200
 ```
 
-Sebelum update Freqtrade:
+Sebelum update: backup config, strategy, dan database bila diperlukan; baca changelog; pastikan tidak ada trade penting; siapkan waktu untuk rollback.
 
-* Backup Config.
-* Backup Strategy.
-* Backup Database Jika Dibutuhkan.
-* Baca Changelog.
-* Pastikan Tidak Ada Trade Penting.
-* Siapkan Waktu untuk Rollback Jika Perlu.
+Setelah update: pastikan bot dapat start, FreqUI dapat diakses, strategy tidak error, dan log bersih dari error kritis. Untuk perubahan besar, uji melalui dry-run sebelum kembali ke live. Jika update menyebabkan error, hentikan bot, baca log, periksa changelog, dan rollback bila perlu.
 
-Setelah update:
+### Backup Konfigurasi dan Strategy
 
-* Cek Bot Bisa Start.
-* Cek FreqUI Bisa Diakses.
-* Cek Strategy Tidak Error.
-* Cek Log Tidak Memiliki Error Kritis.
-* Jalankan Dry-run Jika Menguji Perubahan Besar.
-* Jangan Langsung Mengubah Banyak Hal Sekaligus.
+File yang perlu di-backup:
 
-Jika update menyebabkan error, jangan panik. Stop bot, baca log, cek changelog, dan rollback jika perlu.
+| File atau folder              | Fungsi                          |
+| ----------------------------- | ------------------------------- |
+| `user_data/config.json`       | Config utama                    |
+| `user_data/strategies/`       | File strategy                   |
+| `user_data/data/`             | Data historis                   |
+| `user_data/backtest_results/` | Hasil backtest                  |
+| `user_data/logs/`             | Log                             |
+| Database Freqtrade            | Riwayat trade dan data operasional |
 
----
+Secret tidak diunggah ke repository publik. Untuk GitHub, gunakan file example dan `.gitignore`.
 
-## Backup Konfigurasi dan Strategy
-
-Backup adalah bagian wajib operations. File penting:
-
-| File atau Folder              | Fungsi                                      |
-| ----------------------------- | ------------------------------------------- |
-| `user_data/config.json`       | Config utama                                |
-| `user_data/strategies/`       | File strategy                               |
-| `user_data/data/`             | Data historis                               |
-| `user_data/backtest_results/` | Hasil backtest                              |
-| `user_data/logs/`             | Log                                         |
-| Database Freqtrade            | Riwayat trade dan data operasional tertentu |
-
-Namun, jangan upload secret ke repository publik. Untuk GitHub, gunakan file example:
+File yang aman diunggah:
 
 ```text
 config.example.json
 config.dryrun.example.json
 ```
 
-Jangan upload:
+File yang tidak diunggah:
 
 ```text
 config.json
@@ -772,7 +602,7 @@ __pycache__/
 Thumbs.db
 ```
 
-Contoh backup manual:
+Backup manual:
 
 ```bash
 cd ~/freqtrade
@@ -783,15 +613,15 @@ tar -czf freqtrade-backup-$(date +%Y%m%d).tar.gz \
   user_data/backtest_results
 ```
 
-Jika config berisi secret, simpan backup di tempat aman. Jangan menyimpan backup berisi API key di lokasi publik.
+Backup yang memuat API key disimpan di lokasi aman, bukan di repository atau lokasi publik.
 
 ---
 
-## Incident Response Ringan
+## Incident Response
 
-Incident response adalah langkah ketika terjadi masalah. Tujuannya adalah membatasi kerusakan, memahami penyebab, dan mencegah kejadian berulang.
+Incident response adalah prosedur penanganan masalah dengan tujuan membatasi kerusakan, mengidentifikasi penyebab, dan mencegah kejadian berulang. Berikut prosedur untuk beberapa insiden umum.
 
-### Contoh Incident: API Key Error
+### API Key Error
 
 Gejala:
 
@@ -801,58 +631,57 @@ Authentication failed
 Permission denied
 ```
 
-Langkah:
+Prosedur:
 
-1. Stop Bot.
-2. Cek Permission API di Exchange.
-3. Cek IP Whitelist.
-4. Cek Apakah API Key Baru Saja Diubah.
-5. Cek Config.
-6. Jangan Share API Key di Chat Publik.
-7. Rotate API Key Jika Ada Risiko Bocor.
-8. Start Bot Kembali dalam Kondisi Aman.
+1. Hentikan bot
+2. Periksa permission API di exchange
+3. Periksa IP whitelist
+4. Periksa apakah API key baru diubah
+5. Periksa config
+6. Rotasi API key jika ada risiko bocor
+7. Jalankan ulang bot setelah kondisi aman
 
-### Contoh Incident: VPS Down
+### VPS Down
 
-Langkah:
+Prosedur:
 
-1. Cek Panel Provider VPS.
-2. Cek Apakah Server Bisa Ping.
-3. Cek Apakah SSH Bisa Login.
-4. Cek Status Docker.
-5. Cek Status Apache.
-6. Cek Log Setelah Server Hidup.
-7. Cek Exchange Langsung untuk Open Order.
-8. Jangan Asumsikan Bot Berjalan Normal Sebelum Diverifikasi.
+1. Periksa panel provider VPS
+2. Periksa apakah server merespons ping
+3. Periksa apakah SSH dapat login
+4. Periksa status Docker
+5. Periksa status Apache
+6. Periksa log setelah server hidup
+7. Periksa open order langsung di exchange
+8. Verifikasi kondisi bot sebelum mengasumsikannya berjalan normal
 
-### Contoh Incident: Bot Membuka Trade Tidak Sesuai Ekspektasi
+### Bot Membuka Trade di Luar Ekspektasi
 
-Langkah:
+Prosedur:
 
-1. Stop Bot.
-2. Cek Trade di FreqUI.
-3. Cek Trade di Exchange.
-4. Baca Log Entry.
-5. Cek Strategy Code.
-6. Cek Pair dan Timeframe.
-7. Cek Apakah Config Berubah.
-8. Jalankan Backtest Ulang Jika Perlu.
-9. Jalankan Dry-run Sebelum Live Kembali.
+1. Hentikan bot
+2. Periksa trade di FreqUI
+3. Periksa trade di exchange
+4. Baca log entry
+5. Periksa code strategy
+6. Periksa pair dan timeframe
+7. Periksa apakah config berubah
+8. Jalankan backtest ulang bila perlu
+9. Jalankan dry-run sebelum kembali ke live
 
-### Contoh Incident: Loss Beruntun
+### Loss Beruntun
 
-Langkah:
+Prosedur:
 
-1. Stop Bot Jika Sudah Melewati Risk Limit.
-2. Cek Market Condition.
-3. Cek Exit Reason.
-4. Cek Pair yang Paling Banyak Rugi.
-5. Cek Apakah Stoploss Terlalu Ketat atau Terlalu Longgar.
-6. Cek Apakah Strategy Cocok dengan Market Saat Ini.
-7. Jangan Langsung Menaikkan Modal.
-8. Jangan Revenge Trading.
+1. Hentikan bot jika sudah melewati risk limit
+2. Periksa kondisi market
+3. Periksa exit reason
+4. Identifikasi pair dengan loss terbesar
+5. Periksa apakah stoploss terlalu ketat atau terlalu longgar
+6. Periksa kesesuaian strategy dengan kondisi market saat ini
+7. Jangan menaikkan modal
+8. Jangan melakukan revenge trading
 
-Incident harus dicatat. Format catatan sederhana:
+Setiap insiden dicatat dengan format berikut:
 
 ```text
 Tanggal:
@@ -862,166 +691,65 @@ Pair:
 Masalah:
 Dampak:
 Aksi:
-Penyebab Sementara:
+Penyebab sementara:
 Perbaikan:
 Status:
 ```
 
 ---
 
-## Troubleshooting Umum Saat Live
+## Troubleshooting Saat Live
 
 ### Bot Tidak Membuka Trade
 
-Kemungkinan penyebab:
-
-* Strategy Tidak Memberi Sinyal.
-* Bot Masih Dalam State Stopped.
-* Pairlist Kosong.
-* Pair Tidak Tersedia.
-* Saldo Tidak Cukup.
-* Stake Amount Terlalu Kecil.
-* Max Open Trades Sudah Tercapai.
-* Exchange Menolak Order.
-* Market Tidak Memenuhi Kondisi Entry.
-
-Command cek:
+Penyebab umum: strategy belum memberi sinyal, bot masih dalam state `stopped`, pairlist kosong, pair tidak tersedia, saldo tidak cukup, `stake_amount` di bawah minimum order, `max_open_trades` sudah terpenuhi, exchange menolak order, atau kondisi market tidak memenuhi aturan entry.
 
 ```bash
 docker compose logs --tail=200
 ```
 
-Cek FreqUI:
+Periksa juga status bot, open trades, pairlist, dan log melalui FreqUI.
 
-```text
-Status bot
-Open trades
-Pairlist
-Logs
-```
+### Bot Membuka Terlalu Banyak Trade
 
-### Bot Membuka Trade Terlalu Banyak
+Penyebab umum: `max_open_trades` terlalu besar, pair whitelist terlalu banyak, entry logic terlalu longgar, timeframe terlalu kecil, atau strategy kekurangan filter.
 
-Kemungkinan penyebab:
+Solusi: turunkan `max_open_trades`, batasi pair whitelist, tambahkan filter pada strategy, tinjau entry logic, lalu backtest dan dry-run ulang.
 
-* `max_open_trades` Terlalu Besar.
-* Pair Whitelist Terlalu Banyak.
-* Entry Logic Terlalu Longgar.
-* Timeframe Terlalu Kecil.
-* Strategy Tidak Memiliki Filter Cukup.
-* Stake Amount Terlalu Kecil Sehingga Banyak Posisi Terbuka.
+### Stoploss Terlalu Sering Terpicu
 
-Solusi:
+Penyebab umum: entry terlalu agresif, stoploss terlalu ketat, market choppy, pair terlalu volatil, timeframe tidak sesuai, atau strategy membuka posisi melawan trend.
 
-* Turunkan `max_open_trades`.
-* Batasi Pair Whitelist.
-* Tambahkan Filter Strategy.
-* Review Entry Logic.
-* Backtest Ulang.
-* Dry-run Ulang.
+Solusi: periksa exit reason dan pair performance, evaluasi kondisi market, uji nilai stoploss berbeda pada backtest, tambahkan trend filter, kurangi pair volatil, dan hentikan bot bila terjadi loss beruntun.
 
-### Stoploss Terlalu Sering Kena
+### Profit Habis oleh Fee
 
-Kemungkinan penyebab:
+Penyebab umum: target ROI terlalu kecil, frekuensi trading terlalu tinggi, spread terlalu besar, pair kurang likuid, timeframe terlalu kecil, atau fee exchange tidak diperhitungkan dalam strategy.
 
-* Entry Terlalu Agresif.
-* Stoploss Terlalu Ketat.
-* Market Sedang Choppy.
-* Pair Terlalu Volatil.
-* Timeframe Tidak Cocok.
-* Strategy Melawan Trend.
+Solusi: periksa struktur fee exchange, gunakan pair lebih likuid, kurangi frekuensi trading, uji timeframe lebih besar, sesuaikan minimal ROI, dan hindari scalping sebelum memahami dampak fee dan slippage.
 
-Solusi:
+### FreqUI Tidak Dapat Diakses
 
-* Cek Exit Reason.
-* Cek Pair Performance.
-* Cek Market Condition.
-* Uji Stoploss Berbeda di Backtest.
-* Tambahkan Trend Filter.
-* Kurangi Pair Volatil.
-* Stop Bot Jika Loss Beruntun.
-
-### Profit Kecil Hilang Karena Fee
-
-Kemungkinan penyebab:
-
-* Target ROI Terlalu Kecil.
-* Strategy Terlalu Sering Trading.
-* Spread Terlalu Besar.
-* Pair Kurang Likuid.
-* Timeframe Terlalu Kecil.
-* Fee Exchange Tidak Diperhitungkan.
-
-Solusi:
-
-* Periksa Fee Exchange.
-* Gunakan Pair Lebih Likuid.
-* Kurangi Frekuensi Trading.
-* Uji Timeframe Lebih Besar.
-* Sesuaikan Minimal ROI.
-* Hindari Scalping Jika Belum Memahami Fee dan Slippage.
-
-### FreqUI Tidak Bisa Diakses
-
-Kemungkinan penyebab:
-
-* Container Mati.
-* API Server Mati.
-* Apache Error.
-* SSL Expired.
-* DNS Bermasalah.
-* Firewall Memblokir Akses.
-* Reverse Proxy Salah.
-
-Command cek:
+Penyebab umum: container mati, API server mati, Apache error, SSL kedaluwarsa, masalah DNS, firewall memblokir, atau konfigurasi reverse proxy salah.
 
 ```bash
 docker compose ps
-```
-
-```bash
 curl http://127.0.0.1:8080
-```
-
-```bash
 sudo systemctl status apache2
-```
-
-```bash
 sudo apachectl configtest
-```
-
-```bash
 sudo ufw status
 ```
 
 ### Disk VPS Penuh
 
-Gejala:
-
-* Bot Error.
-* Database Error.
-* Log Tidak Bisa Ditulis.
-* Container Gagal Start.
-* Server Lambat.
-
-Command cek:
+Gejala: bot error, database error, log gagal ditulis, container gagal start, atau server lambat.
 
 ```bash
 df -h
-```
-
-```bash
 docker system df
 ```
 
-Solusi:
-
-* Hapus Log Lama Jika Aman.
-* Backup Lalu Hapus File Tidak Diperlukan.
-* Bersihkan Docker Resource Tidak Terpakai.
-* Perbesar Storage Jika Perlu.
-* Jangan Menghapus Database Tanpa Backup.
+Solusi: hapus log lama yang aman dihapus, backup lalu hapus file yang tidak diperlukan, bersihkan resource Docker yang tidak terpakai, dan perbesar storage bila perlu. Database tidak dihapus tanpa backup.
 
 ### Exchange API Rate Limit
 
@@ -1032,121 +760,74 @@ Rate limit exceeded
 Too many requests
 ```
 
-Kemungkinan penyebab:
+Penyebab umum: frekuensi request terlalu tinggi, terlalu banyak pair dipantau, beberapa instance bot berjalan bersamaan, pembatasan dari exchange, atau retry network berlebihan.
 
-* Bot Terlalu Sering Request.
-* Banyak Pair Dipantau.
-* Banyak Instance Bot.
-* Exchange Membatasi API.
-* Network Retry Terlalu Sering.
-
-Solusi:
-
-* Kurangi Pair.
-* Cek Config Exchange.
-* Cek Jumlah Instance Bot.
-* Cek Log Error.
-* Jangan Menjalankan Terlalu Banyak Bot dengan API Key yang Sama.
+Solusi: kurangi jumlah pair, periksa config exchange, periksa jumlah instance bot, baca log error, dan jangan menjalankan banyak bot dengan API key yang sama.
 
 ---
 
 ## Routine Review
 
-Operations tidak selesai setelah bot berjalan. Bot perlu direview secara rutin.
+Operations berlanjut setelah bot berjalan. Review dilakukan secara berkala.
 
-### Review Harian
+**Review harian:** status bot, trade aktif, profit/loss harian, error log, API error, saldo exchange, resource VPS, dan kondisi market.
 
-Hal yang diperiksa:
+**Review mingguan:** total trade, winrate, drawdown, pair performance, exit reason, jumlah stoploss, profit per pair, perilaku strategy, dampak fee, dan perbandingan dengan hasil backtest.
 
-* Status Bot.
-* Trade Aktif.
-* Profit dan Loss Harian.
-* Error Log.
-* API Error.
-* Saldo Exchange.
-* VPS Resource.
-* Market Condition.
+**Review bulanan:** kelayakan strategy, perubahan kondisi market, penyesuaian pairlist, keputusan modal (tetap, turun, atau naik), kecukupan resource VPS, kebutuhan update Freqtrade, status backup, dan pembaruan dokumentasi internal.
 
-### Review Mingguan
-
-Hal yang diperiksa:
-
-* Total Trade.
-* Winrate.
-* Drawdown.
-* Pair Performance.
-* Exit Reason.
-* Stoploss Count.
-* Profit per Pair.
-* Strategy Behavior.
-* Fee Impact.
-* Perbandingan dengan Backtest.
-
-### Review Bulanan
-
-Hal yang diperiksa:
-
-* Apakah Strategy Masih Layak.
-* Apakah Market Condition Berubah.
-* Apakah Pairlist Perlu Disesuaikan.
-* Apakah Modal Perlu Tetap, Turun, atau Naik.
-* Apakah VPS Masih Cukup.
-* Apakah Freqtrade Perlu Update.
-* Apakah Backup Berjalan.
-* Apakah Dokumentasi Internal Sudah Diperbarui.
-
-Catatan review membantu pembaca mengambil keputusan berdasarkan data. Tanpa review, bot hanya berjalan berdasarkan harapan kosong.
+Catatan review menjadi dasar pengambilan keputusan. Tanpa review, keputusan operasional tidak memiliki dasar data.
 
 ---
 
 ## Checklist Operasional
 
-Checklist harian:
+### Harian
 
-| Checklist                        | Status |
-| -------------------------------- | ------ |
-| Bot Berjalan Normal              | Wajib  |
-| FreqUI Bisa Diakses              | Wajib  |
-| Tidak Ada Error Kritis           | Wajib  |
-| Trade Aktif Masuk Akal           | Wajib  |
-| Loss Harian Masih di Bawah Limit | Wajib  |
-| VPS Resource Normal              | Wajib  |
-| Exchange Tidak Bermasalah        | Wajib  |
+| Checklist                          | Status |
+| ---------------------------------- | ------ |
+| Bot berjalan normal                | Wajib  |
+| FreqUI dapat diakses               | Wajib  |
+| Tidak ada error kritis             | Wajib  |
+| Trade aktif wajar                  | Wajib  |
+| Loss harian di bawah limit         | Wajib  |
+| Resource VPS normal                | Wajib  |
+| Exchange tidak bermasalah          | Wajib  |
 
-Checklist mingguan:
+### Mingguan
 
-| Checklist                        | Status           |
-| -------------------------------- | ---------------- |
-| Pair Performance Direview        | Wajib            |
-| Exit Reason Direview             | Wajib            |
-| Drawdown Direview                | Wajib            |
-| Stoploss Count Direview          | Wajib            |
-| Log Error Direview               | Wajib            |
-| Backup Dicek                     | Wajib            |
-| Update Freqtrade Dipertimbangkan | Direkomendasikan |
+| Checklist                          | Status           |
+| ---------------------------------- | ---------------- |
+| Pair performance direview          | Wajib            |
+| Exit reason direview               | Wajib            |
+| Drawdown direview                  | Wajib            |
+| Jumlah stoploss direview           | Wajib            |
+| Log error direview                 | Wajib            |
+| Backup diperiksa                   | Wajib            |
+| Update Freqtrade dipertimbangkan   | Direkomendasikan |
 
-Checklist sebelum update:
+### Sebelum Update
 
-| Checklist                 | Status           |
-| ------------------------- | ---------------- |
-| Backup Config             | Wajib            |
-| Backup Strategy           | Wajib            |
-| Baca Changelog            | Wajib            |
-| Cek Trade Aktif           | Wajib            |
-| Siapkan Rollback Plan     | Direkomendasikan |
-| Update Saat Market Tenang | Direkomendasikan |
+| Checklist                  | Status           |
+| -------------------------- | ---------------- |
+| Backup config              | Wajib            |
+| Backup strategy            | Wajib            |
+| Changelog dibaca           | Wajib            |
+| Trade aktif diperiksa      | Wajib            |
+| Rollback plan disiapkan    | Direkomendasikan |
+| Update saat market tenang  | Direkomendasikan |
 
-Checklist sebelum menaikkan modal:
+### Sebelum Menaikkan Modal
 
-| Checklist                                  | Status |
-| ------------------------------------------ | ------ |
-| Strategy Stabil di Dry-run                 | Wajib  |
-| Live Kecil Sudah Berjalan Cukup Lama       | Wajib  |
-| Drawdown Terkontrol                        | Wajib  |
-| Tidak Ada Error Operasional                | Wajib  |
-| Risk Limit Tertulis                        | Wajib  |
-| Pengguna Siap Menerima Loss                | Wajib  |
-| Tidak Naik Modal Setelah Satu Profit Besar | Wajib  |
+| Checklist                                    | Status |
+| -------------------------------------------- | ------ |
+| Strategy stabil di dry-run                   | Wajib  |
+| Live kecil sudah berjalan cukup lama         | Wajib  |
+| Drawdown terkontrol                          | Wajib  |
+| Tidak ada error operasional                  | Wajib  |
+| Risk limit tertulis                          | Wajib  |
+| Pengguna siap menerima loss                  | Wajib  |
+| Modal tidak dinaikkan setelah satu profit besar | Wajib |
 
 ---
 
@@ -1158,12 +839,12 @@ Checklist sebelum menaikkan modal:
 | Dry-run           | Simulasi trading tanpa order sungguhan                        |
 | Live Trading      | Trading dengan order sungguhan di exchange                    |
 | Position Sizing   | Pengaturan ukuran posisi per trade                            |
-| Exposure          | Total risiko atau nilai posisi yang sedang terbuka            |
-| Risk Limit        | Batas kerugian yang ditentukan sebelum trading                |
+| Exposure          | Total nilai posisi yang sedang terbuka                        |
+| Risk Limit        | Batas kerugian yang ditetapkan sebelum trading                |
 | Drawdown          | Penurunan nilai akun dari titik tertinggi                     |
 | Stoploss          | Batas keluar untuk membatasi kerugian                         |
-| Kill Switch       | Rencana menghentikan bot dengan cepat                         |
-| Monitoring        | Proses memantau bot, server, log, dan trade                   |
+| Kill Switch       | Prosedur menghentikan bot dengan cepat                        |
+| Monitoring        | Pemantauan bot, server, log, dan trade                        |
 | Alerting          | Notifikasi otomatis untuk kondisi penting                     |
 | FreqUI            | Web interface untuk memantau dan mengontrol Freqtrade         |
 | API Key           | Kredensial untuk menghubungkan bot ke exchange                |
@@ -1171,37 +852,35 @@ Checklist sebelum menaikkan modal:
 | Reverse Proxy     | Komponen yang meneruskan request dari domain ke service lokal |
 | SSL               | Enkripsi koneksi web melalui HTTPS                            |
 | VPS               | Server virtual untuk menjalankan bot                          |
-| Incident Response | Langkah menangani masalah operasional                         |
+| Incident Response | Prosedur menangani masalah operasional                        |
 | Backup            | Salinan file penting untuk pemulihan                          |
 | Changelog         | Catatan perubahan versi software                              |
-| Rollback          | Mengembalikan sistem ke versi sebelumnya                      |
+| Rollback          | Pengembalian sistem ke versi sebelumnya                       |
 
 ---
 
-## Key Takeaways
+## Ringkasan
 
-* Live trading adalah fase operations, bukan sekadar mengubah `dry_run` menjadi `false`.
-* Dry-run membantu testing, tetapi tidak sama dengan live market.
-* Pre-live checklist wajib dilakukan sebelum bot memakai uang sungguhan.
-* Manajemen modal dan position sizing lebih penting daripada mengejar profit besar.
-* Bot harus memiliki risk limit harian dan mingguan.
-* Monitoring harus mencakup bot, trade, log, exchange, VPS, dan akses FreqUI.
-* Pengguna harus tahu cara menghentikan bot sebelum menjalankan bot live.
-* Kill switch plan wajib ada.
-* Server perlu maintenance, update, dan backup.
-* Strategy harus direview secara berkala.
-* Tidak menjalankan bot juga bisa menjadi keputusan yang benar.
-* Operations yang baik tidak menjamin profit, tetapi membantu mengurangi risiko kesalahan sistemik.
+* Live trading adalah fase operations, bukan sekadar mengubah `dry_run` menjadi `false`; seluruh parameter terkait ditinjau ulang sebelum live.
+* Dry-run digunakan untuk validasi tetapi tidak merepresentasikan kondisi live secara penuh; dijalankan dalam periode yang cukup panjang.
+* Pre-live checklist diselesaikan sebelum bot menggunakan dana sungguhan.
+* Manajemen modal dan position sizing diukur dari skenario kerugian, bukan dari target profit.
+* Risk limit harian dan mingguan ditetapkan secara tertulis sebelum live untuk mencegah keputusan berbasis emosi.
+* Monitoring mencakup sisi trading dan infrastruktur, melalui log, FreqUI, dan alert yang volumenya seimbang.
+* Prosedur menghentikan bot (kill switch) dikuasai sebelum live; menghentikan bot adalah keputusan operasional yang valid.
+* Server memerlukan maintenance, update OS, update Freqtrade, dan backup berkala dengan secret yang dijaga di luar repository publik.
+* Insiden ditangani dengan prosedur tertulis dan dicatat untuk mencegah pengulangan.
+* Strategy direview secara harian, mingguan, dan bulanan berdasarkan data, bukan asumsi.
 
 ---
 
 ## Disclaimer
 
-Artikel ini hanya untuk tujuan edukasi. Crypto trading memiliki risiko tinggi. Bot trading tidak menjamin profit. Live trading dapat menyebabkan kehilangan dana sungguhan.
+Artikel ini ditulis untuk tujuan edukasi. Crypto trading memiliki risiko tinggi. Bot trading tidak menjamin profit. Live trading dapat menyebabkan kehilangan dana sungguhan.
 
-Contoh command, checklist, dan parameter dalam artikel ini harus disesuaikan dengan kondisi masing-masing pengguna. Jangan menjalankan bot live sebelum memahami strategy, config, API key, exchange risk, server security, stoploss, position sizing, dan cara menghentikan bot. Jangan menggunakan uang kebutuhan hidup, dana darurat, uang pinjaman, atau uang operasional keluarga untuk trading.
+Contoh command, checklist, dan parameter dalam artikel ini perlu disesuaikan dengan kondisi masing-masing pengguna. Jangan menjalankan bot live sebelum memahami strategy, config, API key, risiko exchange, keamanan server, stoploss, position sizing, dan prosedur menghentikan bot. Jangan menggunakan dana kebutuhan hidup, dana darurat, dana pinjaman, atau dana operasional keluarga untuk trading.
 
-Setiap keputusan teknis dan trading adalah tanggung jawab pribadi masing-masing pengguna.
+Setiap keputusan teknis dan trading adalah tanggung jawab masing-masing pengguna.
 
 ---
 
