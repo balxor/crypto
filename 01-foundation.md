@@ -1,4 +1,4 @@
-# Artikel 1 — Foundation
+# Artikel 1 - Foundation
 
 # Crypto Trading untuk Gamers: Dasar Cryptocurrency, Market, dan Freqtrade
 
@@ -71,7 +71,7 @@ Artikel ini ditulis untuk pembaca dengan latar belakang gaming. Pemain game pada
 
 Perbedaan utamanya ada pada konsekuensi. Kesalahan transaksi di dalam game mengurangi mata uang virtual atau waktu farming. Kesalahan di crypto trading mengurangi dana sungguhan, dan pada sebagian besar kasus transaksi tidak dapat dibatalkan.
 
-Kemampuan yang umum dimiliki gamer — membaca sistem, memahami statistik, melakukan eksperimen build, dan mengikuti perubahan meta — berguna dalam mempelajari trading, tetapi tidak cukup sebagai modal tunggal. Harga di market crypto dipengaruhi banyak faktor sekaligus: transaksi pembeli dan penjual, likuiditas, sentimen, berita, kondisi makro, aktivitas whale, leverage, liquidation, dan algoritma trading. Market crypto perlu diperlakukan sebagai sistem kompleks yang dipelajari dan diuji secara bertahap, dengan risiko yang dikendalikan sejak awal.
+Kemampuan yang umum dimiliki gamer - membaca sistem, memahami statistik, melakukan eksperimen build, dan mengikuti perubahan meta - berguna dalam mempelajari trading, tetapi tidak cukup sebagai modal tunggal. Harga di market crypto dipengaruhi banyak faktor sekaligus: transaksi pembeli dan penjual, likuiditas, sentimen, berita, kondisi makro, aktivitas whale, leverage, liquidation, dan algoritma trading. Market crypto perlu diperlakukan sebagai sistem kompleks yang dipelajari dan diuji secara bertahap, dengan risiko yang dikendalikan sejak awal.
 
 ---
 
@@ -564,7 +564,7 @@ Jika sebagian besar poin belum dipahami, ulangi artikel ini sebelum masuk ke set
 * Freqtrade menyediakan workflow lengkap untuk pengembangan strategi: penulisan strategy, backtesting, hyperopt, dry-run, dan live trading.
 * Backtest, dry-run, dan live trading adalah tiga mode yang berbeda. Validasi strategi dilakukan berurutan dari backtest, dry-run, lalu live dengan modal kecil.
 * Data OHLCV dan candlestick chart adalah input dasar strategi; pembacaannya selalu dilakukan dalam konteks trend, volume, dan struktur market.
-* Risk management — batas risiko, position sizing, dan rencana exit — adalah faktor penentu utama keberlangsungan akun.
+* Risk management - batas risiko, position sizing, dan rencana exit - adalah faktor penentu utama keberlangsungan akun.
 
 ---
 
