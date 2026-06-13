@@ -1,4 +1,4 @@
-# Artikel 3 — Strategy
+# Artikel 3 - Strategy
 
 # Pengembangan Strategy Freqtrade: Indikator, Entry/Exit, dan Backtesting
 
@@ -42,7 +42,7 @@
 
 ## Pendahuluan
 
-Artikel ini adalah lanjutan dari Artikel 2 — Setup. Artikel sebelumnya membahas pembangunan environment Freqtrade; artikel ini membahas penulisan dan evaluasi strategy.
+Artikel ini adalah lanjutan dari Artikel 2 - Setup. Artikel sebelumnya membahas pembangunan environment Freqtrade; artikel ini membahas penulisan dan evaluasi strategy.
 
 ### Prasyarat
 
@@ -101,7 +101,7 @@ Kriteria strategy yang layak dikembangkan:
 
 Loss adalah bagian normal dari sistem trading. Strategy yang baik bukan strategy yang selalu profit, melainkan strategy yang memiliki aturan jelas untuk kedua kondisi: ketika analisis benar dan ketika analisis salah.
 
-Setiap strategy juga memiliki konteks market. Strategy yang profitable pada kondisi trending dapat merugi pada kondisi sideways; strategy yang terlihat baik pada market bullish dapat gagal pada market bearish. Tidak ada strategy yang profitable di seluruh kondisi market. Tujuan pengembangan strategy adalah menghasilkan strategy yang dapat dipahami, diuji, dan dikontrol risikonya — bukan strategy yang sempurna.
+Setiap strategy juga memiliki konteks market. Strategy yang profitable pada kondisi trending dapat merugi pada kondisi sideways; strategy yang terlihat baik pada market bullish dapat gagal pada market bearish. Tidak ada strategy yang profitable di seluruh kondisi market. Tujuan pengembangan strategy adalah menghasilkan strategy yang dapat dipahami, diuji, dan dikontrol risikonya - bukan strategy yang sempurna.
 
 ---
 
@@ -693,7 +693,7 @@ Total profit adalah metrik yang paling menonjol pada output, tetapi bukan metrik
 
 **Total profit.** Hasil akhir strategy pada periode backtest. Total profit dapat menyesatkan jika sebagian besar profit berasal dari satu trade besar sementara mayoritas trade lain merugi.
 
-**Total trades.** Jumlah transaksi. Jumlah trade yang terlalu sedikit membuat hasil tidak signifikan secara statistik — profit 20% dari 3 trade tidak cukup untuk menyimpulkan kualitas strategy. Jumlah trade yang sangat banyak juga perlu diperiksa karena fee dan slippage berdampak lebih besar pada kondisi live.
+**Total trades.** Jumlah transaksi. Jumlah trade yang terlalu sedikit membuat hasil tidak signifikan secara statistik - profit 20% dari 3 trade tidak cukup untuk menyimpulkan kualitas strategy. Jumlah trade yang sangat banyak juga perlu diperiksa karena fee dan slippage berdampak lebih besar pada kondisi live.
 
 **Winrate.** Persentase trade yang profit. Winrate tinggi tidak menjamin strategy profitable: satu loss besar dapat menghapus banyak profit kecil. Sebaliknya, strategy dengan winrate rendah dapat profitable jika rata-rata profit per winning trade jauh lebih besar daripada rata-rata loss.
 
@@ -974,7 +974,7 @@ Artikel berikutnya membahas operations: pengelolaan bot pada fase mendekati live
 * Strategy sederhana yang dipahami sepenuhnya lebih baik sebagai titik awal daripada strategy kompleks yang tidak dipahami.
 * SMA crossover sesuai untuk mempelajari konsep trend tetapi lemah pada market sideways; RSI sesuai untuk mempelajari momentum tetapi memerlukan trend filter; kombinasi trend, RSI, dan volume lebih dapat dipertanggungjawabkan tetapi tetap harus diuji.
 * ROI, stoploss, dan trailing stoploss adalah komponen risk control yang setara pentingnya dengan aturan entry.
-* Hasil backtest dievaluasi dari seluruh metrik — total trades, winrate, average profit, drawdown, distribusi exit reason, dan pair performance — bukan hanya total profit.
+* Hasil backtest dievaluasi dari seluruh metrik - total trades, winrate, average profit, drawdown, distribusi exit reason, dan pair performance - bukan hanya total profit.
 * Iterasi strategy dilakukan satu perubahan per siklus dengan pencatatan hasil pembanding.
 * Hyperopt adalah alat eksplorasi parameter; hasilnya divalidasi pada data out-of-sample dan dry-run.
 * Overfitting adalah penyebab kegagalan paling umum; mitigasinya adalah strategi sederhana, pemisahan data, dan pengujian lintas periode dan pair.
