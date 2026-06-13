@@ -1,12 +1,12 @@
 # Crypto Trading for Gamers with Freqtrade
 
-> Seri tutorial edukasi untuk mempelajari crypto trading dan bot trading menggunakan Freqtrade secara sistematis, dari konsep dasar hingga operasional bot di VPS.
+> Seri tutorial untuk mempelajari crypto trading dan bot trading dengan Freqtrade secara sistematis, dari konsep dasar hingga operasional bot di VPS.
 
 ## Tentang Repository Ini
 
 Repository ini berisi seri tutorial tentang dasar crypto trading, setup Freqtrade, pengembangan strategy, backtesting, dry-run, dan operasional bot.
 
-Target pembaca adalah pengguna dengan latar belakang gaming yang terbiasa membaca sistem, statistik, ekonomi virtual, build, probabilitas, dan resource management, tetapi belum familiar dengan crypto market dan risiko trading. Seri ini menekankan pemahaman dan pengendalian risiko, bukan profit cepat. Alur pembelajarannya:
+Target pembaca adalah pengguna dengan latar gaming yang terbiasa membaca sistem, statistik, ekonomi virtual, build, probabilitas, dan resource management, tetapi belum familiar dengan crypto market dan risiko trading. Fokus seri ini adalah pemahaman dan pengendalian risiko. Urutan belajarnya:
 
 * Memahami market sebelum trading
 * Memahami risiko sebelum menggunakan bot
@@ -43,7 +43,7 @@ Tidak sesuai untuk:
 3. **Backtest.** Backtest menunjukkan performa pada data historis; kondisi live dapat berbeda.
 4. **Security.** API key, VPS, SSH, firewall, reverse proxy, SSL, dan backup adalah bagian dari operasional bot.
 5. **Risk management.** Strategy yang baik tetap dapat gagal jika position sizing, stoploss, dan eksposur tidak dikontrol.
-6. **Bot menjalankan aturan.** Bot menjalankan strategy persis seperti yang dikonfigurasi; strategy yang buruk akan dijalankan secara konsisten sebagai strategy buruk.
+6. **Bot menjalankan aturan.** Bot menjalankan strategy persis seperti yang dikonfigurasi. Strategy buruk akan dijalankan secara konsisten.
 
 ---
 
@@ -247,7 +247,7 @@ Rujukan resmi yang relevan:
 * Configuration - https://www.freqtrade.io/en/stable/configuration/
 * FreqUI - https://www.freqtrade.io/en/stable/freq-ui/
 
-Dokumentasi resmi adalah sumber acuan utama karena fitur, command, dukungan exchange, dan best practice dapat berubah antar versi.
+Dokumentasi resmi adalah acuan utama karena fitur, command, dukungan exchange, dan best practice dapat berubah antar versi.
 
 ---
 
@@ -255,7 +255,7 @@ Dokumentasi resmi adalah sumber acuan utama karena fitur, command, dukungan exch
 
 Repository ini ditulis untuk tujuan edukasi.
 
-Crypto trading memiliki risiko tinggi. Harga aset crypto dapat bergerak cepat dan ekstrem. Bot trading tidak menjamin profit. Backtesting tidak menjamin hasil di masa depan. Dry-run tidak sepenuhnya merepresentasikan kondisi live market. Jangan menggunakan dana kebutuhan hidup, dana darurat, dana pinjaman, atau dana operasional keluarga untuk trading.
+Crypto trading memiliki risiko tinggi. Harga aset crypto dapat bergerak cepat dan dalam rentang besar. Bot trading tidak menjamin profit. Backtesting tidak menjamin hasil di masa depan. Dry-run tidak sepenuhnya merepresentasikan kondisi live market. Jangan menggunakan dana kebutuhan hidup, dana darurat, dana pinjaman, atau dana operasional keluarga untuk trading.
 
 Setiap keputusan trading adalah tanggung jawab masing-masing pengguna. Materi ini bukan financial advice.
 
