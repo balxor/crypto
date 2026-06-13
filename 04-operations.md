@@ -1,4 +1,4 @@
-# Artikel 4 — Operations
+# Artikel 4 - Operations
 
 # Mengoperasikan Freqtrade: Transisi ke Live, Manajemen Risiko, dan Maintenance
 
@@ -44,7 +44,7 @@
 
 ## Pendahuluan
 
-Artikel ini adalah lanjutan dari Artikel 3 — Strategy. Artikel sebelumnya membahas penulisan dan pengujian strategy; artikel ini membahas pengoperasian bot pada fase mendekati live dan live.
+Artikel ini adalah lanjutan dari Artikel 3 - Strategy. Artikel sebelumnya membahas penulisan dan pengujian strategy; artikel ini membahas pengoperasian bot pada fase mendekati live dan live.
 
 Pada tahap ini, pertanyaan yang relevan bukan lagi sebatas apakah strategy profitable pada backtest, melainkan:
 
