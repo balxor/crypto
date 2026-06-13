@@ -57,7 +57,7 @@ Tidak sesuai untuk:
 | Artikel 4 | Operations | Transisi ke live, risk management, monitoring, dan maintenance |
 | Glossary  | Referensi  | Daftar istilah yang digunakan di seluruh seri                 |
 
-### Artikel 1 — Foundation
+### Artikel 1 - Foundation
 
 Dasar crypto trading untuk pembaca baru:
 
@@ -71,7 +71,7 @@ Dasar crypto trading untuk pembaca baru:
 
 Tujuan: membangun pemahaman dasar sebelum masuk ke instalasi bot.
 
-### Artikel 2 — Setup
+### Artikel 2 - Setup
 
 Setup teknis dari nol hingga bot berjalan dalam mode dry-run:
 
@@ -85,7 +85,7 @@ Setup teknis dari nol hingga bot berjalan dalam mode dry-run:
 
 Tujuan: menyiapkan environment Freqtrade yang bersih, aman, dan siap untuk eksperimen.
 
-### Artikel 3 — Strategy
+### Artikel 3 - Strategy
 
 Penulisan dan evaluasi strategy:
 
@@ -99,7 +99,7 @@ Penulisan dan evaluasi strategy:
 
 Tujuan: memahami cara strategy dibuat, diuji, dievaluasi, dan diperbaiki.
 
-### Artikel 4 — Operations
+### Artikel 4 - Operations
 
 Pengoperasian bot setelah strategy diuji:
 
@@ -240,12 +240,12 @@ Thumbs.db
 
 Rujukan resmi yang relevan:
 
-* Freqtrade Documentation — https://www.freqtrade.io/en/stable/
-* Freqtrade GitHub Repository — https://github.com/freqtrade/freqtrade
-* Strategy Customization — https://www.freqtrade.io/en/stable/strategy-customization/
-* Backtesting — https://www.freqtrade.io/en/stable/backtesting/
-* Configuration — https://www.freqtrade.io/en/stable/configuration/
-* FreqUI — https://www.freqtrade.io/en/stable/freq-ui/
+* Freqtrade Documentation - https://www.freqtrade.io/en/stable/
+* Freqtrade GitHub Repository - https://github.com/freqtrade/freqtrade
+* Strategy Customization - https://www.freqtrade.io/en/stable/strategy-customization/
+* Backtesting - https://www.freqtrade.io/en/stable/backtesting/
+* Configuration - https://www.freqtrade.io/en/stable/configuration/
+* FreqUI - https://www.freqtrade.io/en/stable/freq-ui/
 
 Dokumentasi resmi adalah sumber acuan utama karena fitur, command, dukungan exchange, dan best practice dapat berubah antar versi.
 
