@@ -1,4 +1,4 @@
-# Artikel 2 — Setup
+# Artikel 2 - Setup
 
 # Setup Freqtrade di VPS: Exchange, Ubuntu Server, Docker, FreqUI, dan Reverse Proxy
 
@@ -46,9 +46,9 @@
 
 ## Pendahuluan
 
-Artikel ini adalah lanjutan dari Artikel 1 — Foundation. Artikel pertama membahas konsep dasar crypto market; artikel ini membahas sisi teknis. Target akhir artikel ini adalah environment Freqtrade yang berjalan di VPS dalam mode dry-run, dapat dipantau melalui FreqUI, dan dapat diakses secara aman melalui HTTPS.
+Artikel ini adalah lanjutan dari Artikel 1 - Foundation. Artikel pertama membahas konsep dasar crypto market; artikel ini membahas sisi teknis. Target akhir artikel ini adalah environment Freqtrade yang berjalan di VPS dalam mode dry-run, dapat dipantau melalui FreqUI, dan dapat diakses secara aman melalui HTTPS.
 
-Fokus pada tahap ini adalah membangun environment yang rapi, aman, dan dapat diuji — bukan profit. Live trading baru dipertimbangkan setelah seluruh tahapan validasi pada artikel-artikel berikutnya selesai.
+Fokus pada tahap ini adalah membangun environment yang rapi, aman, dan dapat diuji - bukan profit. Live trading baru dipertimbangkan setelah seluruh tahapan validasi pada artikel-artikel berikutnya selesai.
 
 Setelah menyelesaikan artikel ini, pembaca diharapkan dapat:
 
